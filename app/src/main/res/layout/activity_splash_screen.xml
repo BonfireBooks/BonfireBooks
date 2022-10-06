@@ -8,9 +8,9 @@
     android:background="@color/logo_orange">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/logo"
-        android:layout_marginStart="-8dp"/>
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_centerInParent="true"
+        app:srcCompat="@drawable/logo"/>
 
 </RelativeLayout>
