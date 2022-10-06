@@ -13,8 +13,6 @@ public class SplashScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        getSupportActionBar().hide();
-
         // hold the splash screen for 1s before switching to appropriate activity'
         new Handler().postDelayed(new Runnable() {
             @Override
