@@ -8,9 +8,44 @@
     android:background="@color/logo_orange">
 
     <ImageView
+        android:id="@+id/imgV_logo"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/txtV_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_logo"
+        android:text="@string/bonfire_uppercase"
+        android:textSize="60sp"
+        android:layout_below="@id/imgV_logo"
+        android:layout_marginTop="-40dp"
+        android:layout_centerHorizontal="true"
         />
+
+    <Button
+        android:id="@+id/btn_signin"
+        android:layout_width="315dp"
+        android:layout_height="80dp"
+        android:backgroundTint="@color/btn_orange"
+        android:text="@string/sign_in"
+        android:textColor="@color/btntxt_blue"
+        android:layout_below="@id/txtV_name"
+        android:layout_marginTop="100dp"
+        android:layout_centerHorizontal="true"
+        />
+
+    <Button
+        android:id="@+id/signup"
+        android:layout_width="315dp"
+        android:layout_height="80dp"
+        android:layout_below="@id/btn_signin"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/white"
+        android:text="@string/sign_up"
+        android:textColor="@color/btntxt_blue" />
 
 </RelativeLayout>
