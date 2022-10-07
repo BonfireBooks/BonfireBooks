@@ -69,7 +69,7 @@
         />
 
     <EditText
-        android:id="@+id/txtE_hofstraID"
+        android:id="@+id/txtE_HofID"
         android:layout_width="350dp"
         android:layout_height="55dp"
         android:layout_below="@id/txtV_HofID"
@@ -84,7 +84,7 @@
         android:layout_height="wrap_content"
         android:text="@string/password"
         android:textColor="@color/txt_white50"
-        android:layout_below="@id/txtE_hofstraID"
+        android:layout_below="@id/txtE_HofID"
         android:layout_marginTop="20dp"
         android:layout_marginStart="30dp"
         />
@@ -123,7 +123,7 @@
 
     <Button
         android:id="@+id/btn_login"
-        android:layout_width="300dp"
+        android:layout_width="350dp"
         android:layout_height="55dp"
         android:text="@string/login_now"
         android:layout_centerHorizontal="true"
@@ -135,7 +135,7 @@
 
     <Button
         android:id="@+id/btn_signup"
-        android:layout_width="300dp"
+        android:layout_width="350dp"
         android:layout_height="55dp"
         android:text="@string/login_now"
         android:layout_centerHorizontal="true"
