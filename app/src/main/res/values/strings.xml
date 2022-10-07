@@ -16,4 +16,6 @@
     <string name="username">Username</string>
     <string name="email">Email</string>
     <string name="example_hofstra_email">hofstrastudent@pride.hoftstra.edu</string>
+    <string name="signup_instructions">Please enter a display name, hofstra ID, email and a password.</string>
+    <string name="signup_header">Create your account</string>
 </resources>
