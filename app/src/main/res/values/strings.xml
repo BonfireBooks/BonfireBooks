@@ -3,4 +3,13 @@
     <string name="sign_in">SIGN IN</string>
     <string name="sign_up">SIGN UP</string>
     <string name="bonfire_uppercase">BONFIRE</string>
+    <string name="login_instructions"><![CDATA[Please enter your ID & password to login to your bonfire account]]></string>
+    <string name="login_welcome">Welcome to Login</string>
+    <string name="hofstra_id">Hofstra ID:</string>
+    <string name="login_now">Login Now</string>
+    <string name="hint_hofstra_ID">h*********</string>
+    <string name="password">Password:</string>
+    <string name="password_hint">***********</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="remember_me">Remember me</string>
 </resources>

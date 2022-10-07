@@ -1,9 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/logo_orange"
     tools:context=".LoginActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/ic_arrow_back" />
+
+    <View
+        android:id="@+id/v_circle"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginHorizontal="220dp"
+        android:layout_marginTop="-120dp"
+        android:layout_toEndOf="@id/btn_back"
+        android:background="@drawable/circle" />
+
+    <TextView
+        android:id="@+id/txtV_welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_welcome"
+        android:layout_below="@id/btn_back"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="30dp"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        />
+
+    <TextView
+        android:id="@+id/txtV_info"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="@string/login_instructions"
+        android:lineSpacingExtra="8dp"
+        android:layout_below="@id/txtV_welcome"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="30dp"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        />
+
+    <View
+        android:id="@+id/rectangle"
+        android:layout_width="match_parent"
+        android:layout_height="520dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/rectangle"
+        />
+
+    <TextView
+        android:id="@+id/txtV_HofID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hofstra_id"
+        android:textColor="@color/txt_white50"
+        android:layout_below="@id/txtV_info"
+        android:layout_marginTop="70dp"
+        android:layout_marginStart="30dp"
+        />
+
+    <EditText
+        android:id="@+id/txtE_hofstraID"
+        android:layout_width="350dp"
+        android:layout_height="55dp"
+        android:layout_below="@id/txtV_HofID"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/edit_text_inputs_starting_screens"
+        android:hint="@string/hint_hofstra_ID"/>
+
+    <TextView
+        android:id="@+id/txtV_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/password"
+        android:textColor="@color/txt_white50"
+        android:layout_below="@id/txtE_hofstraID"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="30dp"
+        />
+
+    <EditText
+        android:id="@+id/txtE_password"
+        android:layout_width="350dp"
+        android:layout_height="55dp"
+        android:layout_below="@id/txtV_password"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/edit_text_inputs_starting_screens"
+        android:hint="@string/password_hint"/>
+
+    <CheckBox
+        android:id="@+id/chk_remember_me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtE_password"
+        android:layout_alignStart="@id/txtE_password"
+        android:layout_marginTop="33dp"
+        android:text="@string/remember_me"
+        android:textColor="@color/txt_gray50" />
+
+    <TextView
+        android:id="@+id/txtV_forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/forgot_password"
+        android:textStyle="italic"
+        android:textColor="@color/txt_gray50"
+        android:layout_below="@id/txtE_password"
+        android:layout_marginTop="41dp"
+        android:layout_alignEnd="@id/txtE_password"
+        />
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="300dp"
+        android:layout_height="55dp"
+        android:text="@string/login_now"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/buttons_orange"
+        android:textColor="@color/btntxt_blue"
+        android:layout_below="@id/chk_remember_me"
+        android:layout_marginTop="33dp"
+        />
+
+    <Button
+        android:id="@+id/btn_signup"
+        android:layout_width="300dp"
+        android:layout_height="55dp"
+        android:text="@string/login_now"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/buttons_brown"
+        android:textColor="@color/btntxt_white"
+        android:layout_below="@id/btn_login"
+        android:layout_marginTop="33dp"
+        />
+
+
+
+</RelativeLayout>
