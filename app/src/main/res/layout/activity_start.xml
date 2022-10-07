@@ -37,7 +37,7 @@
         android:textColor="@color/btntxt_blue" />
 
     <Button
-        android:id="@+id/signup"
+        android:id="@+id/btn_signup"
         android:layout_width="315dp"
         android:layout_height="80dp"
         android:background="@drawable/buttons_white"

@@ -150,7 +150,7 @@
         android:background="@drawable/buttons_orange"
         android:textColor="@color/btntxt_blue"
         android:layout_below="@id/txtE_password"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         />
 
 
