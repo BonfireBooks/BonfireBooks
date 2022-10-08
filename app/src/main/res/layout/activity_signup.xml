@@ -57,102 +57,11 @@
         android:background="@drawable/rectangle"
         />
 
-    <TextView
-        android:id="@+id/txtV_displayName"
-        android:layout_width="wrap_content"
+    <include layout="@layout/drawer_signup"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/display_name"
-        android:textColor="@color/txt_white50"
-        android:layout_below="@id/txtV_info"
-        android:layout_marginTop="70dp"
-        android:layout_marginStart="30dp"
         />
-
-    <EditText
-        android:id="@+id/txtE_displayName"
-        android:layout_width="350dp"
-        android:layout_height="55dp"
-        android:layout_below="@id/txtV_displayName"
-        android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/edit_text_inputs_starting_screens"
-        android:hint="@string/username"/>
-
-    <TextView
-        android:id="@+id/txtV_HofID"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hofstra_id"
-        android:textColor="@color/txt_white50"
-        android:layout_below="@id/txtE_displayName"
-        android:layout_marginTop="15dp"
-        android:layout_marginStart="30dp"
-        />
-
-    <EditText
-        android:id="@+id/txtE_HofID"
-        android:layout_width="350dp"
-        android:layout_height="55dp"
-        android:layout_below="@id/txtV_HofID"
-        android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/edit_text_inputs_starting_screens"
-        android:hint="@string/password_hint"/>
-
-    <TextView
-        android:id="@+id/txtV_email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/email"
-        android:textColor="@color/txt_white50"
-        android:layout_below="@id/txtE_HofID"
-        android:layout_marginTop="15dp"
-        android:layout_marginStart="30dp"
-        />
-
-    <EditText
-        android:id="@+id/txtE_email"
-        android:layout_width="350dp"
-        android:layout_height="55dp"
-        android:layout_below="@id/txtV_email"
-        android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/edit_text_inputs_starting_screens"
-        android:hint="@string/example_hofstra_email"/>
-
-    <TextView
-        android:id="@+id/txtV_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/password"
-        android:textColor="@color/txt_white50"
-        android:layout_below="@id/txtE_email"
-        android:layout_marginTop="15dp"
-        android:layout_marginStart="30dp"
-        />
-
-    <EditText
-        android:id="@+id/txtE_password"
-        android:layout_width="350dp"
-        android:layout_height="55dp"
-        android:layout_below="@id/txtV_password"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/edit_text_inputs_starting_screens"
-        android:hint="@string/password_hint" />
-
-    <Button
-        android:id="@+id/btn_create"
-        android:layout_width="350dp"
-        android:layout_height="55dp"
-        android:text="@string/login_now"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/buttons_orange"
-        android:textColor="@color/btntxt_blue"
-        android:layout_below="@id/txtE_password"
-        android:layout_marginTop="30dp"
-        />
-
 
 
 </RelativeLayout>

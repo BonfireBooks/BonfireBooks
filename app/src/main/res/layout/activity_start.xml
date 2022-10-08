@@ -1,40 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StartActivity"
-    android:background="@color/logo_orange">
+    android:background="@color/logo_orange"
+    tools:context=".StartActivity">
 
     <ImageView
         android:id="@+id/imgV_logo"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/logo" />
+        android:src="@drawable/logo"
+        android:layout_marginTop="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/txtV_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="-40dp"
         android:text="@string/bonfire_uppercase"
         android:textSize="60sp"
-        android:layout_below="@id/imgV_logo"
-        android:layout_marginTop="-40dp"
-        android:layout_centerHorizontal="true"
-        />
+        android:textColor="@color/logo_brown"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgV_logo" />
 
     <Button
         android:id="@+id/btn_signin"
         android:layout_width="315dp"
         android:layout_height="80dp"
-        android:layout_below="@id/txtV_name"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="120dp"
         android:background="@drawable/buttons_orange"
         android:text="@string/sign_in"
-        android:textColor="@color/btntxt_blue" />
+        android:textColor="@color/btntxt_blue"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_signup"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <Button
         android:id="@+id/btn_signup"
@@ -43,8 +49,9 @@
         android:background="@drawable/buttons_white"
         android:text="@string/sign_up"
         android:textColor="@color/btntxt_blue"
-        android:layout_below="@id/btn_signin"
-        android:layout_marginTop="40dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

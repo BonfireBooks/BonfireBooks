@@ -33,7 +33,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginStart="30dp"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="25sp"
         />
 
     <TextView
@@ -49,102 +49,10 @@
         android:textSize="14sp"
         />
 
-    <View
-        android:id="@+id/rectangle"
-        android:layout_width="match_parent"
-        android:layout_height="520dp"
+    <include layout="@layout/drawer_login"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/rectangle"
-        />
-
-    <TextView
-        android:id="@+id/txtV_HofID"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/hofstra_id"
-        android:textColor="@color/txt_white50"
-        android:layout_below="@id/txtV_info"
-        android:layout_marginTop="70dp"
-        android:layout_marginStart="30dp"
         />
-
-    <EditText
-        android:id="@+id/txtE_HofID"
-        android:layout_width="350dp"
-        android:layout_height="55dp"
-        android:layout_below="@id/txtV_HofID"
-        android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/edit_text_inputs_starting_screens"
-        android:hint="@string/hint_hofstra_ID"/>
-
-    <TextView
-        android:id="@+id/txtV_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/password"
-        android:textColor="@color/txt_white50"
-        android:layout_below="@id/txtE_HofID"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="30dp"
-        />
-
-    <EditText
-        android:id="@+id/txtE_password"
-        android:layout_width="350dp"
-        android:layout_height="55dp"
-        android:layout_below="@id/txtV_password"
-        android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/edit_text_inputs_starting_screens"
-        android:hint="@string/password_hint"/>
-
-    <CheckBox
-        android:id="@+id/chk_remember_me"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtE_password"
-        android:layout_alignStart="@id/txtE_password"
-        android:layout_marginTop="33dp"
-        android:text="@string/remember_me"
-        android:textColor="@color/txt_gray50" />
-
-    <TextView
-        android:id="@+id/txtV_forgot_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/forgot_password"
-        android:textStyle="italic"
-        android:textColor="@color/txt_gray50"
-        android:layout_below="@id/txtE_password"
-        android:layout_marginTop="41dp"
-        android:layout_alignEnd="@id/txtE_password"
-        />
-
-    <Button
-        android:id="@+id/btn_login"
-        android:layout_width="350dp"
-        android:layout_height="55dp"
-        android:text="@string/login_now"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/buttons_orange"
-        android:textColor="@color/btntxt_blue"
-        android:layout_below="@id/chk_remember_me"
-        android:layout_marginTop="33dp"
-        />
-
-    <Button
-        android:id="@+id/btn_signup"
-        android:layout_width="350dp"
-        android:layout_height="55dp"
-        android:text="@string/login_now"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/buttons_brown"
-        android:textColor="@color/btntxt_white"
-        android:layout_below="@id/btn_login"
-        android:layout_marginTop="33dp"
-        />
-
-
 
 </RelativeLayout>

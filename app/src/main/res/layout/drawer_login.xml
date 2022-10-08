@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_login"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rectangle"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp">
+    <TextView
+        android:id="@+id/txtV_HofID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/hofstra_id"
+        android:textColor="@color/txt_white50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/txtE_HofID"
+        android:layout_width="350dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/edit_text_inputs_starting_screens"
+        android:hint="@string/hint_hofstra_ID"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtV_HofID" />
+
+    <TextView
+        android:id="@+id/txtV_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/password"
+        android:textColor="@color/txt_white50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtE_HofID" />
+
+    <EditText
+        android:id="@+id/txtE_password"
+        android:layout_width="350dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/edit_text_inputs_starting_screens"
+        android:hint="@string/password_hint"
+        android:inputType="textPassword"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtV_password" />
+
+    <CheckBox
+        android:id="@+id/chk_remember_me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="33dp"
+        android:text="@string/remember_me"
+        android:textColor="@color/txt_gray50"
+        app:layout_constraintStart_toStartOf="@id/txtE_password"
+        app:layout_constraintTop_toBottomOf="@id/txtE_password" />
+
+    <TextView
+        android:id="@+id/txtV_forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="41dp"
+        android:text="@string/forgot_password"
+        android:textColor="@color/txt_gray50"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="@id/txtE_password"
+        app:layout_constraintTop_toBottomOf="@id/txtE_password" />
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="350dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="33dp"
+        android:background="@drawable/buttons_orange"
+        android:text="@string/login_now"
+        android:textColor="@color/btntxt_blue"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chk_remember_me" />
+
+    <Button
+        android:id="@+id/btn_signup"
+        android:layout_width="350dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="33dp"
+        android:background="@drawable/buttons_brown"
+        android:text="@string/sign_up"
+        android:textColor="@color/btntxt_white"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_login" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
