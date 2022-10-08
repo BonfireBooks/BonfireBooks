@@ -1,5 +1,6 @@
 package com.example.bonfirebooks;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -8,7 +9,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 public class SignupActivity extends AppCompatActivity {
@@ -44,7 +56,62 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isValidInput()) {
+                    createUser();
+                }
+            }
+        });
+    }
 
+    private void createUser() {
+        // input data
+        String displayName = txtE_displayName.getText().toString();
+        String hofstraID = txtE_HofID.getText().toString();
+        String email = txtE_email.getText().toString();
+        String password = txtE_password.getText().toString();
+
+        // create user in auth system
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()) {
+                    Log.d("createUser", "success");
+                    String uID = auth.getCurrentUser().getUid();
+
+                    // create user data in realtime and firestore databases
+                    createUserInRealtime(hofstraID, email);
+                    createUserInFirestore(uID, displayName, email, hofstraID);
+                } else {
+                    Log.w("createUser:failure", task.getException().toString());
+                    Toast.makeText(SignupActivity.this, "Could not create an account at this time.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void createUserInFirestore(String uID, String displayName, String email, String hofID) {
+        // create Map with users info
+        HashMap<String, String> userInfo = new HashMap();
+        userInfo.put("name", displayName);
+        userInfo.put("email", email);
+        userInfo.put("hofID", hofID);
+
+        // Set users personal info
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        firestore.collection("users").document(uID).set(userInfo);
+    }
+
+    private void createUserInRealtime(String hofId, String email) {
+        // store the hofId:email in realtime
+        DatabaseReference realtime = FirebaseDatabase.getInstance().getReference();
+        realtime.child("users").child(hofId).setValue(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    Log.d("createUserRealtime", "success");
+                } else {
+                    Log.w("createUserRealtime", "failure\n" + task.getException().toString());
+                    Toast.makeText(SignupActivity.this, "Could not create an account at this time", Toast.LENGTH_SHORT).show();
                 }
             }
         });
