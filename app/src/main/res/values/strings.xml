@@ -18,4 +18,6 @@
     <string name="example_hofstra_email">hofstrastudent@pride.hoftstra.edu</string>
     <string name="signup_instructions">Please enter a display name, hofstra ID, email and a password.</string>
     <string name="signup_header">Create your account</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="reset_pass_info">Enter your email address and we will send a link to reset your password.</string>
 </resources>
