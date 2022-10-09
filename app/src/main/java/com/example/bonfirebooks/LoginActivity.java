@@ -1,14 +1,25 @@
 package com.example.bonfirebooks;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -59,7 +70,46 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isValidInput()) {
+                    // get the user email -- login gets called from this function
+                    getUserEmail(txtE_HofID.getText().toString());
+                }
+            }
+        });
+    }
 
+    private void getUserEmail(String hofID) {
+        // grab the user email from the realtime database
+        DatabaseReference realtime = FirebaseDatabase.getInstance().getReference();
+        realtime.child("users").child(hofID).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()) {
+                    Log.d("getRealtimeUser", "success\n" + task.getResult().getValue().toString());
+                    String email = String.valueOf(task.getResult().getValue());
+
+                    // call the login here -- to make sure email has been retreived
+                    loginUser(email, txtE_password.getText().toString());
+                } else {
+                    Log.w("getRealtimeUser", "failure\n" + task.getException());
+                    Toast.makeText(LoginActivity.this, "Could not log in at the moment", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void loginUser(String email, String password) {
+        // login the user with the fetched email and the password entered by the user
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()) {
+                    Log.d("loginUser", "success");
+                    // navigate to main activity
+
+                } else {
+                    Log.w("loginUser", "failure\n" + task.getException());
+                    Toast.makeText(LoginActivity.this, "Incorrect Credentials", Toast.LENGTH_SHORT).show();
                 }
             }
         });
