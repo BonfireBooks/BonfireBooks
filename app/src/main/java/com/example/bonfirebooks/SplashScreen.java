@@ -29,7 +29,8 @@ public class SplashScreen extends AppCompatActivity {
                 }
             }, 1000);
         } else {
-            // ToDo -- create intent to the main activity
+            startActivity(new Intent(SplashScreen.this, MainActivity.class));
+            finish();
         }
 
     }
