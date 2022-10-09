@@ -80,6 +80,9 @@ public class SignupActivity extends AppCompatActivity {
                     Log.d("createUser", "success");
                     String uID = auth.getCurrentUser().getUid();
 
+                    // send email verification
+                    sendEmailVerification();
+
                     // create user data in realtime and firestore databases
                     createUserInRealtime(hofstraID, email);
                     createUserInFirestore(uID, displayName, email, hofstraID);
@@ -89,6 +92,23 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void sendEmailVerification() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    Log.d("emailVerificationSent", "success");
+                } else {
+                    Log.d("emailVerificationSent", "failure");
+                }
+            }
+        });
+
+        // sign out since users should be able to login without verifying their email
+        auth.signOut();
     }
 
     private void createUserInFirestore(String uID, String displayName, String email, String hofID) {
@@ -103,7 +123,8 @@ public class SignupActivity extends AppCompatActivity {
         firestore.collection("users").document(uID).set(userInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                startActivity(new Intent(SignupActivity.this, MainActivity.class));
+                Toast.makeText(SignupActivity.this, "Please verify your email before logging in.", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(SignupActivity.this, LoginActivity.class));
                 finish();
             }
         });
