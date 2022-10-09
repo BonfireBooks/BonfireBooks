@@ -108,7 +108,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(AuthResult authResult) {
                 Log.d("loginUser", "success");
-                // navigate to main activity
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
