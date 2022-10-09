@@ -14,12 +14,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -84,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if(task.isSuccessful()) {
-                    Log.d("getRealtimeUser", "success\n" + task.getResult().getValue().toString());
+                    Log.d("getRealtimeUser", "success");
                     String email = String.valueOf(task.getResult().getValue());
 
                     // call the login here -- to make sure email has been retreived
@@ -100,35 +104,52 @@ public class LoginActivity extends AppCompatActivity {
     private void loginUser(String email, String password) {
         // login the user with the fetched email and the password entered by the user
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        auth.signInWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()) {
-                    Log.d("loginUser", "success");
-                    // navigate to main activity
-
-                } else {
-                    Log.w("loginUser", "failure\n" + task.getException());
-                    Toast.makeText(LoginActivity.this, "Incorrect Credentials", Toast.LENGTH_SHORT).show();
-                }
+            public void onSuccess(AuthResult authResult) {
+                Log.d("loginUser", "success");
+                // navigate to main activity
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("loginUser", "failure\n" + e.getMessage());
+                Toast.makeText(LoginActivity.this, "Incorrect Credentials", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private boolean isValidInput() {
-        boolean isValid = true;
+        final boolean[] isValid = {true};
 
-        // ToDo -- Add check to see if id exists in database
-
+        // check that ID field is empty
         if(TextUtils.isEmpty(txtE_HofID.getText().toString())) {
             txtE_HofID.setError("Please enter your Hofstra ID");
-            isValid = false;
-        }
-        if(TextUtils.isEmpty(txtE_password.getText().toString())) {
-            txtE_password.setError("Please enter your password");
-            isValid = false;
+            isValid[0] = false;
+        } else {
+            // check if ID exists
+            FirebaseDatabase.getInstance().getReference().child("users").child(txtE_HofID.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(!snapshot.exists()) {
+                        isValid[0] = false;
+                        txtE_HofID.setError("Account does not exist");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
 
-        return isValid;
+        // check that password field is empty
+        if(TextUtils.isEmpty(txtE_password.getText().toString())) {
+            txtE_password.setError("Please enter your password");
+            isValid[0] = false;
+        }
+
+        return isValid[0];
     }
 }
