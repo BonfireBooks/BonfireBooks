@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -90,7 +91,6 @@ public class LoginActivity extends AppCompatActivity {
                 if(task.isSuccessful()) {
                     Log.d("getRealtimeUser", "success");
                     String email = String.valueOf(task.getResult().getValue());
-
                     // call the login here -- to make sure email has been retreived
                     loginUser(email, txtE_password.getText().toString());
                 } else {
@@ -108,8 +108,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(AuthResult authResult) {
                 Log.d("loginUser", "success");
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                finish();
+                emailIsVerified();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -118,6 +117,32 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "Incorrect Credentials", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void emailIsVerified() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        if(user.isEmailVerified()) {
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            finish();
+        } else {
+            // Todo -- notify user that they must first verify their email
+            Toast.makeText(this, "Please verify your email before logging in.", Toast.LENGTH_SHORT).show();
+
+            // send the user a verification email
+            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()) {
+                        Log.d("emailVerificationSent", "success");
+                    } else {
+                        Log.d("emailVerificationSent", "failure");
+                    }
+                }
+            });
+
+            auth.signOut();
+        }
     }
 
     private boolean isValidInput() {
