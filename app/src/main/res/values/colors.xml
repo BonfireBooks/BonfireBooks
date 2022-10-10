@@ -9,7 +9,7 @@
     <color name="white">#FFFFFFFF</color>
 
     <!--  Logo Colors  -->
-    <color name="logo_orange">#F4B358</color>
+    <color name="logo_orange">#F4B32D</color>
     <color name="logo_brown">#5C382D</color>
 
     <!--  Button Colors  -->
@@ -20,7 +20,7 @@
     <color name="btn_outline_gray">#DCDCDC</color>
 
     <!--  Button Text Colors  -->
-    <color name="btntxt_blue">#414B5A</color>
+    <color name="btntxt_brown">#5C382D</color>
     <color name="btntxt_white">#FFFFFF</color>
 
     <!--  Text Colors  -->
@@ -28,6 +28,8 @@
     <color name="txt_blue">#4D5BB6</color>
     <color name="txt_gray">#170404</color>
     <color name="txt_gray50">#50170404</color>
-    <color name="txt_white50">#50000000</color>
+
+    <!--  No longer accurate color name  -->
+    <color name="txt_white50">#000000</color>
     
 </resources>

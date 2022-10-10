@@ -20,4 +20,9 @@
     <string name="signup_header">Create your account</string>
     <string name="reset_password">Reset Password</string>
     <string name="reset_pass_info">Enter your email address and we will send a link to reset your password.</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="create_account">Create Account</string>
+    <string name="confirm_password">Confirm Password:</string>
+    <string name="phone_number">Phone Number:</string>
+    <string name="example_phone">(123)-456-8790</string>
 </resources>

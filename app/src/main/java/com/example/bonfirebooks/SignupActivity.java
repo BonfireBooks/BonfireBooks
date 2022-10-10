@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -32,8 +33,10 @@ public class SignupActivity extends AppCompatActivity {
 
     private EditText txtE_displayName;
     private EditText txtE_HofID;
+    private EditText txtE_phone_number;
     private EditText txtE_email;
     private EditText txtE_password;
+    private EditText txtE_confirm_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +47,10 @@ public class SignupActivity extends AppCompatActivity {
         btn_Signup = findViewById(R.id.btn_signup);
         txtE_displayName = findViewById(R.id.txtE_displayName);
         txtE_HofID = findViewById(R.id.txtE_HofID);
+        txtE_phone_number = findViewById(R.id.txtE_phone_number);
         txtE_email = findViewById(R.id.txtE_email);
         txtE_password = findViewById(R.id.txtE_password);
+        txtE_confirm_password = findViewById(R.id.txtE_confirm_password);
 
         btn_Back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +67,9 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // properly format the phone number
+        txtE_phone_number.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
     }
 
     private void createUser() {
@@ -72,6 +80,7 @@ public class SignupActivity extends AppCompatActivity {
         String password = txtE_password.getText().toString();
 
         // create user in auth system
+        // Todo -- add the phone number to the user account, send otp later on when trying to sign in
         FirebaseAuth auth = FirebaseAuth.getInstance();
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -174,6 +183,16 @@ public class SignupActivity extends AppCompatActivity {
             }
         }
 
+        // phone number check
+        String phoneNumber = txtE_phone_number.getText().toString();
+        if(TextUtils.isEmpty(phoneNumber)) {
+            txtE_phone_number.setError("Please enter your phone number");
+            isValid = false;
+        } else if(phoneNumber.length() != 10) {
+            txtE_phone_number.setError("Please enter a valid 10 digit phone number");
+            isValid = false;
+        }
+
         // email check -- must use hofstra domain
         String email = txtE_email.getText().toString().toLowerCase();
         if(TextUtils.isEmpty(email)) {
@@ -186,11 +205,16 @@ public class SignupActivity extends AppCompatActivity {
 
         // password check
         String pass = txtE_password.getText().toString();
+        String conf_pass = txtE_confirm_password.getText().toString();
         if(TextUtils.isEmpty(pass)) {
             txtE_password.setError("Please enter a password");
         }
         else if(pass.length() < 6) {
             txtE_password.setError("Password must have 6 or more characters");
+            isValid = false;
+        } else if(!pass.equals(conf_pass)) {
+            txtE_password.setError("Passwords are not different");
+            txtE_confirm_password.setError("Passwords are not different");
             isValid = false;
         }
 
