@@ -3,8 +3,8 @@
     <string name="sign_in">SIGN IN</string>
     <string name="sign_up">SIGN UP</string>
     <string name="bonfire_uppercase">BONFIRE</string>
-    <string name="login_instructions"><![CDATA[Please enter your ID & password to login to your bonfire account]]></string>
-    <string name="login_welcome">Welcome to Bonfire</string>
+    <string name="login_instructions"><![CDATA[Please fill into your Hofstra ID and Password to log into your account]]></string>
+    <string name="login_welcome">Login to Bonfire</string>
     <string name="hofstra_id">Hofstra ID:</string>
     <string name="login_now">Login Now</string>
     <string name="hint_hofstra_ID">h*********</string>
@@ -16,10 +16,10 @@
     <string name="username">Username</string>
     <string name="email">Email</string>
     <string name="example_hofstra_email">hofstrastudent@pride.hoftstra.edu</string>
-    <string name="signup_instructions">Please enter a display name, hofstra ID, email and a password.</string>
-    <string name="signup_header">Create your account</string>
+    <string name="signup_instructions">Please fill in the fields below to create your account</string>
+    <string name="signup_header">Create an Account</string>
     <string name="reset_password">Reset Password</string>
-    <string name="reset_pass_info">Enter your email address and we will send a link to reset your password.</string>
+    <string name="reset_pass_info">Enter your email address and we will send a link to reset your password</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="create_account">Create Account</string>
     <string name="confirm_password">Confirm Password:</string>
