@@ -26,6 +26,7 @@
     <!--  Text Colors  -->
     <color name="txt_purple">#B620E0</color>
     <color name="txt_blue">#4D5BB6</color>
+    <color name="txt_darkblue">#414B5A</color>
     <color name="txt_gray">#170404</color>
     <color name="txt_gray50">#50170404</color>
 
