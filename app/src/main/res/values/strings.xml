@@ -24,5 +24,8 @@
     <string name="create_account">Create Account</string>
     <string name="confirm_password">Confirm Password:</string>
     <string name="phone_number">Phone Number:</string>
-    <string name="example_phone">(123)-456-8790</string>
+    <string name="example_phone">(123)&#8211;456&#8211;8790</string>
+
+    <string name="all_books">All Books</string>
+    <string name="new_additions">New Additions</string>
 </resources>
