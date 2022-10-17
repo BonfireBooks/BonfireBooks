@@ -29,6 +29,7 @@
     <color name="txt_darkblue">#414B5A</color>
     <color name="txt_gray">#170404</color>
     <color name="txt_gray50">#50170404</color>
+    <color name="txt_grayE2">#E28C8C8C</color>
 
     <!--  No longer accurate color name  -->
     <color name="txt_white50">#000000</color>
