@@ -32,4 +32,12 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sample_text">Sample Text</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas pretium, urna pellentesque feugiat tincidunt, tortor nunc placerat nunc, in ultricies felis ipsum sit amet arcu. Proin eget metus in augue fermentum sollicitudin. Phasellus porttitor ornare enim, non malesuada justo hendrerit id. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Proin varius ex at ante consequat, sit amet bibendum mauris pharetra. Maecenas molestie urna a est dignissim, non lacinia nisi blandit.</string>
+    <string name="profile">Profile</string>
+    <string name="sample_txt_user">USER</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="upload_book">Upload Book</string>
+    <string name="wishlist">Wishlist</string>
+    <string name="order_history">Order History</string>
+    <string name="notification">Notification</string>
+    <string name="chats">Chats</string>
 </resources>
