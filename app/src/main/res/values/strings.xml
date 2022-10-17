@@ -39,7 +39,7 @@
     <string name="order_history">Order History</string>
     <string name="notification">Notification</string>
     <string name="chats">Chats</string>
-    <string name="enter_isbn">Enter ISBN (10 or 13):</string>
+    <string name="enter_isbn">Enter ISBN 13:</string>
     <string name="price">Price:</string>
     <string name="condition">Condition:</string>
     <string name="publish_book">Publish Book</string>
@@ -51,4 +51,11 @@
         <item>Fire</item>
         <item>Poor</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="book_search">Book Search</string>
+    <string name="book_title">Book Title:</string>
+    <string name="search_ISBN">Search ISBN</string>
+    <string name="description">Description:</string>
+    <string name="author_s">Author(s):</string>
 </resources>

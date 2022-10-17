@@ -65,7 +65,7 @@
             app:layout_constraintLeft_toLeftOf="@id/txtV_isbn"
             app:layout_constraintTop_toBottomOf="@id/txtV_isbn"
             android:importantForAutofill="no"
-            android:inputType="text"  />
+            android:inputType="number"  />
 
         <TextView
             android:id="@+id/txtV_price"
