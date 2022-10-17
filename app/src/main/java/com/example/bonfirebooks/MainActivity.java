@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         navigationView.setOnItemSelectedListener(this);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new UploadBookFragment()).commit();
         }
 
     }

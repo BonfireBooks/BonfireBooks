@@ -88,7 +88,7 @@
             app:layout_constraintLeft_toLeftOf="@id/txtV_price"
             app:layout_constraintTop_toBottomOf="@id/txtV_price"
             android:importantForAutofill="no"
-            android:inputType="text" />
+            android:inputType="numberDecimal" />
 
         <TextView
             android:id="@+id/txtV_condition"
@@ -101,20 +101,28 @@
             app:layout_constraintLeft_toLeftOf="@id/txtE_price"
             app:layout_constraintTop_toBottomOf="@id/txtE_price" />
 
-        <EditText
-            android:id="@+id/txtE_condition"
+<!--        <EditText-->
+<!--            android:id="@+id/txtE_condition"-->
+<!--            android:layout_width="350dp"-->
+<!--            android:layout_height="55dp"-->
+<!--            android:layout_marginTop="5dp"-->
+<!--            android:background="@drawable/edit_text_inputs_starting_screens"-->
+<!--            app:layout_constraintLeft_toLeftOf="@id/txtV_condition"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/txtV_condition"-->
+<!--            android:importantForAutofill="no"-->
+<!--            android:inputType="text" />-->
+
+        <Spinner
+            android:id="@+id/spinner_condition"
             android:layout_width="350dp"
             android:layout_height="55dp"
             android:layout_marginTop="5dp"
             android:background="@drawable/edit_text_inputs_starting_screens"
             app:layout_constraintLeft_toLeftOf="@id/txtV_condition"
-            app:layout_constraintTop_toBottomOf="@id/txtV_condition"
-            android:importantForAutofill="no"
-            android:inputType="text" />
-
+            app:layout_constraintTop_toBottomOf="@id/txtV_condition"/>
 
         <Button
-            android:id="@+id/btn_signup"
+            android:id="@+id/btn_publish_book"
             android:layout_width="350dp"
             android:layout_height="65dp"
             android:background="@drawable/buttons_green"
@@ -123,7 +131,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtE_condition" />
+            app:layout_constraintTop_toBottomOf="@+id/spinner_condition" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

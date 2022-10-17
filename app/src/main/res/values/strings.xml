@@ -44,4 +44,11 @@
     <string name="condition">Condition:</string>
     <string name="publish_book">Publish Book</string>
     <string name="empty" />
+
+    <string-array name="book_conditions">
+        <item>Like New</item>
+        <item>Good</item>
+        <item>Fire</item>
+        <item>Poor</item>
+    </string-array>
 </resources>
