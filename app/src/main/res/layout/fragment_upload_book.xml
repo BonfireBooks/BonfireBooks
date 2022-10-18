@@ -45,29 +45,6 @@
             app:layout_constraintTop_toBottomOf="@id/txtV_upload_book" />
 
         <TextView
-            android:id="@+id/txtV_isbn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="@string/enter_isbn"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintLeft_toLeftOf="@id/img_switch_upload_book_images"
-            app:layout_constraintTop_toBottomOf="@id/img_switch_upload_book_images" />
-
-        <EditText
-            android:id="@+id/txtE_isbn"
-            android:layout_width="350dp"
-            android:layout_height="55dp"
-            android:layout_marginTop="5dp"
-            android:hint="@string/empty"
-            android:background="@drawable/edit_text_inputs_starting_screens"
-            app:layout_constraintLeft_toLeftOf="@id/txtV_isbn"
-            app:layout_constraintTop_toBottomOf="@id/txtV_isbn"
-            android:importantForAutofill="no"
-            android:inputType="number"  />
-
-        <TextView
             android:id="@+id/txtV_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -75,8 +52,8 @@
             android:text="@string/price"
             android:textColor="@color/black"
             android:textSize="16sp"
-            app:layout_constraintLeft_toLeftOf="@id/txtE_isbn"
-            app:layout_constraintTop_toBottomOf="@id/txtE_isbn" />
+            app:layout_constraintLeft_toLeftOf="@id/img_switch_upload_book_images"
+            app:layout_constraintTop_toBottomOf="@id/img_switch_upload_book_images" />
 
         <EditText
             android:id="@+id/txtE_price"
@@ -128,10 +105,10 @@
             android:background="@drawable/buttons_green"
             android:text="@string/publish_book"
             android:textColor="@color/black"
+            android:layout_marginBottom="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinner_condition" />
+            app:layout_constraintRight_toRightOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -89,182 +89,45 @@ public class UploadBookFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_upload_book, container, false);
     }
-//
-//    // firebase
-//    FirebaseFirestore firestore;
-//
-//    // layout items
-//    EditText txtE_ISBN;
-//    EditText txtE_price;
-//    Spinner spinner_condition;
-//    Button btn_publish_book;
-//
-//    // api calls
-//    private RequestQueue mQueue;
-//
-//    // book details
-//    HashMap<String, String> bookDetails = new HashMap();
-//    HashMap<String, String> authors = new HashMap();
-//    Double price;
-//
-//    @Override
-//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//
-//        txtE_ISBN = view.findViewById(R.id.txtE_isbn);
-//        txtE_price = view.findViewById(R.id.txtE_price);
-//        spinner_condition = view.findViewById(R.id.spinner_condition);
-//        btn_publish_book = view.findViewById(R.id.btn_publish_book);
-//
-//        // get firebase instances
-//        firestore = FirebaseFirestore.getInstance();
-//
-//        // set options for the spinner
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.book_conditions, android.R.layout.simple_spinner_item);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spinner_condition.setAdapter(adapter);
-//
-//        // todo -- set formatting for the price
-//
-//        // create a volly to hold querys
-//        mQueue = Volley.newRequestQueue(getActivity());
-//
-//        // insert the book into the firebase collection
-//        btn_publish_book.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String isbn = txtE_ISBN.getText().toString();
-//
-//                if(isbn.length() == 10 || isbn.length() == 13) {
-//                    updateFirebase(txtE_ISBN.getText().toString());
-//                } else {
-//
-//                }
-//            }
-//        });
-//    }
-//
-//    private void updateFirebase(String isbn) {
-//
-//        callGoogleApi(isbn);
-//        callBookrunApi(isbn);
-//
-//        // store the book details (title, description)
-////        firestore.collection("books").document(isbn).set(bookDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
-////            @Override
-////            public void onComplete(@NonNull Task<Void> task) {
-////                Log.d("addDetails", "Complete");
-////
-////                // store the authors
-////                firestore.collection("books").document(isbn).update("authors", authors).addOnCompleteListener(new OnCompleteListener<Void>() {
-////                    @Override
-////                    public void onComplete(@NonNull Task<Void> task) {
-////                        Log.d("addAuthors", "Complete");
-////                        firestore.collection("books").document(isbn).update("price", price).addOnCompleteListener(new OnCompleteListener<Void>() {
-////                            @Override
-////                            public void onComplete(@NonNull Task<Void> task) {
-////                                Log.d("addPrice", "Complete");
-////                            }
-////                        });
-////                    }
-////                });
-////            }
-////        });
-//    }
-//
-//    private void callBookrunApi(String isbn) {
-//
-//        String url = "https://booksrun.com/api/v3/price/buy/" + isbn + "?key=t2xlhotmhy246sby0zvu"; //Book Runs API
-//
-//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        try {
-//
-//                            JSONObject jsonObject = response.getJSONObject("result");
-//                            String status = jsonObject.getString("status");
-//                            JSONObject offers = jsonObject.getJSONObject("offers");
-//                            JSONObject bookrs = offers.getJSONObject("booksrun");
-//                            JSONObject new_price = bookrs.getJSONObject("new");
-//                            Double brPrice = bookrs.getDouble("price"); //price of new
-//
-//                            if(!status.equals("error")) {
-//                                price = brPrice;
-//                            }
-//
-//                        }
-//                        catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        error.printStackTrace();
-//                    }
-//                });
-//
-//        mQueue.add(request);
-//    }
-//
-//    private void callGoogleApi(String isbn) {
-//
-//        String url = "https://www.googleapis.com/books/v1/volumes?q=" + isbn; //Google Books API
-//        String bk_price = String.valueOf(isbn);
-//
-//        // call google api and gather data
-//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.d("onResponse", "called");
-//                        try {
-//                            JSONArray itemsArray = response.getJSONArray("items");
-//
-//
-//                            // make sure the isbn exists within the json
-//
-//
-//                            JSONObject itemObj;
-//                            for(int i = 0; i < itemsArray.length(); i++) {
-//                                String isbn = itemsArray.getJSONObject(i).getJSONObject("volumeInfo").getJSONArray("industryIdentifiers").getJSONObject(0).optString("identifier");
-//                                Log.d("ISBN", isbn);
-//                            }
-//
-//
-//                            JSONObject itemsObj = itemsArray.getJSONObject(0); //To get first index
-//                            JSONObject volumeObj = itemsObj.getJSONObject("volumeInfo");
-//                            String title = volumeObj.optString("title");
-//                            JSONArray authorsArray = volumeObj.getJSONArray("authors");
-//                            String description = volumeObj.optString("description");
-//                            int pageCount = volumeObj.optInt("pageCount");
-//
-//                            if (authorsArray.length() != 0) {
-//
-//                                // add book details to map
-//                                bookDetails.put("title", title);
-//                                bookDetails.put("description", description);
-//
-//                                // add authors to map
-//                                for (int i = 0; i < authorsArray.length(); i++) {
-//                                    authors.put(String.valueOf(i), authorsArray.optString(i));
-//                                }
-//
-//                            }
-//                        }catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        error.printStackTrace();
-//                    }
-//                });
-//
-//        mQueue.add(request);
-//    }
+
+    // firebase
+    FirebaseFirestore firestore;
+
+    // layout items
+    EditText txtE_price;
+    Spinner spinner_condition;
+    Button btn_publish_book;
+
+    // api calls
+    private RequestQueue mQueue;
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        txtE_price = view.findViewById(R.id.txtE_price);
+        spinner_condition = view.findViewById(R.id.spinner_condition);
+        btn_publish_book = view.findViewById(R.id.btn_publish_book);
+
+        // get firebase instances
+        firestore = FirebaseFirestore.getInstance();
+
+        // set options for the spinner
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.book_conditions, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_condition.setAdapter(adapter);
+
+        // todo -- set formatting for the price
+
+        // create a volly to hold querys
+        mQueue = Volley.newRequestQueue(getActivity());
+
+        // insert the book into the firebase collection
+        btn_publish_book.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
+    }
+
 }
