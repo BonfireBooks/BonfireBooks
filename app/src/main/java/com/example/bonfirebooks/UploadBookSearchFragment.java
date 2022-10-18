@@ -23,8 +23,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
@@ -101,7 +103,7 @@ public class UploadBookSearchFragment extends Fragment {
     // book details
     HashMap<String, String> bookDetails = new HashMap<String, String>();
     HashMap<String, String> authors = new HashMap<String, String>();
-    Double price;
+    Double price = 0.0;
     String isbn;
 
     // api calls
@@ -127,13 +129,16 @@ public class UploadBookSearchFragment extends Fragment {
         btn_search_isbn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // reset any errors
+                // reset any errors & text views holding details
                 txtE_ISBN.setError(null);
+                txtV_book_authors.setText(null);
+                txtV_book_description.setText(null);
+                txtV_book_title.setText(null);
 
                 isbn = txtE_ISBN.getText().toString();
 
                 // begin the search process
-                if(isbn.length() == 13) {
+                if (isbn.length() == 13 || isbn.length() == 10) {
                     handleSearch();
                 } else {
                     txtE_ISBN.setError("You Must Enter The ISBN 13 For Your Book");
@@ -144,40 +149,38 @@ public class UploadBookSearchFragment extends Fragment {
 
     private void handleSearch() {
         // check if the book exists in firebase
-        firestore.collection("books").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+        String strISBN = isbn.length() == 13 ? "isbn13" : "isbn10";
+
+        firestore.collection("books").whereEqualTo(strISBN, isbn).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                List<DocumentSnapshot> taskDocs = task.getResult().getDocuments();
 
-                // check if a document with the isbn exists
-                boolean hasBook = false;
-                for(int i = 0; i < taskDocs.size(); i++) {
-                    if(taskDocs.get(i).getId().equals(isbn)) {
-                        hasBook = true;
-                    }
-                }
+                List<com.google.firebase.firestore.DocumentSnapshot> documents = task.getResult().getDocuments();
 
-                Log.d("FirestoreHasBook", Boolean.toString(hasBook));
-
-                // being the api call process if the book does not exist in firebase
-                // otherwise just update the ui with the information from firebase
-                if(!hasBook) {
-                    // this process will call  the bookrun api, update firestore and updateUI methods
+                Log.d("task", task.getResult().getDocuments().toString());
+                if (task.getResult().getDocuments().isEmpty()) {
+                    Log.d("firestoreHasBook", "false");
                     callGoogleApi();
                 } else {
-                    UpdateUIFirestore();
+                    Log.d("firestoreHasBook", "true");
+                    updateUIFirestore(documents.get(0).getReference().getPath());
                 }
             }
         });
     }
 
-    private void UpdateUIFirestore() {
-        // grab all the book data from firestore
-        firestore.collection("books").document(isbn).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+    private void updateUIFirestore(String ref) {
+
+        String strISBN = isbn.length() == 13 ? "isbn13" : "isbn10";
+
+        // get the book with the matching isbn
+        firestore.document(ref).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 Log.d("updateUIFirestore", "called");
 
+                // there should only ever be one occurance of a book with matching isbn - so grab the first one
                 DocumentSnapshot taskResult = task.getResult();
 
                 // get the authors map from fireabse
@@ -185,9 +188,9 @@ public class UploadBookSearchFragment extends Fragment {
 
                 // iterate through the authors map from firebase creating a string with the data
                 StringBuilder strAuthors = new StringBuilder();
-                for(int i = 0; i < firebaseAuthors.size(); i++) {
+                for (int i = 0; i < firebaseAuthors.size(); i++) {
                     strAuthors.append(firebaseAuthors.get(String.valueOf(i)));
-                    if(i != firebaseAuthors.size()-1)
+                    if (i != firebaseAuthors.size() - 1)
                         strAuthors.append("\n");
                 }
 
@@ -200,37 +203,39 @@ public class UploadBookSearchFragment extends Fragment {
     }
 
     private void updateFirebase() {
-        //  store the book details (title, description)
-        firestore.collection("books").document(isbn).set(bookDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
+        DocumentReference newBookRef = firestore.collection("books").document();
+
+        //  store the book details (title, description, isbn10, isbn13)
+        newBookRef.set(bookDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Log.d("addDetails", "Complete");
 
                 // store the authors
-                firestore.collection("books").document(isbn).update("authors", authors).addOnCompleteListener(new OnCompleteListener<Void>() {
+                newBookRef.update("authors", authors).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Log.d("addAuthors", "Complete");
 
                         // store the price
-                        firestore.collection("books").document(isbn).update("price", price).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        newBookRef.update("price", price).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 Log.d("addPrice", "Complete");
 
-                                // update the ui
-                                txtV_book_title.setText(bookDetails.get("title"));
-                                txtV_book_description.setText(bookDetails.get("description"));
 
-                                //
+                                // string of authors
                                 StringBuilder strAuthors = new StringBuilder();
-                                for(int i = 0; i < authors.size(); i++) {
+                                for (int i = 0; i < authors.size(); i++) {
                                     strAuthors.append(authors.get(String.valueOf(i)));
-                                    if(i != authors.size()-1)
+                                    if (i != authors.size() - 1)
                                         strAuthors.append("\n");
                                 }
 
+                                // update the ui
                                 txtV_book_authors.setText(strAuthors);
+                                txtV_book_title.setText(bookDetails.get("title"));
+                                txtV_book_description.setText(bookDetails.get("description"));
                             }
                         });
                     }
@@ -249,27 +254,31 @@ public class UploadBookSearchFragment extends Fragment {
                     public void onResponse(JSONObject response) {
                         try {
 
+                            // get json information
                             JSONObject jsonObject = response.getJSONObject("result");
                             String status = jsonObject.getString("status");
                             JSONObject offers = jsonObject.getJSONObject("offers");
                             JSONObject bookrs = offers.getJSONObject("booksrun");
-                            JSONObject new_price = bookrs.getJSONObject("new");
-                            Double brPrice = new_price.getDouble("price"); //price of new
 
-                            // set the price
-                            if(!status.equals("error")) {
-                                price = brPrice;
+                            // check if bookrun has a price for the book
+                            if (bookrs.get("new").equals("none")) {
                                 updateFirebase();
                             } else {
-                                throw new RuntimeException("status error");
-                            }
+                                JSONObject new_price = bookrs.getJSONObject("new");
+                                Double brPrice = new_price.getDouble("price"); //price of new
 
-                        }
-                        catch (JSONException e) {
+                                // set the price
+                                if (!status.equals("error")) {
+                                    price = brPrice;
+                                }
+
+                                // update firestore with the book data
+                                updateFirebase();
+                            }
+                        } catch (JSONException e) {
                             Toast.makeText(getActivity(), "Sorry! We couldn't gather enough info on this book.", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
-                        }
-                        catch (RuntimeException e) {
+                        } catch (RuntimeException e) {
                             Toast.makeText(getActivity(), "Sorry! We couldn't gather enough info on this book.", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
@@ -300,44 +309,63 @@ public class UploadBookSearchFragment extends Fragment {
                         try {
                             JSONArray itemsArray = response.getJSONArray("items");
 
+                            // get the volume with the correct isbn
                             JSONObject itemsObj = null;
-                            for(int i = 0; i < itemsArray.length(); i++) {
-                                itemsObj = itemsArray.getJSONObject(i);
-                                String item_isbn = itemsObj.getJSONObject("volumeInfo").getJSONArray("industryIdentifiers").getJSONObject(0).optString("identifier");
+                            for (int i = 0; i < itemsArray.length(); i++) {
 
-                                if(isbn.equals(item_isbn)) {
+                                // some may not have both isbns -- this will have to be changed later
+                                String item_isbn1 = itemsArray.getJSONObject(i).getJSONObject("volumeInfo").getJSONArray("industryIdentifiers").getJSONObject(0).optString("identifier");
+                                String item_isbn2 = itemsArray.getJSONObject(i).getJSONObject("volumeInfo").getJSONArray("industryIdentifiers").getJSONObject(1).optString("identifier");
+
+                                Log.d("isbns", isbn + " " + item_isbn1 + " " + item_isbn2);
+
+                                if (isbn.equals(item_isbn1) || isbn.equals(item_isbn2)) {
+                                    itemsObj = itemsArray.getJSONObject(i);
                                     break;
                                 }
                             }
 
                             // a book with the isbn does not exist
-                            if(itemsObj == null) {
-                                return;
+                            if (itemsObj == null) {
+                                throw new RuntimeException("Isbn does not exist");
                             }
 
+                            // get book info from the json
                             JSONObject volumeObj = itemsObj.getJSONObject("volumeInfo");
                             String title = volumeObj.optString("title");
                             JSONArray authorsArray = volumeObj.getJSONArray("authors");
                             String description = volumeObj.optString("description");
-                            int pageCount = volumeObj.optInt("pageCount");
+                            JSONArray isbnNums = volumeObj.getJSONArray("industryIdentifiers");
 
-                            if (authorsArray.length() != 0) {
-
-                                // add book details to map
-                                bookDetails.put("title", title);
-                                bookDetails.put("description", description);
-
-                                //  add authors to map
-                                for (int i = 0; i < authorsArray.length(); i++) {
-                                    authors.put(String.valueOf(i), authorsArray.optString(i));
+                            // add the isbns to the book details map
+                            for (int i = 0; i < isbnNums.length(); i++) {
+                                JSONObject currIsbn = isbnNums.getJSONObject(i);
+                                if (currIsbn.optString("type").equals("ISBN_10")) {
+                                    bookDetails.put("isbn10", currIsbn.optString("identifier"));
+                                } else if (currIsbn.optString("type").equals("ISBN_13")) {
+                                    bookDetails.put("isbn13", currIsbn.optString("identifier"));
                                 }
-
-                                Log.d("book details", title + " " + description + " " +  authors.toString());
-
-                                callBookrunApi();
                             }
-                        }catch (JSONException e) {
+
+                            // add book details to map
+                            bookDetails.put("title", title);
+                            bookDetails.put("description", description);
+
+                            //  add authors to map
+                            for (int i = 0; i < authorsArray.length(); i++) {
+                                authors.put(String.valueOf(i), authorsArray.optString(i));
+                            }
+
+                            Log.d("book details", title + " " + description + " " + authors.toString());
+
+                            // call the bookrun api after the google api is done being called
+                            callBookrunApi();
+
+                        } catch (JSONException e) {
                             Toast.makeText(getActivity(), "Sorry! We couldn't gather enough info on this book.", Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        } catch (RuntimeException e) {
+                            Toast.makeText(getActivity(), "Sorry! A book with that isbn could not be found", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
                     }
