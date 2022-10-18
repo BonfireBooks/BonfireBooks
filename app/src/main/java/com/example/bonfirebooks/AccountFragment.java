@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -68,18 +69,30 @@ public class AccountFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_account, container, false);
     }
 
+    Button logout;
+    TextView txtV_upload_book;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        logout = getView().findViewById(R.id.btn_logout);
+        txtV_upload_book = getView().findViewById(R.id.txtV_upload_book);
+
         // user sign out
-        Button logout = getView().findViewById(R.id.btn_logout);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(getActivity(), StartActivity.class));
                 getActivity().finish();
+            }
+        });
+
+        txtV_upload_book.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UploadBookSearchFragment()).commit();
             }
         });
     }

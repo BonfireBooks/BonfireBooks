@@ -21,6 +21,7 @@
         />
 
     <TextView
+        android:id="@+id/txtV_edit_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/edit_profile"
@@ -45,6 +46,7 @@
         />
 
     <TextView
+        android:id="@+id/txtV_upload_book"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/upload_book"
@@ -69,6 +71,7 @@
         />
 
     <TextView
+        android:id="@+id/txtV_wish_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/wishlist"
@@ -93,6 +96,7 @@
         />
 
     <TextView
+        android:id="@+id/txtV_order_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/order_history"
@@ -117,6 +121,7 @@
         />
 
     <TextView
+        android:id="@+id/txtV_notification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/notification"
@@ -141,6 +146,7 @@
         />
 
     <TextView
+        android:id="@+id/txtV_chats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/chats"
