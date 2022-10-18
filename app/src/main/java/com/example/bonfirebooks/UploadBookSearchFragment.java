@@ -102,10 +102,10 @@ public class UploadBookSearchFragment extends Fragment {
     Button btn_finish_upload;
 
     // book details
-    HashMap<String, String> bookDetails = new HashMap<String, String>();
-    HashMap<String, String> authors = new HashMap<String, String>();
-    Double price = 0.0;
+    Book book = new Book();
+    HashMap<String, String> authors = new HashMap<>();
     String isbn;
+    String firebaseBookPath = "";
 
     // api calls
     private RequestQueue mQueue;
@@ -167,18 +167,19 @@ public class UploadBookSearchFragment extends Fragment {
                     callGoogleApi();
                 } else {
                     Log.d("firestoreHasBook", "true");
-                    updateUIFirestore(documents.get(0).getReference().getPath());
+                    firebaseBookPath = documents.get(0).getReference().getPath();
+                    updateUIFirestore();
                 }
             }
         });
     }
 
-    private void updateUIFirestore(String ref) {
+    private void updateUIFirestore() {
 
         String strISBN = isbn.length() == 13 ? "isbn13" : "isbn10";
 
         // get the book with the matching isbn
-        firestore.document(ref).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        firestore.document(firebaseBookPath).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 Log.d("updateUIFirestore", "called");
@@ -186,7 +187,7 @@ public class UploadBookSearchFragment extends Fragment {
                 // there should only ever be one occurance of a book with matching isbn - so grab the first one
                 DocumentSnapshot taskResult = task.getResult();
 
-                // get the authors map from fireabse
+                // get the authors map from firebase
                 HashMap<String, String> firebaseAuthors = (HashMap<String, String>) taskResult.get("authors");
 
                 // iterate through the authors map from firebase creating a string with the data
@@ -202,6 +203,8 @@ public class UploadBookSearchFragment extends Fragment {
                 txtV_book_title.setText(taskResult.getString("title"));
                 txtV_book_description.setText(taskResult.getString("description"));
 
+                book = new Book((Double) taskResult.get("price"), (String) taskResult.get("title"), (String) taskResult.get("isbn10"), (String) taskResult.get("isbn13"), (String) taskResult.get("description"), (HashMap<String, String>) taskResult.get("authors"));
+
                 updateOtherUIElements();
             }
         });
@@ -212,57 +215,39 @@ public class UploadBookSearchFragment extends Fragment {
         btn_finish_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UploadBookFragment()).commit();
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UploadBookFragment(book, firebaseBookPath)).commit();
             }
         });
     }
 
     private void updateFirebase() {
         DocumentReference newBookRef = firestore.collection("books").document();
+        firebaseBookPath = newBookRef.getPath();
 
         //  store the book details (title, description, isbn10, isbn13)
-        newBookRef.set(bookDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
+        newBookRef.set(book).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Log.d("addDetails", "Complete");
+                Log.d("addToFirebase", "complete");
+                //  string of authors
+                StringBuilder strAuthors = new StringBuilder();
+                for (int i = 0; i < authors.size(); i++) {
+                    strAuthors.append(authors.get(String.valueOf(i)));
+                    if (i != authors.size() - 1)
+                        strAuthors.append("\n");
+                }
 
-                // store the authors
-                newBookRef.update("authors", authors).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("addAuthors", "Complete");
+                // update the ui
+                txtV_book_authors.setText(strAuthors);
+                txtV_book_title.setText(book.getTitle());
+                txtV_book_description.setText(book.getDescription());
 
-                        // store the price
-                        newBookRef.update("price", price).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Log.d("addPrice", "Complete");
-
-
-                                // string of authors
-                                StringBuilder strAuthors = new StringBuilder();
-                                for (int i = 0; i < authors.size(); i++) {
-                                    strAuthors.append(authors.get(String.valueOf(i)));
-                                    if (i != authors.size() - 1)
-                                        strAuthors.append("\n");
-                                }
-
-                                // update the ui
-                                txtV_book_authors.setText(strAuthors);
-                                txtV_book_title.setText(bookDetails.get("title"));
-                                txtV_book_description.setText(bookDetails.get("description"));
-
-                                updateOtherUIElements();
-                            }
-                        });
-                    }
-                });
+                updateOtherUIElements();
             }
         });
     }
 
     private void callBookrunApi() {
-
         String url = "https://booksrun.com/api/v3/price/buy/" + isbn + "?key=t2xlhotmhy246sby0zvu"; //Book Runs API
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -278,20 +263,19 @@ public class UploadBookSearchFragment extends Fragment {
                             JSONObject bookrs = offers.getJSONObject("booksrun");
 
                             // check if bookrun has a price for the book
-                            if (bookrs.get("new").equals("none")) {
-                                updateFirebase();
-                            } else {
-                                JSONObject new_price = bookrs.getJSONObject("new");
+                            JSONObject new_price = bookrs.getJSONObject("new");
+
+                            // set the price of the book object
+                            if (new_price.equals("none")) {
+                                book.setPrice(0);
+                            } else if (!status.equals("error")) {
                                 Double brPrice = new_price.getDouble("price"); //price of new
-
-                                // set the price
-                                if (!status.equals("error")) {
-                                    price = brPrice;
-                                }
-
-                                // update firestore with the book data
-                                updateFirebase();
+                                book.setPrice(brPrice);
                             }
+
+                            // update firestore with the book data
+                            updateFirebase();
+
                         } catch (JSONException e) {
                             Toast.makeText(getActivity(), "Sorry! We couldn't gather enough info on this book.", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
@@ -315,7 +299,6 @@ public class UploadBookSearchFragment extends Fragment {
     private void callGoogleApi() {
 
         String url = "https://www.googleapis.com/books/v1/volumes?q=" + isbn; //Google Books API
-        String bk_price = String.valueOf(isbn);
 
         // call google api and gather data
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -354,26 +337,27 @@ public class UploadBookSearchFragment extends Fragment {
                             String description = volumeObj.optString("description");
                             JSONArray isbnNums = volumeObj.getJSONArray("industryIdentifiers");
 
-                            // add the isbns to the book details map
-                            for (int i = 0; i < isbnNums.length(); i++) {
-                                JSONObject currIsbn = isbnNums.getJSONObject(i);
-                                if (currIsbn.optString("type").equals("ISBN_10")) {
-                                    bookDetails.put("isbn10", currIsbn.optString("identifier"));
-                                } else if (currIsbn.optString("type").equals("ISBN_13")) {
-                                    bookDetails.put("isbn13", currIsbn.optString("identifier"));
-                                }
-                            }
-
-                            // add book details to map
-                            bookDetails.put("title", title);
-                            bookDetails.put("description", description);
-
                             //  add authors to map
                             for (int i = 0; i < authorsArray.length(); i++) {
                                 authors.put(String.valueOf(i), authorsArray.optString(i));
                             }
 
-                            Log.d("book details", title + " " + description + " " + authors.toString());
+                            // add book details to the book object
+                            book.setTitle(title);
+                            book.setDescription(description);
+                            book.setAuthors(authors);
+
+                            // add the isbns to the book object
+                            for (int i = 0; i < isbnNums.length(); i++) {
+                                JSONObject currIsbn = isbnNums.getJSONObject(i);
+                                if (currIsbn.optString("type").equals("ISBN_10")) {
+                                    book.setIsbn10(currIsbn.optString("identifier"));
+                                } else if (currIsbn.optString("type").equals("ISBN_13")) {
+                                    book.setIsbn13(currIsbn.optString("identifier"));
+                                }
+                            }
+
+                            Log.d("bookDetails", book.toString());
 
                             // call the bookrun api after the google api is done being called
                             callBookrunApi();
