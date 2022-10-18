@@ -99,6 +99,7 @@ public class UploadBookSearchFragment extends Fragment {
     TextView txtV_book_description;
     TextView txtV_book_authors;
     Button btn_search_isbn;
+    Button btn_finish_upload;
 
     // book details
     HashMap<String, String> bookDetails = new HashMap<String, String>();
@@ -118,6 +119,7 @@ public class UploadBookSearchFragment extends Fragment {
         txtV_book_description = view.findViewById(R.id.txtV_book_description);
         txtV_book_authors = view.findViewById(R.id.txtV_book_authors);
         btn_search_isbn = view.findViewById(R.id.btn_search_isbn);
+        btn_finish_upload = view.findViewById(R.id.btn_finish_upload);
 
         // get firebase instances
         firestore = FirebaseFirestore.getInstance();
@@ -134,6 +136,7 @@ public class UploadBookSearchFragment extends Fragment {
                 txtV_book_authors.setText(null);
                 txtV_book_description.setText(null);
                 txtV_book_title.setText(null);
+                btn_finish_upload.setVisibility(View.GONE);
 
                 isbn = txtE_ISBN.getText().toString();
 
@@ -198,6 +201,18 @@ public class UploadBookSearchFragment extends Fragment {
                 txtV_book_authors.setText(strAuthors.toString());
                 txtV_book_title.setText(taskResult.getString("title"));
                 txtV_book_description.setText(taskResult.getString("description"));
+
+                updateOtherUIElements();
+            }
+        });
+    }
+
+    private void updateOtherUIElements() {
+        btn_finish_upload.setVisibility(View.VISIBLE);
+        btn_finish_upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UploadBookFragment()).commit();
             }
         });
     }
@@ -236,6 +251,8 @@ public class UploadBookSearchFragment extends Fragment {
                                 txtV_book_authors.setText(strAuthors);
                                 txtV_book_title.setText(bookDetails.get("title"));
                                 txtV_book_description.setText(bookDetails.get("description"));
+
+                                updateOtherUIElements();
                             }
                         });
                     }
