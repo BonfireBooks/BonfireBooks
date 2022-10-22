@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,7 +99,8 @@ public class UploadBookFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_condition.setAdapter(adapter);
 
-        // todo -- set formatting for the price
+        // set formatting and filter for price
+        txtE_price.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(3, 2)});
 
         // create a volley to hold querys
         mQueue = Volley.newRequestQueue(getActivity());
