@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -92,12 +95,14 @@ public class UploadBookSearchFragment extends Fragment {
 
     // firebase
     FirebaseFirestore firestore;
+    FirebaseStorage storage;
 
     // layout items
     EditText txtE_ISBN;
     TextView txtV_book_title;
     TextView txtV_book_description;
     TextView txtV_book_authors;
+    ImageView imgV_coverImage;
     Button btn_search_isbn;
     Button btn_finish_upload;
 
@@ -120,9 +125,11 @@ public class UploadBookSearchFragment extends Fragment {
         txtV_book_authors = view.findViewById(R.id.txtV_book_authors);
         btn_search_isbn = view.findViewById(R.id.btn_search_isbn);
         btn_finish_upload = view.findViewById(R.id.btn_finish_upload);
+        imgV_coverImage =  view.findViewById(R.id.imgV_coverImage);
 
         // get firebase instances
         firestore = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
 
         // create a volly to hold querys
         mQueue = Volley.newRequestQueue(requireActivity());
@@ -136,6 +143,8 @@ public class UploadBookSearchFragment extends Fragment {
                 txtV_book_authors.setText(null);
                 txtV_book_description.setText(null);
                 txtV_book_title.setText(null);
+                imgV_coverImage.setVisibility(View.GONE);
+
                 btn_finish_upload.setVisibility(View.GONE);
 
                 isbn = txtE_ISBN.getText().toString();
@@ -202,8 +211,11 @@ public class UploadBookSearchFragment extends Fragment {
                 txtV_book_authors.setText(strAuthors.toString());
                 txtV_book_title.setText(taskResult.getString("title"));
                 txtV_book_description.setText(taskResult.getString("description"));
+                imgV_coverImage.setVisibility(View.VISIBLE);
+                Picasso.get().load(taskResult.getString("coverImgUrl")).into(imgV_coverImage);
+                imgV_coverImage.setMinimumHeight(500);
 
-                book = new Book((Double) taskResult.get("price"), (String) taskResult.get("title"), (String) taskResult.get("isbn10"), (String) taskResult.get("isbn13"), (String) taskResult.get("description"), (HashMap<String, String>) taskResult.get("authors"));
+                book = new Book((Double) taskResult.get("price"), (String) taskResult.get("title"), (String) taskResult.get("isbn10"), (String) taskResult.get("isbn13"), (String) taskResult.get("description"), (String) taskResult.get("coverImgUrl") , (HashMap<String, String>) taskResult.get("authors"));
 
                 updateOtherUIElements();
             }
@@ -211,6 +223,7 @@ public class UploadBookSearchFragment extends Fragment {
     }
 
     private void updateOtherUIElements() {
+
         btn_finish_upload.setVisibility(View.VISIBLE);
         btn_finish_upload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -241,6 +254,8 @@ public class UploadBookSearchFragment extends Fragment {
                 txtV_book_authors.setText(strAuthors);
                 txtV_book_title.setText(book.getTitle());
                 txtV_book_description.setText(book.getDescription());
+                imgV_coverImage.setVisibility(View.VISIBLE);
+                Picasso.get().load(book.getCoverImgUrl()).into(imgV_coverImage);
 
                 updateOtherUIElements();
             }
@@ -265,22 +280,34 @@ public class UploadBookSearchFragment extends Fragment {
                             // check if bookrun has a price for the book
                             JSONObject new_price = bookrs.getJSONObject("new");
 
+                            Log.d("new Price", new_price.toString());
+
                             // set the price of the book object
                             if (new_price.equals("none")) {
                                 book.setPrice(0);
                             } else if (!status.equals("error")) {
+                                Log.d("HERE", "properly set");
                                 Double brPrice = new_price.getDouble("price"); //price of new
                                 book.setPrice(brPrice);
                             }
+
+                            Log.d("bookDetails", book.toString());
 
                             // update firestore with the book data
                             updateFirebase();
 
                         } catch (JSONException e) {
-                            Toast.makeText(getActivity(), "Sorry! We couldn't gather enough info on this book.", Toast.LENGTH_SHORT).show();
-                            e.printStackTrace();
-                        } catch (RuntimeException e) {
-                            Toast.makeText(getActivity(), "Sorry! We couldn't gather enough info on this book.", Toast.LENGTH_SHORT).show();
+
+                            // typically JSONExceptions are thrown since booksrun api
+                            // doesnt always format properly
+                            book.setPrice(0);
+                            Log.d("bookDetails", book.toString());
+
+                            // update firestore with the book data
+                            updateFirebase();
+
+
+                            // Toast.makeText(getActivity(), "Sorry! We couldn't gather enough info on this book.", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
                     }
@@ -292,6 +319,7 @@ public class UploadBookSearchFragment extends Fragment {
                         error.printStackTrace();
                     }
                 });
+
 
         mQueue.add(request);
     }
@@ -336,6 +364,13 @@ public class UploadBookSearchFragment extends Fragment {
                             JSONArray authorsArray = volumeObj.getJSONArray("authors");
                             String description = volumeObj.optString("description");
                             JSONArray isbnNums = volumeObj.getJSONArray("industryIdentifiers");
+                            String coverImgUrl = volumeObj.getJSONObject("imageLinks").optString("thumbnail");
+
+                            // unprotected traffic not allowed when making requests to google books servers
+                            // must make sure the image link uses https
+                            if(!coverImgUrl.substring(0, 5).equals("https")) {
+                                coverImgUrl = "https:" + coverImgUrl.substring(5);
+                            }
 
                             //  add authors to map
                             for (int i = 0; i < authorsArray.length(); i++) {
@@ -346,6 +381,7 @@ public class UploadBookSearchFragment extends Fragment {
                             book.setTitle(title);
                             book.setDescription(description);
                             book.setAuthors(authors);
+                            book.setcoverImgUrl(coverImgUrl);
 
                             // add the isbns to the book object
                             for (int i = 0; i < isbnNums.length(); i++) {
@@ -356,8 +392,6 @@ public class UploadBookSearchFragment extends Fragment {
                                     book.setIsbn13(currIsbn.optString("identifier"));
                                 }
                             }
-
-                            Log.d("bookDetails", book.toString());
 
                             // call the bookrun api after the google api is done being called
                             callBookrunApi();

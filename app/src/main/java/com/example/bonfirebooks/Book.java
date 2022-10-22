@@ -11,16 +11,18 @@ public class Book {
     private String isbn10;
     private String isbn13;
     private String description;
+    private String coverImgUrl;
     private HashMap<String, String> authors;
 
     public Book() {}
 
-    public Book(double price, String title, String isbn10, String isbn13, String description, HashMap<String, String> authors) {
+    public Book(double price, String title, String isbn10, String isbn13, String description, String coverImgUrl, HashMap<String, String> authors) {
         this.price = price;
         this.title = title;
         this.isbn10 = isbn10;
         this.isbn13 = isbn13;
         this.description = description;
+        this.coverImgUrl = coverImgUrl;
         this.authors = authors;
 
         Log.d("thisDescript", description);
@@ -48,6 +50,10 @@ public class Book {
         return description;
     }
 
+    public String getCoverImgUrl() {
+        return coverImgUrl;
+    }
+
     public HashMap<String, String> getAuthors() {
         return authors;
     }
@@ -72,6 +78,8 @@ public class Book {
         this.description = description;
     }
 
+    public void setcoverImgUrl(String coverImgUrl) {this.coverImgUrl = coverImgUrl; }
+
     public void setAuthors(HashMap<String, String> authors) {
         this.authors = authors;
     }
@@ -84,6 +92,7 @@ public class Book {
         str.append("authors: " + authors.toString() + "\n");
         str.append("isbn10: " + isbn10 + "\n");
         str.append("isbn13: " + isbn13 + "\n");
+        str.append("coverImgUrl: " + coverImgUrl);
         return str.toString();
     }
 }

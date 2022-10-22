@@ -63,6 +63,25 @@
             app:layout_constraintTop_toBottomOf="@id/txtV_isbn" />
 
         <!--    Book Details    -->
+        <TextView
+            android:id="@+id/txtV_book_img_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Book Cover Image:"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintLeft_toLeftOf="@id/txtE_isbn"
+            app:layout_constraintTop_toBottomOf="@id/txtE_isbn" />
+
+        <ImageView
+            android:id="@+id/imgV_coverImage"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtV_book_img_header"
+            />
 
         <TextView
             android:id="@+id/txtV_book_title_header"
@@ -72,8 +91,8 @@
             android:text="@string/book_title"
             android:textColor="@color/black"
             android:textSize="16sp"
-            app:layout_constraintLeft_toLeftOf="@id/txtE_isbn"
-            app:layout_constraintTop_toBottomOf="@id/txtE_isbn" />
+            app:layout_constraintLeft_toLeftOf="@id/txtV_book_img_header"
+            app:layout_constraintTop_toBottomOf="@id/imgV_coverImage" />
 
         <TextView
             android:id="@+id/txtV_book_title"
