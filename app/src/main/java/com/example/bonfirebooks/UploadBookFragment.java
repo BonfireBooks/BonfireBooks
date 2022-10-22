@@ -15,26 +15,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.jar.JarInputStream;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,28 +31,26 @@ public class UploadBookFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Book book;
+    private String bookPath;
 
-    public UploadBookFragment() {
+    public UploadBookFragment(Book book, String path) {
         // Required empty public constructor
+        this.book = book;
+        this.bookPath = path;
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param book the book.
      * @return A new instance of fragment UploadBookFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static UploadBookFragment newInstance(String param1, String param2) {
-        UploadBookFragment fragment = new UploadBookFragment();
+    public static UploadBookFragment newInstance(Book book, String path) {
+        UploadBookFragment fragment = new UploadBookFragment(book, path);
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,8 +59,6 @@ public class UploadBookFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -109,6 +88,8 @@ public class UploadBookFragment extends Fragment {
         spinner_condition = view.findViewById(R.id.spinner_condition);
         btn_publish_book = view.findViewById(R.id.btn_publish_book);
 
+        Log.d("book", book.toString());
+
         // get firebase instances
         firestore = FirebaseFirestore.getInstance();
 
@@ -119,8 +100,11 @@ public class UploadBookFragment extends Fragment {
 
         // todo -- set formatting for the price
 
-        // create a volly to hold querys
+        // create a volley to hold querys
         mQueue = Volley.newRequestQueue(getActivity());
+
+        // set the price hint based on the books price
+        txtE_price.setHint("Price <= " + book.getPrice());
 
         // insert the book into the firebase collection
         btn_publish_book.setOnClickListener(new View.OnClickListener() {

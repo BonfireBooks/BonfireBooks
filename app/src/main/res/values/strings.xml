@@ -46,9 +46,9 @@
     <string name="empty" />
 
     <string-array name="book_conditions">
-        <item>Like New</item>
+        <item>Like-New</item>
         <item>Good</item>
-        <item>Fire</item>
+        <item>Fair</item>
         <item>Poor</item>
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
