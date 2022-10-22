@@ -18,7 +18,15 @@ import android.widget.Spinner;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,14 +80,18 @@ public class UploadBookFragment extends Fragment {
 
     // firebase
     FirebaseFirestore firestore;
+    FirebaseUser user;
 
     // layout items
     EditText txtE_price;
     Spinner spinner_condition;
     Button btn_publish_book;
+    Button btn_img_backward;
+    Button btn_img_forward;
 
-    // api calls
-    private RequestQueue mQueue;
+    // firebase paths
+    String userBookPath;
+    HashMap<String, String> imgPaths;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -88,11 +100,14 @@ public class UploadBookFragment extends Fragment {
         txtE_price = view.findViewById(R.id.txtE_price);
         spinner_condition = view.findViewById(R.id.spinner_condition);
         btn_publish_book = view.findViewById(R.id.btn_publish_book);
+        btn_img_backward = view.findViewById(R.id.btn_img_backward);
+        btn_img_forward = view.findViewById(R.id.btn_img_forward);
 
         Log.d("book", book.toString());
 
         // get firebase instances
         firestore = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         // set options for the spinner
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.book_conditions, android.R.layout.simple_spinner_item);
@@ -102,9 +117,6 @@ public class UploadBookFragment extends Fragment {
         // set formatting and filter for price
         txtE_price.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(3, 2)});
 
-        // create a volley to hold querys
-        mQueue = Volley.newRequestQueue(getActivity());
-
         // set the price hint based on the books price
         txtE_price.setHint("Price <= " + book.getPrice());
 
@@ -112,8 +124,77 @@ public class UploadBookFragment extends Fragment {
         btn_publish_book.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // check user price is < the book price'
+                if (isValidInput()) {
+                    addUserBookFirebase();
+                }
             }
         });
+    }
+
+    private void addUserBookFirebase() {
+
+        // get the user name then store the book
+        firestore.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                // new books document path
+                userBookPath = firestore.document(bookPath).collection("users").document().getPath();
+
+                // values for the user book
+                String name = task.getResult().getString("name");
+                double price = Double.valueOf(txtE_price.getText().toString());
+
+                UserBook userBook = new UserBook(price, user.getEmail(), name, spinner_condition.getSelectedItem().toString().toLowerCase(), imgPaths);
+                Log.d("book", userBook.toString());
+
+                // store the book in firebase
+                firestore.document(userBookPath).set(userBook).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("addUserBookFirebase", "Success");
+                            updateUserBooks();
+                        } else {
+                            Log.d("addUserBookFirebase", "Failed");
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void updateUserBooks() {
+
+        // map with the path details
+        HashMap<String, String> path = new HashMap<>();
+        path.put("path", userBookPath);
+
+        // add the path of the book to the users collection of books
+        firestore.collection("users").document(user.getUid()).collection("books").add(path).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                if (task.isSuccessful()) {
+                    Log.d("updateUserBooks", "Success");
+                } else {
+                    Log.d("updateUserBooks", "Failed");
+                }
+            }
+        });
+    }
+
+    private boolean isValidInput() {
+        boolean isValid = true;
+
+        // price does not exceed booksrun price if it exists
+        if (Double.valueOf(txtE_price.getText().toString()) > book.getPrice() && book.getPrice() != 0.0) {
+            txtE_price.setError("The price must be less than or equal to the price of the book: " + book.getPrice());
+            isValid = false;
+        }
+
+        return isValid;
     }
 
 }
