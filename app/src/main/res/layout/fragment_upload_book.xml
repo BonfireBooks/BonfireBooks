@@ -45,6 +45,19 @@
             app:layout_constraintTop_toBottomOf="@id/txtV_upload_book" />
 
         <Button
+            android:id="@+id/btn_add_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Add Photos"
+            android:textColor="@color/white"
+            android:background="@drawable/buttons_blue"
+            android:layout_marginBottom="5dp"
+            app:layout_constraintLeft_toLeftOf="@id/img_switch_upload_book_images"
+            app:layout_constraintRight_toRightOf="@id/img_switch_upload_book_images"
+            app:layout_constraintBottom_toBottomOf="@id/img_switch_upload_book_images"
+            />
+
+        <Button
             android:id="@+id/btn_img_backward"
             android:layout_width="40dp"
             android:layout_height="40dp"

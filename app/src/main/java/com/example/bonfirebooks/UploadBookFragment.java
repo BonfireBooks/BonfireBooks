@@ -1,11 +1,20 @@
 package com.example.bonfirebooks;
 
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +35,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -88,6 +98,11 @@ public class UploadBookFragment extends Fragment {
     Button btn_publish_book;
     Button btn_img_backward;
     Button btn_img_forward;
+    Button btn_add_photo;
+
+    // images
+    private ArrayList<Uri> imageUri;
+    private static final int PICK_IMAGE_MULTIPLE = 1;
 
     // firebase paths
     String userBookPath;
@@ -102,6 +117,7 @@ public class UploadBookFragment extends Fragment {
         btn_publish_book = view.findViewById(R.id.btn_publish_book);
         btn_img_backward = view.findViewById(R.id.btn_img_backward);
         btn_img_forward = view.findViewById(R.id.btn_img_forward);
+        btn_add_photo = view.findViewById(R.id.btn_add_photo);
 
         Log.d("book", book.toString());
 
@@ -131,7 +147,51 @@ public class UploadBookFragment extends Fragment {
                 }
             }
         });
+
+        btn_add_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Intent intent = new Intent();
+//                intent.setAction(Intent.ACTION_VIEW);
+//                intent.setType("image/*");
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intent);
+                openGallery();
+            }
+        });
     }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        // set intent type to select images
+        intent.setType("image/");
+
+        // allow multiple image to be selected
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+
+        // start the intent
+        startForResult.launch(intent);
+    }
+
+    ActivityResultLauncher<Intent> startForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if(result != null && result.getResultCode() == Activity.RESULT_OK) {
+
+                Log.d("clipLength", String.valueOf(result.getData().getClipData().getItemCount()));
+
+                // clip data holds uris
+                ClipData clipData = result.getData().getClipData();
+
+                // get uri data
+                for(int i = 0; i < clipData.getItemCount(); i++) {
+                    imageUri.add(clipData.getItemAt(i).getUri());
+                    Log.d("uri", imageUri.toString());
+                }
+            }
+        }
+    });
 
     private void addUserBookFirebase() {
 
