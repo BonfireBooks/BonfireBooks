@@ -327,6 +327,7 @@ public class UploadBookSearchFragment extends Fragment {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
                         Toast.makeText(getActivity(), "Sorry! We couldn't gather enough info on this book.", Toast.LENGTH_SHORT).show();
                         error.printStackTrace();
                     }
@@ -409,9 +410,11 @@ public class UploadBookSearchFragment extends Fragment {
                             callBookrunApi();
 
                         } catch (JSONException e) {
+                            progressDialog.dismiss();
                             Toast.makeText(getActivity(), "Sorry! We couldn't gather enough info on this book.", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         } catch (RuntimeException e) {
+                            progressDialog.dismiss();
                             Toast.makeText(getActivity(), "Sorry! A book with that isbn could not be found", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
@@ -420,6 +423,7 @@ public class UploadBookSearchFragment extends Fragment {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
                         Toast.makeText(getActivity(), "Sorry! We couldn't gather enough info on this book.", Toast.LENGTH_SHORT).show();
                         error.printStackTrace();
                     }

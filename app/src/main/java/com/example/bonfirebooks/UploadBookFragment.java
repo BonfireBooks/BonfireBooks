@@ -1,8 +1,11 @@
 package com.example.bonfirebooks;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ClipData;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,16 +17,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.ViewSwitcher;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -34,6 +43,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,6 +105,7 @@ public class UploadBookFragment extends Fragment {
     FirebaseUser user;
 
     // layout items
+    ImageSwitcher img_switch_upload_book_images;
     EditText txtE_price;
     Spinner spinner_condition;
     Button btn_publish_book;
@@ -101,17 +114,23 @@ public class UploadBookFragment extends Fragment {
     Button btn_add_photo;
 
     // images
-    private ArrayList<Uri> imageUri;
+    private ArrayList<Uri> imageUris = new ArrayList<>();
     private static final int PICK_IMAGE_MULTIPLE = 1;
+
+
+    ProgressDialog progressDialog;
 
     // firebase paths
     String userBookPath;
-    HashMap<String, String> imgPaths;
+    String userBookID;
+    String bookID;
+    HashMap<String, String> imgPaths = new HashMap<>();
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        img_switch_upload_book_images = view.findViewById(R.id.img_switch_upload_book_images);
         txtE_price = view.findViewById(R.id.txtE_price);
         spinner_condition = view.findViewById(R.id.spinner_condition);
         btn_publish_book = view.findViewById(R.id.btn_publish_book);
@@ -119,11 +138,17 @@ public class UploadBookFragment extends Fragment {
         btn_img_forward = view.findViewById(R.id.btn_img_forward);
         btn_add_photo = view.findViewById(R.id.btn_add_photo);
 
+        progressDialog = new ProgressDialog(getContext());
+
         Log.d("book", book.toString());
 
         // get firebase instances
         firestore = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
+
+        // user book path and id
+        userBookPath = firestore.document(bookPath).collection("users").document().getPath();
+        userBookID = firestore.document(userBookPath).getId();
 
         // set options for the spinner
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.book_conditions, android.R.layout.simple_spinner_item);
@@ -143,7 +168,14 @@ public class UploadBookFragment extends Fragment {
 
                 // check user price is < the book price'
                 if (isValidInput()) {
-                    addUserBookFirebase();
+
+                    // start the dialog here and end when book has finished uploading
+                    progressDialog.setMessage("Uploading");
+                    progressDialog.show();
+
+                    addUserImagesFirebase();
+
+//                    addUserBookFirebase();
                 }
             }
         });
@@ -151,14 +183,48 @@ public class UploadBookFragment extends Fragment {
         btn_add_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent();
-//                intent.setAction(Intent.ACTION_VIEW);
-//                intent.setType("image/*");
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                startActivity(intent);
                 openGallery();
             }
         });
+    }
+
+    private void addUserImagesFirebase() {
+
+        if(imageUris.size() > 0) {
+            StorageReference folderRef = FirebaseStorage.getInstance().getReference().child("User Images").child(userBookID);
+
+            for(int i = 0; i < imageUris.size(); i++) {
+                Uri imageUri = imageUris.get(i);
+
+                String strI = String.valueOf(i);
+
+                StorageReference imgRef = folderRef.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
+
+                imgRef.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if(task.isSuccessful()) {
+                            Log.d("imageUpload", "Succeess");
+                            imgPaths.put(strI, imgRef.getPath());
+                        } else {
+                            Log.d("imageUpload", "Failed");
+                        }
+
+                        if(imgPaths.size() == imageUris.size()) {
+                            addUserBookFirebase();
+                        }
+                    }
+                });
+            }
+        } else {
+            addUserBookFirebase();
+        }
+    }
+
+    private String getFileExtension(Uri imageUri) {
+        ContentResolver contentResolver = getActivity().getContentResolver();
+        MimeTypeMap mtp = MimeTypeMap.getSingleton();
+        return mtp.getExtensionFromMimeType(contentResolver.getType(imageUri));
     }
 
     private void openGallery() {
@@ -184,10 +250,13 @@ public class UploadBookFragment extends Fragment {
                 // clip data holds uris
                 ClipData clipData = result.getData().getClipData();
 
+                // reset the list
+                imageUris = new ArrayList<>();
+
                 // get uri data
                 for(int i = 0; i < clipData.getItemCount(); i++) {
-                    imageUri.add(clipData.getItemAt(i).getUri());
-                    Log.d("uri", imageUri.toString());
+                    imageUris.add(clipData.getItemAt(i).getUri());
+                    Log.d("uri", imageUris.get(i).toString());
                 }
             }
         }
@@ -199,9 +268,6 @@ public class UploadBookFragment extends Fragment {
         firestore.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-
-                // new books document path
-                userBookPath = firestore.document(bookPath).collection("users").document().getPath();
 
                 // values for the user book
                 String name = task.getResult().getString("name");
@@ -238,6 +304,8 @@ public class UploadBookFragment extends Fragment {
             public void onComplete(@NonNull Task<DocumentReference> task) {
                 if (task.isSuccessful()) {
                     Log.d("updateUserBooks", "Success");
+                    progressDialog.dismiss();
+                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new AccountFragment()).commit();
                 } else {
                     Log.d("updateUserBooks", "Failed");
                 }
