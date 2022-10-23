@@ -1,5 +1,6 @@
 package com.example.bonfirebooks;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -112,6 +113,9 @@ public class UploadBookSearchFragment extends Fragment {
     String isbn;
     String firebaseBookPath = "";
 
+
+    ProgressDialog progressDialog;
+
     // api calls
     private RequestQueue mQueue;
 
@@ -126,6 +130,9 @@ public class UploadBookSearchFragment extends Fragment {
         btn_search_isbn = view.findViewById(R.id.btn_search_isbn);
         btn_finish_upload = view.findViewById(R.id.btn_finish_upload);
         imgV_coverImage =  view.findViewById(R.id.imgV_coverImage);
+
+
+        progressDialog = new ProgressDialog(getContext());
 
         // get firebase instances
         firestore = FirebaseFirestore.getInstance();
@@ -146,6 +153,9 @@ public class UploadBookSearchFragment extends Fragment {
                 imgV_coverImage.setVisibility(View.GONE);
 
                 btn_finish_upload.setVisibility(View.GONE);
+
+                progressDialog.setMessage("Searching...");
+                progressDialog.show();
 
                 isbn = txtE_ISBN.getText().toString();
 
@@ -223,6 +233,8 @@ public class UploadBookSearchFragment extends Fragment {
     }
 
     private void updateOtherUIElements() {
+
+        progressDialog.dismiss();
 
         btn_finish_upload.setVisibility(View.VISIBLE);
         btn_finish_upload.setOnClickListener(new View.OnClickListener() {
