@@ -28,8 +28,10 @@ import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.ViewSwitcher;
@@ -105,13 +107,15 @@ public class UploadBookFragment extends Fragment {
     FirebaseUser user;
 
     // layout items
-    ImageSwitcher img_switch_upload_book_images;
+//    ImageSwitcher img_switch_upload_book_images;
     EditText txtE_price;
     Spinner spinner_condition;
     Button btn_publish_book;
-    Button btn_img_backward;
-    Button btn_img_forward;
+//    Button btn_img_backward;
+//    Button btn_img_forward;
     Button btn_add_photo;
+    HorizontalScrollView horizontal_scroll_view_images;
+    LinearLayout linlayout_image_scroll;
 
     // images
     private ArrayList<Uri> imageUris = new ArrayList<>();
@@ -130,13 +134,15 @@ public class UploadBookFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        img_switch_upload_book_images = view.findViewById(R.id.img_switch_upload_book_images);
+        horizontal_scroll_view_images = view.findViewById(R.id.horizontal_scroll_view_images);
+//        img_switch_upload_book_images = view.findViewById(R.id.img_switch_upload_book_images);
         txtE_price = view.findViewById(R.id.txtE_price);
         spinner_condition = view.findViewById(R.id.spinner_condition);
         btn_publish_book = view.findViewById(R.id.btn_publish_book);
-        btn_img_backward = view.findViewById(R.id.btn_img_backward);
-        btn_img_forward = view.findViewById(R.id.btn_img_forward);
+//        btn_img_backward = view.findViewById(R.id.btn_img_backward);
+//        btn_img_forward = view.findViewById(R.id.btn_img_forward);
         btn_add_photo = view.findViewById(R.id.btn_add_photo);
+        linlayout_image_scroll = view.findViewById(R.id.linlayout_image_scroll);
 
         progressDialog = new ProgressDialog(getContext());
 
@@ -250,14 +256,30 @@ public class UploadBookFragment extends Fragment {
                 // clip data holds uris
                 ClipData clipData = result.getData().getClipData();
 
-                // reset the list
-                imageUris = new ArrayList<>();
+                // reset the list and the linear layout
+                for(int i = 0; i < imageUris.size(); i++) {
+                    imageUris.remove(i);
+                    linlayout_image_scroll.removeAllViews();
+                }
 
                 // get uri data
                 for(int i = 0; i < clipData.getItemCount(); i++) {
                     imageUris.add(clipData.getItemAt(i).getUri());
+
+                    ImageView imageView = new ImageView(getContext());
+                    imageView.setImageURI(clipData.getItemAt(i).getUri());
+
+                    // create the linear layout to hold an image
+                    LinearLayout linWrapper = new LinearLayout(getContext());
+                    linWrapper.addView(imageView);
+                    linWrapper.setPadding(0, 0, 20, 0);
+
+                    // add it to the parent layout
+                    linlayout_image_scroll.addView(linWrapper, i);
+
                     Log.d("uri", imageUris.get(i).toString());
                 }
+
             }
         }
     });
