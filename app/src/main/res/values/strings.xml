@@ -59,4 +59,5 @@
     <string name="description">Description:</string>
     <string name="author_s">Author(s):</string>
     <string name="finish_upload">Finish Upload</string>
+    <string name="price_here">price here</string>
 </resources>
