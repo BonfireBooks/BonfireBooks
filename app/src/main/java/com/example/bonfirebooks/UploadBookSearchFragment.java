@@ -163,6 +163,7 @@ public class UploadBookSearchFragment extends Fragment {
                 if (isbn.length() == 13 || isbn.length() == 10) {
                     handleSearch();
                 } else {
+                    progressDialog.dismiss();
                     txtE_ISBN.setError("You Must Enter The ISBN 10 or 13 For Your Book");
                 }
             }

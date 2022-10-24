@@ -98,6 +98,7 @@ public class UploadBookFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_upload_book, container, false);
     }
@@ -107,12 +108,9 @@ public class UploadBookFragment extends Fragment {
     FirebaseUser user;
 
     // layout items
-//    ImageSwitcher img_switch_upload_book_images;
     EditText txtE_price;
     Spinner spinner_condition;
     Button btn_publish_book;
-//    Button btn_img_backward;
-//    Button btn_img_forward;
     Button btn_add_photo;
     HorizontalScrollView horizontal_scroll_view_images;
     LinearLayout linlayout_image_scroll;
@@ -135,12 +133,9 @@ public class UploadBookFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         horizontal_scroll_view_images = view.findViewById(R.id.horizontal_scroll_view_images);
-//        img_switch_upload_book_images = view.findViewById(R.id.img_switch_upload_book_images);
         txtE_price = view.findViewById(R.id.txtE_price);
         spinner_condition = view.findViewById(R.id.spinner_condition);
         btn_publish_book = view.findViewById(R.id.btn_publish_book);
-//        btn_img_backward = view.findViewById(R.id.btn_img_backward);
-//        btn_img_forward = view.findViewById(R.id.btn_img_forward);
         btn_add_photo = view.findViewById(R.id.btn_add_photo);
         linlayout_image_scroll = view.findViewById(R.id.linlayout_image_scroll);
 
@@ -180,8 +175,6 @@ public class UploadBookFragment extends Fragment {
                     progressDialog.show();
 
                     addUserImagesFirebase();
-
-//                    addUserBookFirebase();
                 }
             }
         });
@@ -197,15 +190,20 @@ public class UploadBookFragment extends Fragment {
     private void addUserImagesFirebase() {
 
         if(imageUris.size() > 0) {
+            // get a storage reference
             StorageReference folderRef = FirebaseStorage.getInstance().getReference().child("User Images").child(userBookID);
 
+            // store all images
             for(int i = 0; i < imageUris.size(); i++) {
                 Uri imageUri = imageUris.get(i);
 
+                // need string value of i to store the image paths in the hashmap
                 String strI = String.valueOf(i);
 
+                // create a reference of the image file
                 StorageReference imgRef = folderRef.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
 
+                // store the image file
                 imgRef.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -216,6 +214,8 @@ public class UploadBookFragment extends Fragment {
                             Log.d("imageUpload", "Failed");
                         }
 
+                        // if the number of images stored matches the number of uris that
+                        // need to be stored we can put the user in firebase
                         if(imgPaths.size() == imageUris.size()) {
                             addUserBookFirebase();
                         }
@@ -223,6 +223,7 @@ public class UploadBookFragment extends Fragment {
                 });
             }
         } else {
+            // if there arent any images to add we can just add the user
             addUserBookFirebase();
         }
     }
@@ -339,7 +340,10 @@ public class UploadBookFragment extends Fragment {
         boolean isValid = true;
 
         // price does not exceed booksrun price if it exists
-        if (Double.valueOf(txtE_price.getText().toString()) > book.getPrice() && book.getPrice() != 0.0) {
+        if(txtE_price.getText().toString().isEmpty()) {
+            txtE_price.setError("You must enter a price");
+            isValid = false;
+        } else if (Double.valueOf(txtE_price.getText().toString()) > book.getPrice() && book.getPrice() != 0.0) {
             txtE_price.setError("The price must be less than or equal to the price of the book: " + book.getPrice());
             isValid = false;
         }
