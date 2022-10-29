@@ -109,10 +109,8 @@ public class UploadBookSearchFragment extends Fragment {
 
     // book details
     Book book = new Book();
-    HashMap<String, String> authors = new HashMap<>();
     String isbn;
     String firebaseBookPath = "";
-
 
     ProgressDialog progressDialog;
 
@@ -171,10 +169,9 @@ public class UploadBookSearchFragment extends Fragment {
     }
 
     private void handleSearch() {
-        // check if the book exists in firebase
-
         String strISBN = isbn.length() == 13 ? "isbn13" : "isbn10";
 
+        // check if the book exists in firebase
         firestore.collection("books").whereEqualTo(strISBN, isbn).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -187,60 +184,43 @@ public class UploadBookSearchFragment extends Fragment {
                     callGoogleApi();
                 } else {
                     Log.d("firestoreHasBook", "true");
-                    firebaseBookPath = documents.get(0).getReference().getPath();
-                    updateUIFirestore();
+                    DocumentSnapshot taskResult = documents.get(0);
+
+                    book = new Book((Double) taskResult.get("price"), (String) taskResult.get("title"), (String) taskResult.get("isbn10"), (String) taskResult.get("isbn13"), (String) taskResult.get("description"), (String) taskResult.get("coverImgUrl") , (HashMap<String, String>) taskResult.get("authors"), (HashMap<String, String>) taskResult.get("categories"));
+                    updateUIElements();
                 }
             }
         });
     }
 
-    private void updateUIFirestore() {
-
-        String strISBN = isbn.length() == 13 ? "isbn13" : "isbn10";
-
-        // get the book with the matching isbn
-        firestore.document(firebaseBookPath).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                Log.d("updateUIFirestore", "called");
-
-                // there should only ever be one occurance of a book with matching isbn - so grab the first one
-                DocumentSnapshot taskResult = task.getResult();
-
-                // get the authors map from firebase
-                HashMap<String, String> firebaseAuthors = (HashMap<String, String>) taskResult.get("authors");
-
-                // iterate through the authors map from firebase creating a string with the data
-                StringBuilder strAuthors = new StringBuilder();
-                for (int i = 0; i < firebaseAuthors.size(); i++) {
-                    strAuthors.append(firebaseAuthors.get(String.valueOf(i)));
-                    if (i != firebaseAuthors.size() - 1)
-                        strAuthors.append("\n");
-                }
-
-                // update the text views
-                txtV_book_authors.setText(strAuthors.toString());
-                txtV_book_title.setText(taskResult.getString("title"));
-                txtV_book_description.setText(taskResult.getString("description"));
-                imgV_coverImage.setVisibility(View.VISIBLE);
-                Picasso.get().load(taskResult.getString("coverImgUrl")).into(imgV_coverImage);
-                imgV_coverImage.setMinimumHeight(500);
-
-                book = new Book((Double) taskResult.get("price"), (String) taskResult.get("title"), (String) taskResult.get("isbn10"), (String) taskResult.get("isbn13"), (String) taskResult.get("description"), (String) taskResult.get("coverImgUrl") , (HashMap<String, String>) taskResult.get("authors"));
-
-                updateOtherUIElements();
-            }
-        });
-    }
-
-    private void updateOtherUIElements() {
-
+    private void updateUIElements() {
         progressDialog.dismiss();
 
+        // create a string of authors
+        StringBuilder strAuthors = new StringBuilder();
+        HashMap<String, String> authors = book.getAuthors();
+        for (int i = 0; i < authors.size(); i++) {
+            strAuthors.append(authors.get(String.valueOf(i)));
+            if (i != authors.size() - 1)
+                strAuthors.append("\n");
+        }
+
+        // update testViews
+        txtV_book_authors.setText(strAuthors.toString());
+        txtV_book_title.setText(book.getTitle());
+        txtV_book_description.setText(book.getDescription());
+
+        // update the imageView
+        imgV_coverImage.setVisibility(View.VISIBLE);
+        Picasso.get().load(book.getCoverImgUrl()).into(imgV_coverImage);
+        imgV_coverImage.setMinimumHeight(500);
+
+        // make the finish upload button visible and clickable
         btn_finish_upload.setVisibility(View.VISIBLE);
         btn_finish_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // switch to the uploadBookFragment
                 getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UploadBookFragment(book, firebaseBookPath)).commit();
             }
         });
@@ -250,92 +230,14 @@ public class UploadBookSearchFragment extends Fragment {
         DocumentReference newBookRef = firestore.collection("books").document();
         firebaseBookPath = newBookRef.getPath();
 
-        //  store the book details (title, description, isbn10, isbn13)
+        //  store the book
         newBookRef.set(book).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Log.d("addToFirebase", "complete");
-                //  string of authors
-                StringBuilder strAuthors = new StringBuilder();
-                for (int i = 0; i < authors.size(); i++) {
-                    strAuthors.append(authors.get(String.valueOf(i)));
-                    if (i != authors.size() - 1)
-                        strAuthors.append("\n");
-                }
-
-                // update the ui
-                txtV_book_authors.setText(strAuthors);
-                txtV_book_title.setText(book.getTitle());
-                txtV_book_description.setText(book.getDescription());
-                imgV_coverImage.setVisibility(View.VISIBLE);
-                Picasso.get().load(book.getCoverImgUrl()).into(imgV_coverImage);
-
-                updateOtherUIElements();
+                updateUIElements();
             }
         });
-    }
-
-    private void callBookrunApi() {
-        String url = "https://booksrun.com/api/v3/price/buy/" + isbn + "?key=t2xlhotmhy246sby0zvu"; //Book Runs API
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-
-                            // get json information
-                            JSONObject jsonObject = response.getJSONObject("result");
-                            String status = jsonObject.getString("status");
-                            JSONObject offers = jsonObject.getJSONObject("offers");
-                            JSONObject bookrs = offers.getJSONObject("booksrun");
-
-                            // check if bookrun has a price for the book
-                            JSONObject new_price = bookrs.getJSONObject("new");
-
-                            Log.d("new Price", new_price.toString());
-
-                            // set the price of the book object
-                            if (new_price.equals("none")) {
-                                book.setPrice(0);
-                            } else if (!status.equals("error")) {
-                                Log.d("HERE", "properly set");
-                                Double brPrice = new_price.getDouble("price"); //price of new
-                                book.setPrice(brPrice);
-                            }
-
-                            Log.d("bookDetails", book.toString());
-
-                            // update firestore with the book data
-                            updateFirebase();
-
-                        } catch (JSONException e) {
-
-                            // typically JSONExceptions are thrown since booksrun api
-                            // doesnt always format properly
-                            book.setPrice(0);
-                            Log.d("bookDetails", book.toString());
-
-                            // update firestore with the book data
-                            updateFirebase();
-
-
-                            // Toast.makeText(getActivity(), "Sorry! We couldn't gather enough info on this book.", Toast.LENGTH_SHORT).show();
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        progressDialog.dismiss();
-                        Toast.makeText(getActivity(), "Sorry! We couldn't gather enough info on this book.", Toast.LENGTH_SHORT).show();
-                        error.printStackTrace();
-                    }
-                });
-
-
-        mQueue.add(request);
     }
 
     private void callGoogleApi() {
@@ -372,7 +274,7 @@ public class UploadBookSearchFragment extends Fragment {
                                 throw new RuntimeException("Isbn does not exist");
                             }
 
-                            // get book info from the json
+                            // book volume info
                             JSONObject volumeObj = itemsObj.getJSONObject("volumeInfo");
                             String title = volumeObj.optString("title");
                             JSONArray authorsArray = volumeObj.getJSONArray("authors");
@@ -380,22 +282,45 @@ public class UploadBookSearchFragment extends Fragment {
                             JSONArray isbnNums = volumeObj.getJSONArray("industryIdentifiers");
                             String coverImgUrl = volumeObj.getJSONObject("imageLinks").optString("thumbnail");
 
+                            // sale info data
+                            JSONObject saleInfo = itemsObj.getJSONObject("saleInfo");
+                            Double retailPrice = 0.0;
+
+                            if(saleInfo.has("retailPrice")) {
+                                retailPrice = saleInfo.getJSONObject("retailPrice").getDouble("amount");
+                            }
+
                             // unprotected traffic not allowed when making requests to google books servers
                             // must make sure the image link uses https
                             if(!coverImgUrl.substring(0, 5).equals("https")) {
                                 coverImgUrl = "https:" + coverImgUrl.substring(5);
                             }
 
+                            HashMap<String, String> authors = new HashMap<>();
+                            HashMap<String, String> categories = new HashMap<>();
+
                             //  add authors to map
                             for (int i = 0; i < authorsArray.length(); i++) {
                                 authors.put(String.valueOf(i), authorsArray.optString(i));
+                            }
+
+                            // categories are not always required/included in JSON
+                            if(volumeObj.has("categories")) {
+                                JSONArray categoriesArray = volumeObj.getJSONArray("categories");
+
+                                // add categories to map
+                                for(int i = 0; i < categoriesArray.length(); i++) {
+                                    categories.put(String.valueOf(i), categoriesArray.optString(i));
+                                }
                             }
 
                             // add book details to the book object
                             book.setTitle(title);
                             book.setDescription(description);
                             book.setAuthors(authors);
+                            book.setCategories(categories);
                             book.setcoverImgUrl(coverImgUrl);
+                            book.setPrice(retailPrice);
 
                             // add the isbns to the book object
                             for (int i = 0; i < isbnNums.length(); i++) {
@@ -407,8 +332,8 @@ public class UploadBookSearchFragment extends Fragment {
                                 }
                             }
 
-                            // call the bookrun api after the google api is done being called
-                            callBookrunApi();
+                            // update firestore with the book data
+                            updateFirebase();
 
                         } catch (JSONException e) {
                             progressDialog.dismiss();

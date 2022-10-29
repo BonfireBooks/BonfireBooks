@@ -13,10 +13,11 @@ public class Book {
     private String description;
     private String coverImgUrl;
     private HashMap<String, String> authors;
+    private HashMap<String, String> categories;
 
     public Book() {}
 
-    public Book(double price, String title, String isbn10, String isbn13, String description, String coverImgUrl, HashMap<String, String> authors) {
+    public Book(double price, String title, String isbn10, String isbn13, String description, String coverImgUrl, HashMap<String, String> authors, HashMap<String, String> categories) {
         this.price = price;
         this.title = title;
         this.isbn10 = isbn10;
@@ -24,10 +25,7 @@ public class Book {
         this.description = description;
         this.coverImgUrl = coverImgUrl;
         this.authors = authors;
-
-        Log.d("thisDescript", description);
-
-        Log.d("bookClass", this.toString());
+        this.categories = categories;
     }
 
     public double getPrice() {
@@ -58,6 +56,8 @@ public class Book {
         return authors;
     }
 
+    public HashMap<String, String> getCategories() {return categories;}
+
     public void setPrice(double price) {
         this.price = price;
     }
@@ -84,12 +84,17 @@ public class Book {
         this.authors = authors;
     }
 
+    public void setCategories(HashMap<String, String> categories) {
+        this.categories = categories;
+    }
+
     public String toString() {
         StringBuilder str = new StringBuilder();
         str.append("price: " + price + "\n");
         str.append("title: " + title.toString() + "\n");
         str.append("description: " + description.toString() + "\n");
         str.append("authors: " + authors.toString() + "\n");
+        str.append("categories: " + categories.toString() + "\n");
         str.append("isbn10: " + isbn10 + "\n");
         str.append("isbn13: " + isbn13 + "\n");
         str.append("coverImgUrl: " + coverImgUrl);
