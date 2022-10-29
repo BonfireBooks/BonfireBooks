@@ -40,6 +40,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -297,7 +298,8 @@ public class UploadBookFragment extends Fragment {
                 double price = Double.valueOf(txtE_price.getText().toString());
 
                 UserBook userBook = new UserBook(price, user.getEmail(), name, spinner_condition.getSelectedItem().toString().toLowerCase(), imgPaths);
-                Log.d("book", userBook.toString());
+                userBook.setTime(Timestamp.now());
+                Log.d("userBook", userBook.toString());
 
                 // store the book in firebase
                 firestore.document(userBookPath).set(userBook).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -318,11 +320,13 @@ public class UploadBookFragment extends Fragment {
     private void updateUserBooks() {
 
         // map with the path details
-        HashMap<String, String> path = new HashMap<>();
-        path.put("path", userBookPath);
+        HashMap<String, String> userBookDetails = new HashMap<>();
+        userBookDetails.put("path", userBookPath);
+        userBookDetails.put("title", book.getTitle());
+        userBookDetails.put("coverImgUrl", book.getCoverImgUrl());
 
         // add the path of the book to the users collection of books
-        firestore.collection("users").document(user.getUid()).collection("books").add(path).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+        firestore.collection("users").document(user.getUid()).collection("books").add(userBookDetails).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {
                 if (task.isSuccessful()) {

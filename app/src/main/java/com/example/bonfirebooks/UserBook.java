@@ -1,5 +1,7 @@
 package com.example.bonfirebooks;
 
+import com.google.firebase.Timestamp;
+
 import java.util.HashMap;
 
 public class UserBook {
@@ -9,12 +11,22 @@ public class UserBook {
     private String name;
     private String condition;
     private HashMap<String, String> images;
+    private Timestamp time;
 
     public UserBook(double price, String email, String name, String condition, HashMap<String, String> images) {
         this.price = price;
         this.email = email;
         this.name = name;
         this.condition = condition;
+        this.images = images;
+    }
+
+    public UserBook(double price, String email, String name, String condition, Timestamp time, HashMap<String, String> images) {
+        this.price = price;
+        this.email = email;
+        this.name = name;
+        this.condition = condition;
+        this.time = time;
         this.images = images;
     }
 
@@ -33,6 +45,8 @@ public class UserBook {
     public void setCondition(String condition) {
         this.condition = condition;
     }
+
+    public void setTime(Timestamp time) { this.time = time; }
 
     public void setPathsToImages(HashMap<String, String> images) {
         this.images = images;
@@ -54,6 +68,8 @@ public class UserBook {
         return condition;
     }
 
+    public Timestamp getTime() { return time; }
+
     public HashMap<String, String> getPathsToImages() {
         return images;
     }
@@ -64,6 +80,7 @@ public class UserBook {
         str.append("email: " + email + "\n");
         str.append("name: " + name + "\n");
         str.append("condition: " + condition + "\n");
+        str.append("time: " + time + "\n");
 
         if(images != null)
             str.append("images: " + images.toString());
