@@ -55,7 +55,8 @@
     <ScrollView
         android:id="@+id/scrollV_wishlist"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/linlayout_wishlist"
