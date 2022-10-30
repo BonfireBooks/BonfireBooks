@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -99,14 +100,57 @@ public class WishlistFragment extends Fragment {
         firestore = FirebaseFirestore.getInstance();
         currUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        // handle swipe to refresh
+        final SwipeRefreshLayout pullToRefresh = view.findViewById(R.id.swipe_refresh_wishlist);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshWishlist();
+                pullToRefresh.setRefreshing(false);
+                populateScrollViewWithFirebase(linlayout_wishlist);
+            }
+        });
         populateScrollViewWithFirebase(linlayout_wishlist);
+    }
 
+    private void refreshWishlist() {
+
+        Log.d("wishlistRefresh", "Triggered");
+
+        HashMap<String, WishlistBook> wishlist = new HashMap<>();
+
+        // get wishlist from firebase
+        firestore.collection("users").document(user.getUid()).collection("wishlist").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    Log.d("loadWishlistFirebase", "Successful");
+
+                    int i = 0;
+                    for (DocumentSnapshot doc : task.getResult().getDocuments()) {
+                        // create a new wishlist book with the document data
+                        WishlistBook wBook = new WishlistBook(doc.getString("path"), doc.getString("title"),
+                                doc.getString("coverImgUrl"), doc.getDouble("price"));
+
+                        // add the book to the users wishlist
+                        wishlist.put(String.valueOf(i), wBook);
+
+                        i++;
+                    }
+
+                    user.setWishlist(wishlist);
+
+                } else {
+                    Log.d("loadWishlistFirebase", "Failed");
+                }
+            }
+        });
     }
 
     private void populateScrollViewWithFirebase(LinearLayout linearLayout) {
 
         HashMap<String, WishlistBook> wishlist = user.getWishlist();
-        if(wishlist != null && wishlist.size() != 0) {
+        if (wishlist != null && wishlist.size() != 0) {
             // change the visibilty of the views
             layout_wishlist_empty.setVisibility(View.GONE);
             scrollV_wishlist.setVisibility(View.VISIBLE);
