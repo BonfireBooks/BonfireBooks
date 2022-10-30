@@ -4,11 +4,26 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,8 +75,63 @@ public class ChatFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_chat, container, false);
     }
 
+    // layout items
+    ConstraintLayout layout_chats_empty;
+    ListView listV_chats;
+    TextView txtV_no_chats;
+
+    // Firebase
+    FirebaseFirestore firestore;
+    FirebaseUser currUser;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        layout_chats_empty = view.findViewById(R.id.layout_chats_empty);
+        txtV_no_chats = view.findViewById(R.id.txtV_no_chats);
+        listV_chats = view.findViewById(R.id.listV_chats);
+
+        // firestore
+        firestore = FirebaseFirestore.getInstance();
+        currUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        populateChatList();
+
+        listV_chats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                // todo -- open chat here
+            }
+        });
+
+    }
+
+    private void populateChatList() {
+        HashMap<String, UserProfileChat> chats = user.getChats();
+
+        if (chats != null && chats.size() != 0) {
+
+            layout_chats_empty.setVisibility(View.GONE);
+            listV_chats.setVisibility(View.VISIBLE);
+
+            String[] names = new String[chats.size()];
+            String[] contents = new String[chats.size()];
+            Timestamp[] times = new Timestamp[chats.size()];
+
+            for(int i = 0; i < chats.size(); i++) {
+                UserProfileChat chat = chats.get(String.valueOf(i));
+                names[i] = chat.getOtherUserName();
+                contents[i] = chat.getContent();
+                times[i] = chat.getTime();
+            }
+
+        ChatListAdapter chatAdapter = new ChatListAdapter(getActivity(), names, contents, times);
+        listV_chats.setAdapter(chatAdapter);
+
+        } else {
+            layout_chats_empty.setVisibility(View.VISIBLE);
+            listV_chats.setVisibility(View.GONE);
+        }
     }
 }
