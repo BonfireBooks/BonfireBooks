@@ -6,7 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +19,14 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,8 +102,6 @@ public class ChatFragment extends Fragment {
         firestore = FirebaseFirestore.getInstance();
         currUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        populateChatList();
-
         listV_chats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -105,6 +109,46 @@ public class ChatFragment extends Fragment {
             }
         });
 
+        final SwipeRefreshLayout pullToRefresh = view.findViewById(R.id.swipe_refresh_chats);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshChats();
+                pullToRefresh.setRefreshing(false);
+                populateChatList();
+            }
+        });
+
+        populateChatList();
+    }
+
+    private void refreshChats() {
+        Log.d("wishlistChats", "Triggered");
+
+        HashMap<String, UserProfileChat> chats = new HashMap<>();
+
+        firestore.collection("users").document(user.getUid()).collection("chats").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    // add log d
+                    int i = 0;
+                    for (DocumentSnapshot doc : task.getResult().getDocuments()) {
+                        // create a new chat book with the document data
+                        UserProfileChat chat = new UserProfileChat(doc.getString("otherUserName"), doc.getString("content"), doc.getTimestamp("time"));
+
+                        // add the book to the users wishlist
+                        chats.put(String.valueOf(i), chat);
+
+                        i++;
+                    }
+
+                    user.setChats(chats);
+                } else {
+                    // add log d
+                }
+            }
+        });
     }
 
     private void populateChatList() {
