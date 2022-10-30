@@ -15,10 +15,14 @@ import org.checkerframework.common.subtyping.qual.Bottom;
 
 public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
 
+    private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        user = getIntent().getParcelableExtra("user");
 
         BottomNavigationView navigationView = findViewById(R.id.bottomNavView);
         navigationView.setOnItemSelectedListener(this);
@@ -36,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
                 break;
             case R.id.nav_wish_list:
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new WishlistFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new WishlistFragment(user)).commit();
                 break;
             case R.id.nav_chats:
                 //  Todo -- add navigation to a chats fragment
