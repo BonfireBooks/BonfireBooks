@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new WishlistFragment(user)).commit();
                 break;
             case R.id.nav_chats:
-                //  Todo -- add navigation to a chats fragment
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new ChatFragment(user)).commit();
                 break;
             case R.id.nav_profile:
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new AccountFragment()).commit();
