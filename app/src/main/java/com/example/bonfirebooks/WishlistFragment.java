@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -83,6 +84,7 @@ public class WishlistFragment extends Fragment {
     ConstraintLayout layout_wishlist_empty;
     ScrollView scrollV_wishlist;
     LinearLayout linlayout_wishlist;
+    Button btn_explore;
 
     // Firebase
     FirebaseFirestore firestore;
@@ -95,10 +97,20 @@ public class WishlistFragment extends Fragment {
         layout_wishlist_empty = view.findViewById(R.id.layout_wishlist_empty);
         scrollV_wishlist = view.findViewById(R.id.scrollV_wishlist);
         linlayout_wishlist = view.findViewById(R.id.linlayout_wishlist);
+        btn_explore = view.findViewById(R.id.btn_explore);
 
         // firestore
         firestore = FirebaseFirestore.getInstance();
         currUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        // add explore button listener
+        btn_explore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // switch to the home fragment
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new HomeFragment());
+            }
+        });
 
         // handle swipe to refresh
         final SwipeRefreshLayout pullToRefresh = view.findViewById(R.id.swipe_refresh_wishlist);
