@@ -26,6 +26,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link WishlistFragment#newInstance} factory method to
@@ -39,27 +41,24 @@ public class WishlistFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private User user;
 
-    public WishlistFragment() {
+    public WishlistFragment(User user) {
         // Required empty public constructor
+        this.user = user;
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param user User;
      * @return A new instance of fragment WishlistFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static WishlistFragment newInstance(String param1, String param2) {
-        WishlistFragment fragment = new WishlistFragment();
+    public static WishlistFragment newInstance(User user) {
+        WishlistFragment fragment = new WishlistFragment(user);
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,8 +67,7 @@ public class WishlistFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            user = (User) getArguments().get(ARG_PARAM1);
         }
     }
 
@@ -87,7 +85,7 @@ public class WishlistFragment extends Fragment {
 
     // Firebase
     FirebaseFirestore firestore;
-    FirebaseUser user;
+    FirebaseUser currUser;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -99,61 +97,57 @@ public class WishlistFragment extends Fragment {
 
         // firestore
         firestore = FirebaseFirestore.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        currUser = FirebaseAuth.getInstance().getCurrentUser();
 
         populateScrollViewWithFirebase(linlayout_wishlist);
 
     }
 
     private void populateScrollViewWithFirebase(LinearLayout linearLayout) {
-        firestore.collection("users").document(user.getUid()).collection("wishlist").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()) {
-                    Log.d("getUserWishlist", "Successful");
-                    QuerySnapshot taskResults = task.getResult();
-                    if(taskResults.size() < 1) {
-                        layout_wishlist_empty.setVisibility(View.VISIBLE);
 
-                        int i = 0;
-                        // add all the docs into the vertical scroll
-                        for (DocumentSnapshot taskDoc : task.getResult().getDocuments()) {
+        HashMap<String, WishlistBook> wishlist = user.getWishlist();
+        if(wishlist != null && wishlist.size() != 0) {
+            // change the visibilty of the views
+            layout_wishlist_empty.setVisibility(View.GONE);
+            scrollV_wishlist.setVisibility(View.VISIBLE);
 
-                            View bookView = getLayoutInflater().inflate(R.layout.wishlist_book_item, null);
-                            bookView.setPadding(30, 0, 0, 0);
+            Log.d("wishlist", wishlist.toString());
+            for (int i = 0; i < wishlist.size(); i++) {
+                View bookView = getLayoutInflater().inflate(R.layout.wishlist_book_item, null);
+                bookView.setPadding(30, 0, 0, 0);
 
-                            // new book view details
-                            ImageView book_image = bookView.findViewById(R.id.imgV_coverImage);
-                            TextView book_title = bookView.findViewById(R.id.txtV_book_title);
-                            TextView book_price = bookView.findViewById(R.id.txtV_book_price);
+                // new book view details
+                ImageView book_image = bookView.findViewById(R.id.imgV_coverImage);
+                TextView book_title = bookView.findViewById(R.id.txtV_book_title);
+                TextView book_price = bookView.findViewById(R.id.txtV_book_price);
 
-                            // set book views image
-                            Picasso.get().load(taskDoc.getString("coverImgUrl")).into(book_image, new Callback() {
-                                @Override
-                                public void onSuccess() {
-                                    book_image.setBackground(null);
-                                }
+                String strI = String.valueOf(i);
 
-                                @Override
-                                public void onError(Exception e) {
-                                    // do nothing -- keep image not found background
-                                }
-                            });
-
-                            // set other book view details
-                            book_title.setText(taskDoc.getString("title"));
-                            book_price.setText(taskDoc.getDouble("price").toString());
-
-                            // add the book to the layout
-                            linearLayout.addView(bookView, i);
-
-                            i++;
-                        }
+                // set book views image
+                Picasso.get().load(wishlist.get(strI).getCoverImgUrl()).into(book_image, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        book_image.setBackground(null);
                     }
-                } else {
-                    Log.d("getUserWishlist", "Failed");
-                }
+
+                    @Override
+                    public void onError(Exception e) {
+                        // do nothing -- keep image not found background
+                    }
+                });
+
+                // set other book view details
+                book_title.setText(wishlist.get(strI).getTitle());
+                book_price.setText(wishlist.get(strI).getPrice().toString());
+
+                // add the book to the layout
+                linearLayout.addView(bookView, i);
             }
-        });
+        } else {
+            // change the visibility of the views
+            layout_wishlist_empty.setVisibility(View.VISIBLE);
+            scrollV_wishlist.setVisibility(View.GONE);
+        }
+
     }
 }
