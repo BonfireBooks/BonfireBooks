@@ -10,6 +10,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -85,6 +87,7 @@ public class WishlistFragment extends Fragment {
     ScrollView scrollV_wishlist;
     LinearLayout linlayout_wishlist;
     Button btn_explore;
+    BottomNavigationView bottomNavigationView;
 
     // Firebase
     FirebaseFirestore firestore;
@@ -98,6 +101,8 @@ public class WishlistFragment extends Fragment {
         scrollV_wishlist = view.findViewById(R.id.scrollV_wishlist);
         linlayout_wishlist = view.findViewById(R.id.linlayout_wishlist);
         btn_explore = view.findViewById(R.id.btn_explore);
+        bottomNavigationView = getActivity().findViewById(R.id.bottomNavView);
+
 
         // firestore
         firestore = FirebaseFirestore.getInstance();
@@ -108,7 +113,8 @@ public class WishlistFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // switch to the home fragment
-                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new HomeFragment());
+                bottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
             }
         });
 
