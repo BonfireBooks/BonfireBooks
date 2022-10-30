@@ -60,4 +60,7 @@
     <string name="author_s">Author(s):</string>
     <string name="finish_upload">Finish Upload</string>
     <string name="price_here">price here</string>
+    <string name="wishlist_is_empty">Wishlist is Empty</string>
+    <string name="explore">Explore</string>
+    <string name="no_current_chats">No Current Chats</string>
 </resources>
