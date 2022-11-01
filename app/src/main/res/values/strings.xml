@@ -63,4 +63,5 @@
     <string name="wishlist_is_empty">Wishlist is Empty</string>
     <string name="explore">Explore</string>
     <string name="no_current_chats">No Current Chats</string>
+    <string name="view_books">View Books</string>
 </resources>
