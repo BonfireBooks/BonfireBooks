@@ -94,7 +94,8 @@ public class Book {
         str.append("title: " + title.toString() + "\n");
         str.append("description: " + description.toString() + "\n");
         str.append("authors: " + authors.toString() + "\n");
-        str.append("categories: " + categories.toString() + "\n");
+        if (categories != null)
+            str.append("categories: " + categories.toString() + "\n");
         str.append("isbn10: " + isbn10 + "\n");
         str.append("isbn13: " + isbn13 + "\n");
         str.append("coverImgUrl: " + coverImgUrl);
