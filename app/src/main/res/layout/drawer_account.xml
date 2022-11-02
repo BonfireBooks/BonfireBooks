@@ -85,31 +85,6 @@
         />
 
     <View
-        android:id="@+id/icon_wishlist"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/ic_wish_list"
-        android:backgroundTint="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/icon_upload_books"
-        app:layout_constraintLeft_toLeftOf="parent"
-        />
-
-    <TextView
-        android:id="@+id/txtV_wish_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/wishlist"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:layout_marginStart="20dp"
-        app:layout_constraintLeft_toRightOf="@id/icon_wishlist"
-        app:layout_constraintTop_toTopOf="@id/icon_wishlist"
-        app:layout_constraintBottom_toBottomOf="@id/icon_wishlist"
-        />
-
-    <View
         android:id="@+id/icon_order_history"
         android:layout_width="30dp"
         android:layout_height="30dp"
@@ -117,7 +92,7 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/ic_order_history"
         android:backgroundTint="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/icon_wishlist"
+        app:layout_constraintTop_toBottomOf="@id/txtV_upload_book"
         app:layout_constraintLeft_toLeftOf="parent"
         />
 
@@ -157,31 +132,6 @@
         app:layout_constraintLeft_toRightOf="@id/icon_notification"
         app:layout_constraintTop_toTopOf="@id/icon_notification"
         app:layout_constraintBottom_toBottomOf="@id/icon_notification"
-        />
-
-    <View
-        android:id="@+id/icon_chat"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/ic_chats"
-        android:backgroundTint="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/icon_notification"
-        app:layout_constraintLeft_toLeftOf="parent"
-        />
-
-    <TextView
-        android:id="@+id/txtV_chats"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/chats"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:layout_marginStart="20dp"
-        app:layout_constraintLeft_toRightOf="@id/icon_chat"
-        app:layout_constraintTop_toTopOf="@id/icon_chat"
-        app:layout_constraintBottom_toBottomOf="@id/icon_chat"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
