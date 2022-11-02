@@ -38,29 +38,19 @@ import java.util.HashMap;
  */
 public class ChatFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private User user;
-
-    public ChatFragment(User user) {
+    public ChatFragment() {
         // Required empty public constructor
-        this.user = user;
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param user User;
      * @return A new instance of fragment ChatFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ChatFragment newInstance(User user) {
-        ChatFragment fragment = new ChatFragment(user);
+    public static ChatFragment newInstance() {
+        ChatFragment fragment = new ChatFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -70,7 +60,6 @@ public class ChatFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            user = (User) getArguments().get(ARG_PARAM1);
         }
     }
 
@@ -80,6 +69,8 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_chat, container, false);
     }
+
+    User user;
 
     // layout items
     ConstraintLayout layout_chats_empty;
@@ -93,6 +84,8 @@ public class ChatFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        user = ((MainActivity)getActivity()).getUser();
 
         layout_chats_empty = view.findViewById(R.id.layout_chats_empty);
         txtV_no_chats = view.findViewById(R.id.txtV_no_chats);

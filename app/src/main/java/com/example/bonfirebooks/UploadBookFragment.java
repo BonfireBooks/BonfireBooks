@@ -34,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.android.volley.RequestQueue;
@@ -68,8 +69,12 @@ public class UploadBookFragment extends Fragment {
     private Book book;
     private String bookPath;
 
-    public UploadBookFragment(Book book, String path) {
+    public UploadBookFragment() {
         // Required empty public constructor
+    }
+
+
+    public UploadBookFragment(Book book, String path) {
         this.book = book;
         this.bookPath = path;
     }
@@ -93,6 +98,8 @@ public class UploadBookFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            book = (Book) getArguments().get(ARG_PARAM1);
+            bookPath = (String) getArguments().get(ARG_PARAM2);
         }
     }
 
@@ -104,9 +111,11 @@ public class UploadBookFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_upload_book, container, false);
     }
 
+    User user;
+
     // firebase
     FirebaseFirestore firestore;
-    FirebaseUser user;
+    FirebaseUser currUser;
 
     // layout items
     EditText txtE_price;
@@ -120,7 +129,6 @@ public class UploadBookFragment extends Fragment {
     private ArrayList<Uri> imageUris = new ArrayList<>();
     private static final int PICK_IMAGE_MULTIPLE = 1;
 
-
     ProgressDialog progressDialog;
 
     // firebase paths
@@ -132,6 +140,8 @@ public class UploadBookFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        user = ((MainActivity)getActivity()).getUser();
 
         horizontal_scroll_view_images = view.findViewById(R.id.horizontal_scroll_view_images);
         txtE_price = view.findViewById(R.id.txtE_price);
@@ -146,7 +156,7 @@ public class UploadBookFragment extends Fragment {
 
         // get firebase instances
         firestore = FirebaseFirestore.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        currUser = FirebaseAuth.getInstance().getCurrentUser();
 
         // user book path and id
         userBookPath = firestore.document(bookPath).collection("users").document().getPath();
@@ -289,7 +299,7 @@ public class UploadBookFragment extends Fragment {
     private void addUserBookFirebase() {
 
         // get the user name then store the book
-        firestore.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        firestore.collection("users").document(currUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
@@ -309,7 +319,10 @@ public class UploadBookFragment extends Fragment {
                             Log.d("addUserBookFirebase", "Success");
                             updateUserBooks();
                         } else {
+                            progressDialog.dismiss();
+                            Toast.makeText(getContext(), "Upload Failed. Please try again later.", Toast.LENGTH_SHORT).show();
                             Log.d("addUserBookFirebase", "Failed");
+                            Log.d("reason", task.getException().toString());
                         }
                     }
                 });
@@ -320,13 +333,14 @@ public class UploadBookFragment extends Fragment {
     private void updateUserBooks() {
 
         // map with the path details
-        HashMap<String, String> userBookDetails = new HashMap<>();
+        HashMap<String, Object> userBookDetails = new HashMap<>();
         userBookDetails.put("path", userBookPath);
         userBookDetails.put("title", book.getTitle());
         userBookDetails.put("coverImgUrl", book.getCoverImgUrl());
+        userBookDetails.put("price", book.getPrice());
 
         // add the path of the book to the users collection of books
-        firestore.collection("users").document(user.getUid()).collection("books").add(userBookDetails).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+        firestore.collection("users").document(currUser.getUid()).collection("books").add(userBookDetails).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {
                 if (task.isSuccessful()) {

@@ -39,29 +39,19 @@ import java.util.HashMap;
  */
 public class WishlistFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private User user;
-
-    public WishlistFragment(User user) {
+    public WishlistFragment() {
         // Required empty public constructor
-        this.user = user;
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param user User;
      * @return A new instance of fragment WishlistFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static WishlistFragment newInstance(User user) {
-        WishlistFragment fragment = new WishlistFragment(user);
+    public static WishlistFragment newInstance() {
+        WishlistFragment fragment = new WishlistFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -71,7 +61,6 @@ public class WishlistFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            user = (User) getArguments().get(ARG_PARAM1);
         }
     }
 
@@ -81,6 +70,8 @@ public class WishlistFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_wishlist, container, false);
     }
+
+    User user;
 
     // layout items
     ConstraintLayout layout_wishlist_empty;
@@ -96,6 +87,8 @@ public class WishlistFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        user = ((MainActivity)getActivity()).getUser();
 
         layout_wishlist_empty = view.findViewById(R.id.layout_wishlist_empty);
         scrollV_wishlist = view.findViewById(R.id.scrollV_wishlist);
