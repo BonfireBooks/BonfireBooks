@@ -1,5 +1,6 @@
 package com.example.bonfirebooks;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,9 +10,18 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
+
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +69,8 @@ public class BookDetailsFragment extends Fragment {
 
     User user;
 
+    ImageView imgV_book_images;
+
     TextView txtV_book_title;
     TextView txtV_book_price;
     TextView txtV_author_edit;
@@ -72,6 +84,7 @@ public class BookDetailsFragment extends Fragment {
 
         user = ((MainActivity)getActivity()).getUser();
 
+        imgV_book_images = view.findViewById(R.id.imgV_book_images);
         txtV_book_title = view.findViewById(R.id.txtV_book_title);
         txtV_book_price = view.findViewById(R.id.txtV_book_price);
         txtV_author_edit = view.findViewById(R.id.txtV_author_edit);
@@ -79,12 +92,26 @@ public class BookDetailsFragment extends Fragment {
         txtV_isbn13_edit = view.findViewById(R.id.txtV_isbn13_edit);
         txtV_book_description_edit = view.findViewById(R.id.txtV_book_description_edit);
 
+        // iterate through the authors map and set the textview with its data
+        HashMap<String, String> authors = book.getAuthors();
+        StringBuilder authorsStr = new StringBuilder();
+        for(int i = 0; i < authors.size(); i++) {
+            authorsStr.append(authors.get(String.valueOf(i)));
+            if(i < authors.size()-1)
+                authorsStr.append(", ");
+        }
+        txtV_author_edit.setText(authorsStr);
+
+        // set other textviews with book data
         txtV_book_title.setText(book.getTitle());
-        txtV_book_price.setText("$ " + String.valueOf(book.getPrice()));
-        txtV_author_edit.setText(book.getAuthors().toString());
+        txtV_book_price.setText("$ " + book.getPrice());
         txtV_isbn10_edit.setText(book.getIsbn10());
         txtV_isbn13_edit.setText(book.getIsbn13());
         txtV_book_description_edit.setText(book.getDescription());
+
+        // set image view with book cover image
+        Picasso.get().load(book.getCoverImgUrl()).into(imgV_book_images);
+
 
 
     }
