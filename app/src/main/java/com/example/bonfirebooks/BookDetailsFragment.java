@@ -9,6 +9,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +22,12 @@ public class BookDetailsFragment extends Fragment {
 
     public BookDetailsFragment() {
         // Required empty public constructor
+    }
+
+    Book book;
+
+    public BookDetailsFragment(Book book) {
+        this.book = book;
     }
 
     /**
@@ -50,10 +59,33 @@ public class BookDetailsFragment extends Fragment {
 
     User user;
 
+    TextView txtV_book_title;
+    TextView txtV_book_price;
+    TextView txtV_author_edit;
+    TextView txtV_isbn10_edit;
+    TextView txtV_isbn13_edit;
+    TextView txtV_book_description_edit;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         user = ((MainActivity)getActivity()).getUser();
+
+        txtV_book_title = view.findViewById(R.id.txtV_book_title);
+        txtV_book_price = view.findViewById(R.id.txtV_book_price);
+        txtV_author_edit = view.findViewById(R.id.txtV_author_edit);
+        txtV_isbn10_edit = view.findViewById(R.id.txtV_isbn10_edit);
+        txtV_isbn13_edit = view.findViewById(R.id.txtV_isbn13_edit);
+        txtV_book_description_edit = view.findViewById(R.id.txtV_book_description_edit);
+
+        txtV_book_title.setText(book.getTitle());
+        txtV_book_price.setText("$ " + String.valueOf(book.getPrice()));
+        txtV_author_edit.setText(book.getAuthors().toString());
+        txtV_isbn10_edit.setText(book.getIsbn10());
+        txtV_isbn13_edit.setText(book.getIsbn13());
+        txtV_book_description_edit.setText(book.getDescription());
+
+
     }
 }

@@ -79,7 +79,7 @@
             app:layout_constraintTop_toBottomOf="@id/txtV_book_price" />
 
         <TextView
-            android:id="@+id/txtV_author_book"
+            android:id="@+id/txtV_author_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -99,7 +99,7 @@
             app:layout_constraintTop_toBottomOf="@id/txtV_author" />
 
         <TextView
-            android:id="@+id/txtV_isbn10_book"
+            android:id="@+id/txtV_isbn10_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sample_text"
@@ -118,7 +118,7 @@
             app:layout_constraintTop_toBottomOf="@id/txtV_isbn10" />
 
         <TextView
-            android:id="@+id/txtV_isbn13_book"
+            android:id="@+id/txtV_isbn13_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sample_text"
