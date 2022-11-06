@@ -28,6 +28,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFragment#newInstance} factory method to
@@ -105,6 +107,7 @@ public class HomeFragment extends Fragment {
         storage = FirebaseStorage.getInstance();
 
         populateScrollViewWithFirebase(linlayout_image_scroll_all);
+
     }
 
     private void populateScrollViewWithFirebase(LinearLayout linearLayout) {
@@ -118,6 +121,10 @@ public class HomeFragment extends Fragment {
                     int i = 0;
                     // add all the docs into the horizontal scroll
                     for (DocumentSnapshot taskDoc : task.getResult().getDocuments()) {
+
+                        // limit view to first 20 books
+                        if(i > 20)
+                            break;
 
                         View bookView = getLayoutInflater().inflate(R.layout.home_book_item, null);
                         bookView.setPadding(30, 0, 0, 0);
@@ -143,6 +150,15 @@ public class HomeFragment extends Fragment {
                         // set other book view details
                         book_title.setText(taskDoc.getString("title"));
                         book_price.setText(taskDoc.getDouble("price").toString());
+
+                        bookView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Book book = new Book(taskDoc.getDouble("price"), taskDoc.getString("title"), taskDoc.getString("isbn10"),taskDoc.getString("isbn13"),taskDoc.getString("description"),taskDoc.getString("coverImgUrl"), (HashMap<String, String>) taskDoc.get("authors"), (HashMap<String, String>) taskDoc.get("categories"));
+                                Log.d("book" , book.toString());
+                                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookDetailsFragment(book)).commit();
+                            }
+                        });
 
                         // add the book to the layout
                         linearLayout.addView(bookView, i);
