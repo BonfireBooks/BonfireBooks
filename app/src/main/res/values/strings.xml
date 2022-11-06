@@ -67,4 +67,5 @@
     <string name="author">Author:</string>
     <string name="isbn_10">ISBN-10:</string>
     <string name="isbn_13">ISBN-13:</string>
+    <string name="view_user_books">View User Books</string>
 </resources>
