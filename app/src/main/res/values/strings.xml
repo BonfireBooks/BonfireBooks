@@ -64,4 +64,7 @@
     <string name="explore">Explore</string>
     <string name="no_current_chats">No Current Chats</string>
     <string name="view_books">View Books</string>
+    <string name="author">Author:</string>
+    <string name="isbn_10">ISBN-10:</string>
+    <string name="isbn_13">ISBN-13:</string>
 </resources>
