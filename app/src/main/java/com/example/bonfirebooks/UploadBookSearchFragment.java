@@ -47,8 +47,6 @@ import java.util.List;
  */
 public class UploadBookSearchFragment extends Fragment {
 
-    // TODO: Rename and change types of parameters
-
     public UploadBookSearchFragment() {
         // Required empty public constructor
     }
@@ -59,7 +57,6 @@ public class UploadBookSearchFragment extends Fragment {
      *
      * @return A new instance of fragment UploadBookSearchFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static UploadBookSearchFragment newInstance() {
         UploadBookSearchFragment fragment = new UploadBookSearchFragment();
         Bundle args = new Bundle();
