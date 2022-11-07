@@ -188,7 +188,7 @@ public class HomeFragment extends Fragment {
 
             // set other book view details
             book_title.setText(currBook.getTitle());
-            book_price.setText(String.valueOf(currBook.getPrice()));
+            book_price.setText("$ " + currBook.getPrice());
 
             bookView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -18,7 +18,6 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxWidth="150dp"
-        android:maxLength="36"
         android:maxLines="2"
         android:text="@string/sample_text"
         android:textColor="@color/black"
