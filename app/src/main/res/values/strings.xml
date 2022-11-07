@@ -51,7 +51,7 @@
         <item>Fair</item>
         <item>Poor</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="book_search">Book Search</string>
     <string name="book_title">Book Title:</string>
@@ -69,4 +69,5 @@
     <string name="isbn_13">ISBN-13:</string>
     <string name="view_user_books">View User Books</string>
     <string name="view_all">View All</string>
+    <string name="new_books">New Books</string>
 </resources>
