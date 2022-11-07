@@ -10,11 +10,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
@@ -30,14 +32,17 @@ import java.util.HashMap;
  */
 public class BookDetailsFragment extends Fragment {
 
+
     public BookDetailsFragment() {
         // Required empty public constructor
     }
 
     Book book;
+    Fragment prevFragment;
 
-    public BookDetailsFragment(Book book) {
+    public BookDetailsFragment(Book book, Fragment prevFragment) {
         this.book = book;
+        this.prevFragment = prevFragment;
     }
 
     /**
@@ -78,6 +83,8 @@ public class BookDetailsFragment extends Fragment {
     TextView txtV_isbn13_edit;
     TextView txtV_book_description_edit;
 
+    Button btn_back;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -91,6 +98,7 @@ public class BookDetailsFragment extends Fragment {
         txtV_isbn10_edit = view.findViewById(R.id.txtV_isbn10_edit);
         txtV_isbn13_edit = view.findViewById(R.id.txtV_isbn13_edit);
         txtV_book_description_edit = view.findViewById(R.id.txtV_book_description_edit);
+        btn_back = view.findViewById(R.id.btn_back);
 
         // iterate through the authors map and set the textview with its data
         HashMap<String, String> authors = book.getAuthors();
@@ -109,8 +117,24 @@ public class BookDetailsFragment extends Fragment {
         txtV_isbn13_edit.setText(book.getIsbn13());
         txtV_book_description_edit.setText(book.getDescription());
 
-        // set image view with book cover image
-        Picasso.get().load(book.getCoverImgUrl()).into(imgV_book_images);
+        Picasso.get().load(book.getCoverImgUrl()).into(imgV_book_images, new Callback() {
+            @Override
+            public void onSuccess() {
+                imgV_book_images.setBackground(null);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // do nothing -- keep image not found background
+            }
+        });
+
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, prevFragment).addToBackStack(null).commit();
+            }
+        });
 
 
 
