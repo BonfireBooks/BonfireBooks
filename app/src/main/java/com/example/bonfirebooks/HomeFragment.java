@@ -9,12 +9,14 @@ import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,6 +82,8 @@ public class HomeFragment extends Fragment {
     Button btn_view_new;
     Button btn_view_all;
 
+    SearchView search_bar;
+
     ProgressDialog progressDialog;
 
 
@@ -106,6 +110,7 @@ public class HomeFragment extends Fragment {
         linlayout_image_scroll_all = view.findViewById(R.id.linlayout_image_scroll_all);
         btn_view_new = view.findViewById(R.id.btn_view_new);
         btn_view_all = view.findViewById(R.id.btn_view_all);
+        search_bar = view.findViewById(R.id.search_bar);
 
         // loading indicator
         progressDialog = new ProgressDialog(getContext());
@@ -142,6 +147,18 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new SearchFragment(s)).addToBackStack(null).commit();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
     }
 
     private void getBooksFirebase(String order) {
