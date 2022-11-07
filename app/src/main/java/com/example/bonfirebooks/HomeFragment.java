@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -76,6 +77,9 @@ public class HomeFragment extends Fragment {
     LinearLayout linlayout_image_scroll_new;
     LinearLayout linlayout_image_scroll_all;
 
+    Button btn_view_new;
+    Button btn_view_all;
+
     ProgressDialog progressDialog;
 
 
@@ -90,14 +94,18 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // data from main activity
         user = ((MainActivity)getActivity()).getUser();
         booksByTitle = ((MainActivity)getActivity()).getBooksByTitle();
         booksByTime = ((MainActivity)getActivity()).getBooksByTime();
 
+        // views from layout
         horizontal_new_additions = view.findViewById(R.id.horizontal_new_additions);
         horizontal_all_books = view.findViewById(R.id.horizontal_all_books);
         linlayout_image_scroll_new = view.findViewById(R.id.linlayout_image_scroll_new);
         linlayout_image_scroll_all = view.findViewById(R.id.linlayout_image_scroll_all);
+        btn_view_new = view.findViewById(R.id.btn_view_new);
+        btn_view_all = view.findViewById(R.id.btn_view_all);
 
         // loading indicator
         progressDialog = new ProgressDialog(getContext());
@@ -113,11 +121,26 @@ public class HomeFragment extends Fragment {
         if(booksByTitle.size() == 0 || booksByTime.size() == 0) {
             getBooksFirebase("time");
             getBooksFirebase("title");
-
         } else {
             populateScrollViewWithFirebase(linlayout_image_scroll_new, booksByTime);
             populateScrollViewWithFirebase(linlayout_image_scroll_all, booksByTitle);
+            // dismiss loading
+            progressDialog.dismiss();
         }
+
+        btn_view_new.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new NewBooksFragment()).commit();
+            }
+        });
+
+        btn_view_all.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new AllBooksFragment()).commit();
+            }
+        });
 
     }
 
