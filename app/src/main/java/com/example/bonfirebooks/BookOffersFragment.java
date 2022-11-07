@@ -166,7 +166,7 @@ public class BookOffersFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     Log.d("book", currBook.toString());
-//                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookDetailsFragment(currBook, BookOffersFragment.this)).addToBackStack(null).commit();
+                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookOfferDetailsFragment(book, currBook)).addToBackStack(null).commit();
                 }
             });
 
