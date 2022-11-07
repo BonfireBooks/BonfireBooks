@@ -142,7 +142,7 @@ public class BookDetailsFragment extends Fragment {
         btn_view_uBooks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookOffersFragment(book.getIsbn10())).addToBackStack(null).commit();
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookOffersFragment(book)).addToBackStack(null).commit();
             }
         });
 
