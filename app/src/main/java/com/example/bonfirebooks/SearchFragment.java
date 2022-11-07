@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +21,12 @@ public class SearchFragment extends Fragment {
 
     public SearchFragment() {
         // Required empty public constructor
+    }
+
+    String query;
+
+    public SearchFragment(String query) {
+        this.query = query;
     }
 
     /**
@@ -48,8 +56,16 @@ public class SearchFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_search, container, false);
     }
 
+    TextView txtV_search_books;
+    GridLayout gridL_books;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        txtV_search_books = view.findViewById(R.id.txtV_search_books);
+        gridL_books = view.findViewById(R.id.gridL_books);
+
+        txtV_search_books.setText(query);
     }
 }
