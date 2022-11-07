@@ -17,27 +17,37 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link AllBooksFragment#newInstance} factory method to
+ * Use the {@link BooksGridFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AllBooksFragment extends Fragment {
+public class BooksGridFragment extends Fragment {
 
-    public AllBooksFragment() {
+    public BooksGridFragment() {
         // Required empty public constructor
+    }
+
+    HashMap<Integer, Book> books = new HashMap<>();
+    String header;
+
+    public BooksGridFragment(HashMap<Integer, Book> books, String header) {
+        this.books = books;
+        this.header = header;
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment AllBooksFragment.
+     * @return A new instance of fragment BooksGridFragment.
      */
-    public static AllBooksFragment newInstance() {
-        AllBooksFragment fragment = new AllBooksFragment();
+    public static BooksGridFragment newInstance() {
+        BooksGridFragment fragment = new BooksGridFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -54,23 +64,23 @@ public class AllBooksFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_all_books, container, false);
+        return inflater.inflate(R.layout.fragment_books_grid, container, false);
     }
 
-    HashMap<Integer, Book> booksByTitle = new HashMap<>();
-
-    GridLayout gridL_all_books;
+    GridLayout gridL_books;
+    TextView txtV_all_books;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        booksByTitle = ((MainActivity)getActivity()).getBooksByTitle();
+        gridL_books = view.findViewById(R.id.gridL_books);
+        txtV_all_books = view.findViewById(R.id.txtV_all_books);
 
-        gridL_all_books = view.findViewById(R.id.gridL_all_books);
+        txtV_all_books.setText(header);
 
-        for (int i = 0; i < booksByTitle.size(); i++) {
-            Book currBook = booksByTitle.get(i);
+        for (int i = 0; i < books.size(); i++) {
+            Book currBook = books.get(i);
 
             View bookView = getLayoutInflater().inflate(R.layout.home_book_item, null);
 
@@ -106,12 +116,12 @@ public class AllBooksFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     Log.d("book", currBook.toString());
-                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookDetailsFragment(currBook)).commit();
+                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookDetailsFragment(currBook, BooksGridFragment.this)).commit();
                 }
             });
 
             // add the book to the layout
-            gridL_all_books.addView(bookView);
+            gridL_books.addView(bookView);
         }
     }
 }
