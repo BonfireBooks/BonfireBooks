@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -84,12 +85,13 @@ public class BookDetailsFragment extends Fragment {
     TextView txtV_book_description_edit;
 
     Button btn_back;
+    ConstraintLayout btn_view_uBooks;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        user = ((MainActivity)getActivity()).getUser();
+        user = ((MainActivity) getActivity()).getUser();
 
         imgV_book_images = view.findViewById(R.id.imgV_book_images);
         txtV_book_title = view.findViewById(R.id.txtV_book_title);
@@ -99,13 +101,14 @@ public class BookDetailsFragment extends Fragment {
         txtV_isbn13_edit = view.findViewById(R.id.txtV_isbn13_edit);
         txtV_book_description_edit = view.findViewById(R.id.txtV_book_description_edit);
         btn_back = view.findViewById(R.id.btn_back);
+        btn_view_uBooks = view.findViewById(R.id.btn_view_uBooks);
 
         // iterate through the authors map and set the textview with its data
         HashMap<String, String> authors = book.getAuthors();
         StringBuilder authorsStr = new StringBuilder();
-        for(int i = 0; i < authors.size(); i++) {
+        for (int i = 0; i < authors.size(); i++) {
             authorsStr.append(authors.get(String.valueOf(i)));
-            if(i < authors.size()-1)
+            if (i < authors.size() - 1)
                 authorsStr.append(", ");
         }
         txtV_author_edit.setText(authorsStr);
@@ -136,7 +139,12 @@ public class BookDetailsFragment extends Fragment {
             }
         });
 
-
+        btn_view_uBooks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookOffersFragment(book.getIsbn10())).addToBackStack(null).commit();
+            }
+        });
 
     }
 }
