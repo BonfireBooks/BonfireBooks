@@ -107,7 +107,7 @@ public class WishlistFragment extends Fragment {
             public void onClick(View view) {
                 // switch to the home fragment
                 bottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
-                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new HomeFragment()).addToBackStack(null).commit();
             }
         });
 

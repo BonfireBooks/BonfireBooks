@@ -131,14 +131,14 @@ public class HomeFragment extends Fragment {
         btn_view_new.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BooksGridFragment(booksByTime, "New Books")).commit();
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BooksGridFragment(booksByTime, "New Books")).addToBackStack(null).commit();
             }
         });
 
         btn_view_all.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BooksGridFragment(booksByTitle, "All Books")).commit();
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BooksGridFragment(booksByTitle, "All Books")).addToBackStack(null).commit();
             }
         });
 
@@ -217,7 +217,7 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     Log.d("book" , currBook.toString());
-                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookDetailsFragment(currBook)).commit();
+                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookDetailsFragment(currBook, HomeFragment.this)).addToBackStack(null).commit();
                 }
             });
 

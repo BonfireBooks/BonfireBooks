@@ -175,7 +175,7 @@ public class UploadBookSearchFragment extends Fragment {
                     DocumentSnapshot taskResult = documents.get(0);
                     firebaseBookPath = taskResult.getReference().getPath();
 
-                    book = new Book((Double) taskResult.get("price"), (String) taskResult.get("title"), (String) taskResult.get("isbn10"), (String) taskResult.get("isbn13"), (String) taskResult.get("description"), (String) taskResult.get("coverImgUrl") , (HashMap<String, String>) taskResult.get("authors"), (HashMap<String, String>) taskResult.get("categories"));
+                    book = new Book(taskResult.getDouble("price"), (String) taskResult.get("title"), (String) taskResult.get("isbn10"), (String) taskResult.get("isbn13"), (String) taskResult.get("description"), (String) taskResult.get("coverImgUrl") , (HashMap<String, String>) taskResult.get("authors"), (HashMap<String, String>) taskResult.get("categories"));
                     updateUIElements();
                 }
             }
@@ -210,7 +210,7 @@ public class UploadBookSearchFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // switch to the uploadBookFragment
-                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UploadBookFragment(book, firebaseBookPath)).commit();
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UploadBookFragment(book, firebaseBookPath)).addToBackStack(null).commit();
             }
         });
     }

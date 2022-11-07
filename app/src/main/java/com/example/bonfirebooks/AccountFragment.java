@@ -112,7 +112,7 @@ public class AccountFragment extends Fragment {
         txtV_upload_book.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UploadBookSearchFragment()).commit();
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UploadBookSearchFragment()).addToBackStack(null).commit();
             }
         });
 

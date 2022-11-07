@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         navigationView.setOnItemSelectedListener(this);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new HomeFragment()).addToBackStack(null).commit();
         }
 
     }
@@ -72,16 +72,16 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_home:
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new HomeFragment()).addToBackStack(null).commit();
                 break;
             case R.id.nav_wish_list:
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new WishlistFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new WishlistFragment()).addToBackStack(null).commit();
                 break;
             case R.id.nav_chats:
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new ChatFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new ChatFragment()).addToBackStack(null).commit();
                 break;
             case R.id.nav_profile:
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new AccountFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new AccountFragment()).addToBackStack(null).commit();
                 break;
         }
 
