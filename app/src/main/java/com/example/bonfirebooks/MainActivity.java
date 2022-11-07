@@ -2,8 +2,10 @@ package com.example.bonfirebooks;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.accounts.Account;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
 
     private FirebaseFirestore firestore;
 
+    BottomNavigationView navigationView;
+
     private HashMap<Integer, Book> booksByTitle = new HashMap<>();
     private HashMap<Integer, Book> booksByTime = new HashMap<>();
 
@@ -39,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         user = getIntent().getParcelableExtra("user");
         firestore = FirebaseFirestore.getInstance();
 
-        BottomNavigationView navigationView = findViewById(R.id.bottomNavView);
+        navigationView = findViewById(R.id.bottomNavView);
         navigationView.setOnItemSelectedListener(this);
 
         if (savedInstanceState == null) {
@@ -86,5 +90,24 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         }
 
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        // fragment being switched to
+        String fragName = getSupportFragmentManager().getFragments().get(0).getClass().getName();
+
+        // set the bottom nav based on the fragment being switched into
+        if(fragName.equals(HomeFragment.class.getName())) {
+            navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+        } else if(fragName.equals(WishlistFragment.class.getName())) {
+            navigationView.getMenu().findItem(R.id.nav_wish_list).setChecked(true);
+        } else if(fragName.equals(ChatFragment.class.getName())) {
+            navigationView.getMenu().findItem(R.id.nav_chats).setChecked(true);
+        } else if(fragName.equals(Account.class.getName())) {
+            navigationView.getMenu().findItem(R.id.nav_profile).setChecked(true);
+        }
     }
 }
