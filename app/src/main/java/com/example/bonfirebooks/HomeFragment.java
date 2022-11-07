@@ -63,6 +63,8 @@ public class HomeFragment extends Fragment {
     }
 
     User user;
+    HashMap<Integer, Book> booksByTitle = new HashMap<>();
+    HashMap<Integer, Book> booksByTime = new HashMap<>();
 
     FirebaseFirestore firestore;
     FirebaseUser currUser;
@@ -89,6 +91,8 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         user = ((MainActivity)getActivity()).getUser();
+        booksByTitle = ((MainActivity)getActivity()).getBooksByTitle();
+        booksByTime = ((MainActivity)getActivity()).getBooksByTime();
 
         horizontal_new_additions = view.findViewById(R.id.horizontal_new_additions);
         horizontal_all_books = view.findViewById(R.id.horizontal_all_books);
@@ -106,75 +110,96 @@ public class HomeFragment extends Fragment {
         currUser = FirebaseAuth.getInstance().getCurrentUser();
         storage = FirebaseStorage.getInstance();
 
-        populateScrollViewWithFirebase(linlayout_image_scroll_all);
+        if(booksByTitle.size() == 0 || booksByTime.size() == 0) {
+            getBooksFirebase("time");
+            getBooksFirebase("title");
+
+        } else {
+            populateScrollViewWithFirebase(linlayout_image_scroll_new, booksByTime);
+            populateScrollViewWithFirebase(linlayout_image_scroll_all, booksByTitle);
+        }
 
     }
 
-    private void populateScrollViewWithFirebase(LinearLayout linearLayout) {
-        // todo -- need to limit the amount of books queried at once
-        firestore.collection("books").orderBy("price").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    private void getBooksFirebase(String order) {
+        firestore.collection("books").orderBy(order).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    Log.d("getAllBooks", "Successful");
+                if(task.isSuccessful()) {
+                    Log.d("RetrieveBooks", "Success");
 
                     int i = 0;
-                    // add all the docs into the horizontal scroll
                     for (DocumentSnapshot taskDoc : task.getResult().getDocuments()) {
+                        Book book = new Book(taskDoc.getDouble("price"), taskDoc.getString("title"), taskDoc.getString("isbn10"), taskDoc.getString("isbn13"), taskDoc.getString("description"), taskDoc.getString("coverImgUrl"), (HashMap<String, String>) taskDoc.get("authors"), (HashMap<String, String>) taskDoc.get("categories"));
 
-                        // limit view to first 20 books
-                        if(i > 20)
-                            break;
-
-                        View bookView = getLayoutInflater().inflate(R.layout.home_book_item, null);
-                        bookView.setPadding(30, 0, 0, 0);
-
-                        // new book view details
-                        ImageView book_image = bookView.findViewById(R.id.imgV_coverImage);
-                        TextView book_title = bookView.findViewById(R.id.txtV_book_title);
-                        TextView book_price = bookView.findViewById(R.id.txtV_book_price);
-
-                        // set book views image
-                        Picasso.get().load(taskDoc.getString("coverImgUrl")).into(book_image, new Callback() {
-                            @Override
-                            public void onSuccess() {
-                                book_image.setBackground(null);
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-                                // do nothing -- keep image not found background
-                            }
-                        });
-
-                        // set other book view details
-                        book_title.setText(taskDoc.getString("title"));
-                        book_price.setText(taskDoc.getDouble("price").toString());
-
-                        bookView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Book book = new Book(taskDoc.getDouble("price"), taskDoc.getString("title"), taskDoc.getString("isbn10"),taskDoc.getString("isbn13"),taskDoc.getString("description"),taskDoc.getString("coverImgUrl"), (HashMap<String, String>) taskDoc.get("authors"), (HashMap<String, String>) taskDoc.get("categories"));
-                                Log.d("book" , book.toString());
-                                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookDetailsFragment(book)).commit();
-                            }
-                        });
-
-                        // add the book to the layout
-                        linearLayout.addView(bookView, i);
+                        if(order.equals("time")) {
+                            booksByTime.put(i, book);
+                        } else if(order.equals("title")) {
+                            booksByTitle.put(i, book);
+                        }
 
                         i++;
                     }
 
-                    // dismiss loading
-                    progressDialog.dismiss();
+                    // set the books in the main activity-
+                    if(order.equals("time")) {
+                        ((MainActivity)getActivity()).setBooksByTime(booksByTime);
+                        populateScrollViewWithFirebase(linlayout_image_scroll_new, booksByTime);
+                    } else if(order.equals("title")) {
+                        ((MainActivity)getActivity()).setBooksByTitle(booksByTitle);
+                        populateScrollViewWithFirebase(linlayout_image_scroll_all, booksByTitle);
+
+                        // dismiss loading
+                        progressDialog.dismiss();
+                    }
+
 
                 } else {
-                    Log.d("getAllBooks", "Failed");
-                    progressDialog.dismiss();
-                    Toast.makeText(getContext(), "Could not read from database", Toast.LENGTH_SHORT).show();
+                    Log.d("RetrieveBooks", "Failed");
                 }
             }
         });
+    }
+
+    private void populateScrollViewWithFirebase(LinearLayout linearLayout, HashMap<Integer, Book> books) {
+        for(int i = 0; i < 20; i++) {
+            Book currBook = books.get(i);
+
+            View bookView = getLayoutInflater().inflate(R.layout.home_book_item, null);
+            bookView.setPadding(30, 0, 0, 0);
+
+            // new book view details
+            ImageView book_image = bookView.findViewById(R.id.imgV_coverImage);
+            TextView book_title = bookView.findViewById(R.id.txtV_book_title);
+            TextView book_price = bookView.findViewById(R.id.txtV_book_price);
+
+            // set book views image
+            Picasso.get().load(currBook.getCoverImgUrl()).into(book_image, new Callback() {
+                @Override
+                public void onSuccess() {
+                    book_image.setBackground(null);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    // do nothing -- keep image not found background
+                }
+            });
+
+            // set other book view details
+            book_title.setText(currBook.getTitle());
+            book_price.setText(String.valueOf(currBook.getPrice()));
+
+            bookView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("book" , currBook.toString());
+                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookDetailsFragment(currBook)).commit();
+                }
+            });
+
+            // add the book to the layout
+            linearLayout.addView(bookView, i);
+        }
     }
 }
