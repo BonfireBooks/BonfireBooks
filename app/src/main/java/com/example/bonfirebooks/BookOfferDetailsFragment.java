@@ -1,17 +1,37 @@
 package com.example.bonfirebooks;
 
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageSwitcher;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
+
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,7 +79,8 @@ public class BookOfferDetailsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_book_offer_details, container, false);
     }
 
-    ImageSwitcher imgS_book_images;
+    HorizontalScrollView horizScrollV_images;
+    LinearLayout linlayout_image_scroll;
 
     TextView txtV_book_title;
     TextView txtV_book_price;
@@ -74,7 +95,8 @@ public class BookOfferDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        imgS_book_images = view.findViewById(R.id.imgS_book_images);
+        horizScrollV_images = view.findViewById(R.id.horizScrollV_images);
+        linlayout_image_scroll = view.findViewById(R.id.linlayout_image_scroll);
         txtV_book_title = view.findViewById(R.id.txtV_book_title);
         txtV_book_price = view.findViewById(R.id.txtV_book_price);
         txtV_seller_edit = view.findViewById(R.id.txtV_seller_edit);
@@ -83,9 +105,42 @@ public class BookOfferDetailsFragment extends Fragment {
         btn_email_seller = view.findViewById(R.id.btn_email_seller);
         btn_message_seller = view.findViewById(R.id.btn_message_seller);
 
+
+        if(userBook.getPathsToImages() == null) {
+            addImageToScroll(book.getCoverImgUrl(), 0);
+        } else {
+            HashMap<String, String> paths = userBook.getPathsToImages();
+            for(int i = 0; i < paths.size(); i++) {
+                addImageToScroll(paths.get(String.valueOf(i)), i);
+            }
+        }
+
         txtV_book_title.setText(book.getTitle());
         txtV_book_price.setText("$ " + userBook.getPrice());
         txtV_seller_edit.setText(userBook.getUserName());
         txtV_condition_edit.setText(userBook.getCondition());
     }
+
+    private void addImageToScroll(String imgLink, int i) {
+        View image = getLayoutInflater().inflate(R.layout.book_image_view, null);
+        ImageView book_image = image.findViewById(R.id.imgV_image);
+
+        Picasso.get().load(imgLink).into(book_image, new Callback() {
+            @Override
+            public void onSuccess() {
+                book_image.setBackground(null);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // do nothing -- keep image not found background
+            }
+        });
+
+        image.setPadding(0,0,20,0);
+        linlayout_image_scroll.addView(image, i);
+
+    }
+
+
 }
