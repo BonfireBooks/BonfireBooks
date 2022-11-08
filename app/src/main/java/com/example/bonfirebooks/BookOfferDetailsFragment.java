@@ -106,11 +106,11 @@ public class BookOfferDetailsFragment extends Fragment {
         btn_message_seller = view.findViewById(R.id.btn_message_seller);
 
 
-        if(userBook.getPathsToImages() == null) {
+        if (userBook.getPathsToImages() == null) {
             addImageToScroll(book.getCoverImgUrl(), 0);
         } else {
             HashMap<String, String> paths = userBook.getPathsToImages();
-            for(int i = 0; i < paths.size(); i++) {
+            for (int i = 0; i < paths.size(); i++) {
                 addImageToScroll(paths.get(String.valueOf(i)), i);
             }
         }
@@ -119,6 +119,13 @@ public class BookOfferDetailsFragment extends Fragment {
         txtV_book_price.setText("$ " + userBook.getPrice());
         txtV_seller_edit.setText(userBook.getUserName());
         txtV_condition_edit.setText(userBook.getCondition());
+
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).onBackPressed();
+            }
+        });
     }
 
     private void addImageToScroll(String imgLink, int i) {
@@ -137,10 +144,9 @@ public class BookOfferDetailsFragment extends Fragment {
             }
         });
 
-        image.setPadding(0,0,20,0);
+        image.setPadding(0, 0, 20, 0);
         linlayout_image_scroll.addView(image, i);
 
     }
-
 
 }
