@@ -23,6 +23,7 @@
                 android:textColor="@color/logo_brown"
                 android:textSize="25sp"
                 android:textStyle="bold"
+                android:textAlignment="center"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

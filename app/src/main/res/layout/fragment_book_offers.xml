@@ -22,6 +22,7 @@
                 android:layout_marginTop="30dp"
                 android:textColor="@color/logo_brown"
                 android:textSize="25sp"
+                android:textAlignment="center"
                 android:text="@string/offers"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
