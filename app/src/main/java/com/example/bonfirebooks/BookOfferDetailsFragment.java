@@ -1,5 +1,6 @@
 package com.example.bonfirebooks;
 
+import android.content.Intent;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -123,7 +124,24 @@ public class BookOfferDetailsFragment extends Fragment {
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).onBackPressed();
+                ((MainActivity) getActivity()).onBackPressed();
+            }
+        });
+
+        btn_email_seller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("message/rfc822");
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[] { userBook.getEmail() });
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Regarding Your " + book.getTitle() + " Posting On Bonfire");
+
+                Intent.createChooser(intent, "Choose an e-mail app");
+                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+
             }
         });
     }
