@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -49,7 +50,6 @@ public class WishlistFragment extends Fragment {
      *
      * @return A new instance of fragment WishlistFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static WishlistFragment newInstance() {
         WishlistFragment fragment = new WishlistFragment();
         Bundle args = new Bundle();
@@ -75,8 +75,9 @@ public class WishlistFragment extends Fragment {
 
     // layout items
     ConstraintLayout layout_wishlist_empty;
-    ScrollView scrollV_wishlist;
-    LinearLayout linlayout_wishlist;
+    ConstraintLayout layout_wishlist_grid;
+//    ScrollView scrollV_wishlist;
+//    LinearLayout linlayout_wishlist;
     Button btn_explore;
     BottomNavigationView bottomNavigationView;
 
@@ -84,18 +85,26 @@ public class WishlistFragment extends Fragment {
     FirebaseFirestore firestore;
     FirebaseUser currUser;
 
+    ScrollView scrollV_books;
+    GridLayout gridL_books;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        user = ((MainActivity)getActivity()).getUser();
+        user = ((MainActivity) getActivity()).getUser();
 
         layout_wishlist_empty = view.findViewById(R.id.layout_wishlist_empty);
-        scrollV_wishlist = view.findViewById(R.id.scrollV_wishlist);
-        linlayout_wishlist = view.findViewById(R.id.linlayout_wishlist);
+
+//        scrollV_wishlist = view.findViewById(R.id.scrollV_wishlist);
+//        linlayout_wishlist = view.findViewById(R.id.linlayout_wishlist);
+
+        layout_wishlist_grid = view.findViewById(R.id.layout_wishlist_grid);
+        scrollV_books = view.findViewById(R.id.scrollV_books);
+        gridL_books = view.findViewById(R.id.gridL_books);
+
         btn_explore = view.findViewById(R.id.btn_explore);
         bottomNavigationView = getActivity().findViewById(R.id.bottomNavView);
-
 
         // firestore
         firestore = FirebaseFirestore.getInstance();
@@ -118,10 +127,12 @@ public class WishlistFragment extends Fragment {
             public void onRefresh() {
                 refreshWishlist();
                 pullToRefresh.setRefreshing(false);
-                populateScrollViewWithFirebase(linlayout_wishlist);
+//                populateScrollViewWithFirebase(linlayout_wishlist);
+                populateScrollViewWithFirebase();
             }
         });
-        populateScrollViewWithFirebase(linlayout_wishlist);
+//        populateScrollViewWithFirebase(linlayout_wishlist);
+        populateScrollViewWithFirebase();
     }
 
     private void refreshWishlist() {
@@ -134,7 +145,7 @@ public class WishlistFragment extends Fragment {
         firestore.collection("users").document(user.getUid()).collection("wishlist").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()) {
+                if (task.isSuccessful()) {
                     Log.d("loadWishlistFirebase", "Successful");
 
                     int i = 0;
@@ -158,28 +169,38 @@ public class WishlistFragment extends Fragment {
         });
     }
 
-    private void populateScrollViewWithFirebase(LinearLayout linearLayout) {
+    private void populateScrollViewWithFirebase() {
 
         HashMap<String, WishlistBook> wishlist = user.getWishlist();
-        if (wishlist != null && wishlist.size() != 0) {
+        if (wishlist != null) {
+
+            gridL_books.removeAllViews();
+
             // change the visibilty of the views
             layout_wishlist_empty.setVisibility(View.GONE);
-            scrollV_wishlist.setVisibility(View.VISIBLE);
+            layout_wishlist_grid.setVisibility(View.VISIBLE);
 
             Log.d("wishlist", wishlist.toString());
             for (int i = 0; i < wishlist.size(); i++) {
+
+                WishlistBook currBook = wishlist.get(String.valueOf(i));
+
                 View bookView = getLayoutInflater().inflate(R.layout.wishlist_book_item, null);
-                bookView.setPadding(30, 0, 0, 0);
+
+                // add some spacing between the grid items
+                GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+                params.setMargins(10, 10, 10, 10);
+
+                bookView.setLayoutParams(params);
 
                 // new book view details
                 ImageView book_image = bookView.findViewById(R.id.imgV_coverImage);
                 TextView book_title = bookView.findViewById(R.id.txtV_book_title);
                 TextView book_price = bookView.findViewById(R.id.txtV_book_price);
-
-                String strI = String.valueOf(i);
+                TextView book_condition = bookView.findViewById(R.id.txtV_book_condition);
 
                 // set book views image
-                Picasso.get().load(wishlist.get(strI).getCoverImgUrl()).into(book_image, new Callback() {
+                Picasso.get().load(currBook.getCoverImgUrl()).into(book_image, new Callback() {
                     @Override
                     public void onSuccess() {
                         book_image.setBackground(null);
@@ -192,17 +213,56 @@ public class WishlistFragment extends Fragment {
                 });
 
                 // set other book view details
-                book_title.setText(wishlist.get(strI).getTitle());
-                book_price.setText(wishlist.get(strI).getPrice().toString());
+                book_title.setText(currBook.getTitle());
+                book_price.setText("$ " + currBook.getPrice());
+                book_condition.setText(currBook.getCondition());
+
+                bookView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d("book", currBook.toString());
+//                        getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookOfferDetailsFragment(currBook, WishlistFragment.this)).addToBackStack(null).commit();
+                    }
+                });
 
                 // add the book to the layout
-                linearLayout.addView(bookView, i);
+                gridL_books.addView(bookView);
             }
-        } else {
-            // change the visibility of the views
-            layout_wishlist_empty.setVisibility(View.VISIBLE);
-            scrollV_wishlist.setVisibility(View.GONE);
-        }
-
+//                View bookView = getLayoutInflater().inflate(R.layout.wishlist_book_item, null);
+//                bookView.setPadding(30, 0, 0, 0);
+//
+//                // new book view details
+//                ImageView book_image = bookView.findViewById(R.id.imgV_coverImage);
+//                TextView book_title = bookView.findViewById(R.id.txtV_book_title);
+//                TextView book_price = bookView.findViewById(R.id.txtV_book_price);
+//
+//                String strI = String.valueOf(i);
+//
+//                // set book views image
+//                Picasso.get().load(wishlist.get(strI).getCoverImgUrl()).into(book_image, new Callback() {
+//                    @Override
+//                    public void onSuccess() {
+//                        book_image.setBackground(null);
+//                    }
+//
+//                    @Override
+//                    public void onError(Exception e) {
+//                        // do nothing -- keep image not found background
+//                    }
+//                });
+//
+//                // set other book view details
+//                book_title.setText(wishlist.get(strI).getTitle());
+//                book_price.setText(wishlist.get(strI).getPrice().toString());
+//
+//                // add the book to the layout
+//                linearLayout.addView(bookView, i);
+    } else
+    {
+        // change the visibility of the views
+        layout_wishlist_empty.setVisibility(View.VISIBLE);
+        layout_wishlist_grid.setVisibility(View.GONE);
     }
+
+}
 }

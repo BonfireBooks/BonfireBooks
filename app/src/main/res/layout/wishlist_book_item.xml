@@ -27,6 +27,20 @@
         app:layout_constraintTop_toBottomOf="@id/imgV_coverImage" />
 
     <TextView
+        android:id="@+id/txtV_book_condition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxWidth="150dp"
+        android:maxLength="36"
+        android:maxLines="2"
+        android:text="@string/sample_text"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtV_book_title" />
+
+    <TextView
         android:id="@+id/txtV_book_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,6 +48,6 @@
         android:textColor="#FA6400"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtV_book_title" />
+        app:layout_constraintTop_toBottomOf="@id/txtV_book_condition" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
