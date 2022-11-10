@@ -20,6 +20,7 @@
                 android:layout_width="350dp"
                 android:layout_height="200dp"
                 android:layout_marginTop="40dp"
+                android:background="@drawable/image_switcher"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -32,7 +33,6 @@
 
             </HorizontalScrollView>
 
-
             <Button
                 android:id="@+id/btn_back"
                 android:layout_width="23dp"
@@ -42,6 +42,17 @@
                 android:background="@drawable/ic_arrow_back_black"
                 android:backgroundTint="@color/txt_gray"
                 app:layout_constraintLeft_toLeftOf="@id/horizScrollV_images"
+                app:layout_constraintTop_toTopOf="@id/horizScrollV_images" />
+
+            <Button
+                android:id="@+id/btn_wishlist"
+                android:layout_width="23dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/ic_heart_empty"
+                android:backgroundTint="@color/txt_gray"
+                app:layout_constraintRight_toRightOf="@id/horizScrollV_images"
                 app:layout_constraintTop_toTopOf="@id/horizScrollV_images" />
 
             <TextView
