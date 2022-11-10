@@ -7,17 +7,20 @@ import java.util.HashMap;
 public class UserBook {
 
     private double price;
+    private String bookId;
     private String email;
     private String name;
     private String condition;
     private HashMap<String, String> images;
     private Timestamp time;
 
-    public UserBook(double price, String email, String name, String condition, HashMap<String, String> images) {
+    public UserBook(double price, String bookId, String email, String name, String condition, Timestamp time, HashMap<String, String> images) {
         this.price = price;
+        this.bookId = bookId;
         this.email = email;
         this.name = name;
         this.condition = condition;
+        this.time = time;
         this.images = images;
     }
 
@@ -32,6 +35,10 @@ public class UserBook {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
     }
 
     public void setEmail(String email) {
@@ -56,6 +63,10 @@ public class UserBook {
         return price;
     }
 
+    public String getBookId() {
+        return bookId;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -77,6 +88,7 @@ public class UserBook {
     public String toString() {
         StringBuilder str = new StringBuilder();
         str.append("price: " + price + "\n");
+        str.append("bookId: " + bookId + "\n");
         str.append("email: " + email + "\n");
         str.append("name: " + name + "\n");
         str.append("condition: " + condition + "\n");

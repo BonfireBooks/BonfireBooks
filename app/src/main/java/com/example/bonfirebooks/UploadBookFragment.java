@@ -307,8 +307,7 @@ public class UploadBookFragment extends Fragment {
                 String name = task.getResult().getString("name");
                 double price = Double.valueOf(txtE_price.getText().toString());
 
-                UserBook userBook = new UserBook(price, user.getEmail(), name, spinner_condition.getSelectedItem().toString().toLowerCase(), imgPaths);
-                userBook.setTime(Timestamp.now());
+                UserBook userBook = new UserBook(price, user.getEmail(), name, spinner_condition.getSelectedItem().toString().toLowerCase(), Timestamp.now(), imgPaths);
                 Log.d("userBook", userBook.toString());
 
                 // store the book in firebase
