@@ -81,8 +81,8 @@ public class SplashScreen extends AppCompatActivity {
                                 int i = 0;
                                 for (DocumentSnapshot doc : task.getResult().getDocuments()) {
                                     // create a new wishlist book with the document data
-                                    WishlistBook wBook = new WishlistBook(doc.getString("path"), doc.getString("title"),
-                                            doc.getString("coverImgUrl"), doc.getDouble("price"));
+                                    WishlistBook wBook = new WishlistBook(doc.getId(), doc.getString("title"),
+                                            doc.getString("condition"), doc.getString("coverImgUrl"), doc.getDouble("price"));
 
                                     // add the book to the users wishlist
                                     wishlist.put(String.valueOf(i), wBook);
@@ -165,5 +165,6 @@ public class SplashScreen extends AppCompatActivity {
                 }
             }
         });
+//        startActivity(new Intent(SplashScreen.this, MainActivity.class));
     }
 }
