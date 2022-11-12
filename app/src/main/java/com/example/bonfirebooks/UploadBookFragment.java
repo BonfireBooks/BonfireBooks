@@ -39,6 +39,7 @@ import android.widget.ViewSwitcher;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
@@ -47,12 +48,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.FirebaseFunctionsException;
+import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,16 +72,16 @@ public class UploadBookFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private Book book;
-    private String bookPath;
+    private String bookId;
 
     public UploadBookFragment() {
         // Required empty public constructor
     }
 
 
-    public UploadBookFragment(Book book, String path) {
+    public UploadBookFragment(Book book, String bookId) {
         this.book = book;
-        this.bookPath = path;
+        this.bookId = bookId;
     }
 
     /**
@@ -87,8 +92,8 @@ public class UploadBookFragment extends Fragment {
      * @return A new instance of fragment UploadBookFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static UploadBookFragment newInstance(Book book, String path) {
-        UploadBookFragment fragment = new UploadBookFragment(book, path);
+    public static UploadBookFragment newInstance(Book book, String bookId) {
+        UploadBookFragment fragment = new UploadBookFragment(book, bookId);
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -99,7 +104,7 @@ public class UploadBookFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             book = (Book) getArguments().get(ARG_PARAM1);
-            bookPath = (String) getArguments().get(ARG_PARAM2);
+            bookId = (String) getArguments().get(ARG_PARAM2);
         }
     }
 
@@ -116,6 +121,7 @@ public class UploadBookFragment extends Fragment {
     // firebase
     FirebaseFirestore firestore;
     FirebaseUser currUser;
+    FirebaseFunctions firebaseFunctions;
 
     // layout items
     EditText txtE_price;
@@ -134,14 +140,13 @@ public class UploadBookFragment extends Fragment {
     // firebase paths
     String userBookPath;
     String userBookID;
-    String bookID;
     HashMap<String, String> imgPaths = new HashMap<>();
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        user = ((MainActivity)getActivity()).getUser();
+        user = ((MainActivity) getActivity()).getUser();
 
         horizontal_scroll_view_images = view.findViewById(R.id.horizontal_scroll_view_images);
         txtE_price = view.findViewById(R.id.txtE_price);
@@ -152,14 +157,13 @@ public class UploadBookFragment extends Fragment {
 
         progressDialog = new ProgressDialog(getContext());
 
-        Log.d("book", book.toString());
-
         // get firebase instances
         firestore = FirebaseFirestore.getInstance();
         currUser = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseFunctions = FirebaseFunctions.getInstance();
 
         // user book path and id
-        userBookPath = firestore.document(bookPath).collection("users").document().getPath();
+        userBookPath = firestore.collection("books").document(bookId).collection("users").document().getPath();
         userBookID = firestore.document(userBookPath).getId();
 
         // set options for the spinner
@@ -171,7 +175,11 @@ public class UploadBookFragment extends Fragment {
         txtE_price.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(3, 2)});
 
         // set the price hint based on the books price
-        txtE_price.setHint("Price <= " + book.getPrice());
+        if(book.getPrice() == 0) {
+            txtE_price.setHint("Enter a Price");
+        } else {
+            txtE_price.setHint("Enter a Price <= " + book.getPrice());
+        }
 
         // insert the book into the firebase collection
         btn_publish_book.setOnClickListener(new View.OnClickListener() {
@@ -185,7 +193,11 @@ public class UploadBookFragment extends Fragment {
                     progressDialog.setMessage("Uploading");
                     progressDialog.show();
 
-                    addUserImagesFirebase();
+                    if(imageUris.size() > 0) {
+                        addUserImagesFirebase();
+                    } else {
+                        callAddUserBook();
+                    }
                 }
             }
         });
@@ -200,12 +212,11 @@ public class UploadBookFragment extends Fragment {
 
     private void addUserImagesFirebase() {
 
-        if(imageUris.size() > 0) {
             // get a storage reference
             StorageReference folderRef = FirebaseStorage.getInstance().getReference().child("User Images").child(userBookID);
 
             // store all images
-            for(int i = 0; i < imageUris.size(); i++) {
+            for (int i = 0; i < imageUris.size(); i++) {
                 Uri imageUri = imageUris.get(i);
 
                 // need string value of i to store the image paths in the hashmap
@@ -218,7 +229,7 @@ public class UploadBookFragment extends Fragment {
                 imgRef.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Log.d("imageUpload", "Succeess");
                             imgPaths.put(strI, imgRef.getPath());
                         } else {
@@ -227,16 +238,14 @@ public class UploadBookFragment extends Fragment {
 
                         // if the number of images stored matches the number of uris that
                         // need to be stored we can put the user in firebase
-                        if(imgPaths.size() == imageUris.size()) {
-                            addUserBookFirebase();
+                        if (imgPaths.size() == imageUris.size()) {
+                            callAddUserBook();
+                        } else {
+                            // todo -- create an else case
                         }
                     }
                 });
             }
-        } else {
-            // if there arent any images to add we can just add the user
-            addUserBookFirebase();
-        }
     }
 
     private String getFileExtension(Uri imageUri) {
@@ -261,7 +270,7 @@ public class UploadBookFragment extends Fragment {
     ActivityResultLauncher<Intent> startForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
-            if(result != null && result.getResultCode() == Activity.RESULT_OK) {
+            if (result != null && result.getResultCode() == Activity.RESULT_OK) {
 
                 Log.d("clipLength", String.valueOf(result.getData().getClipData().getItemCount()));
 
@@ -269,13 +278,13 @@ public class UploadBookFragment extends Fragment {
                 ClipData clipData = result.getData().getClipData();
 
                 // reset the list and the linear layout
-                for(int i = 0; i < imageUris.size(); i++) {
+                for (int i = 0; i < imageUris.size(); i++) {
                     imageUris.remove(i);
                     linlayout_image_scroll.removeAllViews();
                 }
 
                 // get uri data
-                for(int i = 0; i < clipData.getItemCount(); i++) {
+                for (int i = 0; i < clipData.getItemCount(); i++) {
                     imageUris.add(clipData.getItemAt(i).getUri());
 
                     ImageView imageView = new ImageView(getContext());
@@ -291,64 +300,70 @@ public class UploadBookFragment extends Fragment {
 
                     Log.d("uri", imageUris.get(i).toString());
                 }
-
             }
         }
     });
 
-    private void addUserBookFirebase() {
-
-        // get the user name then store the book
-        firestore.collection("users").document(currUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+    private void callAddUserBook() {
+        firestore.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
                 // values for the user book
                 String name = task.getResult().getString("name");
-                double price = Double.valueOf(txtE_price.getText().toString());
 
-                UserBook userBook = new UserBook(price, user.getEmail(), name, spinner_condition.getSelectedItem().toString().toLowerCase(), Timestamp.now(), imgPaths);
-                Log.d("userBook", userBook.toString());
+                // book data to used in the firebase function
+                HashMap<String, Object> data = new HashMap<>();
+                data.put("bookId", bookId);
+                data.put("condition", spinner_condition.getSelectedItem().toString().toLowerCase());
+                data.put("name", name);
+                data.put("price", Double.valueOf(txtE_price.getText().toString()));
+                data.put("images", imgPaths);
+                data.put("uBookId", userBookID);
 
-                // store the book in firebase
-                firestore.document(userBookPath).set(userBook).addOnCompleteListener(new OnCompleteListener<Void>() {
+                firebaseFunctions.getHttpsCallable("addUserBook").call(data).continueWith(new Continuation<HttpsCallableResult, HashMap<String, Object>>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                    public HashMap<String, Object> then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        return (HashMap<String, Object>) task.getResult().getData();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<HashMap<String, Object>>() {
+                    @Override
+                    public void onComplete(@NonNull Task<HashMap<String, Object>> task) {
                         if (task.isSuccessful()) {
-                            Log.d("addUserBookFirebase", "Success");
-                            updateUserBooks();
+                            HashMap<String, Object> taskResult = task.getResult();
+                            // task failed to insert data into firebase
+                            if ((Integer) taskResult.get("status") == 400) {
+                                progressDialog.dismiss();
+                                // notify the user that the operation failed
+                                Log.d("addBookUsingApi", "Failed\nmessage:" + taskResult.get("message"));
+                                Toast.makeText(getContext(), taskResult.get("message").toString(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                progressDialog.dismiss();
+                                // notify user the book was uploaded
+                                Log.d("addBookUsingApi", "Success " + taskResult.get("message"));
+                                Toast.makeText(getContext(), "Book Uploaded Successfully", Toast.LENGTH_SHORT).show();
+
+                                // switch fragments
+                                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new AccountFragment()).commit();
+                            }
                         } else {
                             progressDialog.dismiss();
-                            Toast.makeText(getContext(), "Upload Failed. Please try again later.", Toast.LENGTH_SHORT).show();
-                            Log.d("addUserBookFirebase", "Failed");
-                            Log.d("reason", task.getException().toString());
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseFunctionsException) {
+                                FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                                FirebaseFunctionsException.Code code = ffe.getCode();
+                                Object details = ffe.getDetails();
+
+                                Log.e("code ", code.toString());
+
+                                if(details != null) {
+                                    Log.e("error ", details.toString());
+                                }
+                            }
+                            Toast.makeText(getContext(), "Server Error! Could not upload book.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
-            }
-        });
-    }
-
-    private void updateUserBooks() {
-
-        // map with the path details
-        HashMap<String, Object> userBookDetails = new HashMap<>();
-        userBookDetails.put("path", userBookPath);
-        userBookDetails.put("title", book.getTitle());
-        userBookDetails.put("coverImgUrl", book.getCoverImgUrl());
-        userBookDetails.put("price", book.getPrice());
-
-        // add the path of the book to the users collection of books
-        firestore.collection("users").document(currUser.getUid()).collection("books").add(userBookDetails).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentReference> task) {
-                if (task.isSuccessful()) {
-                    Log.d("updateUserBooks", "Success");
-                    progressDialog.dismiss();
-                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new AccountFragment()).commit();
-                } else {
-                    Log.d("updateUserBooks", "Failed");
-                }
             }
         });
     }
@@ -357,7 +372,7 @@ public class UploadBookFragment extends Fragment {
         boolean isValid = true;
 
         // price does not exceed booksrun price if it exists
-        if(txtE_price.getText().toString().isEmpty()) {
+        if (txtE_price.getText().toString().isEmpty()) {
             txtE_price.setError("You must enter a price");
             isValid = false;
         } else if (Double.valueOf(txtE_price.getText().toString()) > book.getPrice() && book.getPrice() != 0.0) {

@@ -100,7 +100,7 @@ public class UploadBookSearchFragment extends Fragment {
     // book details
     Book book = new Book();
     String isbn;
-    String firebaseBookPath = "";
+    String firebaseBookId = "";
 
     ProgressDialog progressDialog;
 
@@ -176,7 +176,7 @@ public class UploadBookSearchFragment extends Fragment {
                 } else {
                     Log.d("firestoreHasBook", "true");
                     DocumentSnapshot taskResult = documents.get(0);
-                    firebaseBookPath = taskResult.getReference().getPath();
+                    firebaseBookId = taskResult.getId();
 
                     book = new Book(taskResult.getDouble("price"), (String) taskResult.get("title"), (String) taskResult.get("isbn10"), (String) taskResult.get("isbn13"), (String) taskResult.get("description"), (String) taskResult.get("coverImgUrl"), (HashMap<String, String>) taskResult.get("authors"), (HashMap<String, String>) taskResult.get("categories"));
                     updateUIElements();
@@ -194,11 +194,11 @@ public class UploadBookSearchFragment extends Fragment {
         }).addOnCompleteListener(new OnCompleteListener<HashMap<String, Object>>() {
             @Override
             public void onComplete(@NonNull Task<HashMap<String, Object>> task) {
-                HashMap<String, Object> taskResult = task.getResult();
                 if (task.isSuccessful()) {
-
+                    HashMap<String, Object> taskResult = task.getResult();
                     // task failed to insert data into firebase
                     if ((Integer) taskResult.get("status") == 400) {
+                        progressDialog.dismiss();
                         // notify the user that the operation failed
                         Toast.makeText(getContext(), taskResult.get("message").toString(), Toast.LENGTH_SHORT).show();
                         Log.d("addBookUsingApi", "Failed " + taskResult.get("message"));
@@ -218,12 +218,14 @@ public class UploadBookSearchFragment extends Fragment {
                         updateUIElements();
                     }
                 } else {
+                    progressDialog.dismiss();
                     Exception e = task.getException();
                     if (e instanceof FirebaseFunctionsException) {
                         FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
                         FirebaseFunctionsException.Code code = ffe.getCode();
                         Object details = ffe.getDetails();
                     }
+                    Toast.makeText(getContext(), "Server Error! Could Not Find Book.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -259,7 +261,7 @@ public class UploadBookSearchFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // switch to the uploadBookFragment
-                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UploadBookFragment(book, firebaseBookPath)).addToBackStack(null).commit();
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UploadBookFragment(book, firebaseBookId)).addToBackStack(null).commit();
             }
         });
     }
