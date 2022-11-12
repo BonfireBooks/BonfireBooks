@@ -169,6 +169,13 @@ public class HomeFragment extends Fragment {
                     Log.d("RetrieveBooks", "Success");
 
                     int i = 0;
+                    boolean reverse = false;
+
+                    if(order.equals("time")) {
+                        i = task.getResult().getDocuments().size() - 1;
+                        reverse = true;
+                    }
+
                     for (DocumentSnapshot taskDoc : task.getResult().getDocuments()) {
                         Book book = new Book(taskDoc.getDouble("price"), taskDoc.getString("title"), taskDoc.getString("isbn10"), taskDoc.getString("isbn13"), taskDoc.getString("description"), taskDoc.getString("coverImgUrl"), (HashMap<String, String>) taskDoc.get("authors"), (HashMap<String, String>) taskDoc.get("categories"));
 
@@ -178,7 +185,7 @@ public class HomeFragment extends Fragment {
                             booksByTitle.put(i, book);
                         }
 
-                        i++;
+                        i = reverse ? i-1 : i+1;
                     }
 
                     // set the books in the main activity-
