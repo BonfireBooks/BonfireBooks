@@ -118,7 +118,7 @@ public class UserBooksFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     Log.d("book", currBook.toString());
-//                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookDetailsFragment(currBook, UserBooksFragment.this)).addToBackStack(null).commit();
+                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UserBooksDetailsFragment(currBook)).addToBackStack(null).commit();
                 }
             });
 
