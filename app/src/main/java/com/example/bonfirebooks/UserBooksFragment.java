@@ -6,9 +6,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
+import android.widget.ImageView;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
+
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,8 +60,70 @@ public class UserBooksFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_user_books, container, false);
     }
 
+    User user;
+
+    TextView txtV_my_books;
+
+    GridLayout gridL_books;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        user = ((MainActivity)getActivity()).getUser();
+
+        gridL_books = view.findViewById(R.id.gridL_books);
+        txtV_my_books = view.findViewById(R.id.txtV_my_books);
+
+        txtV_my_books.setText("My Books");
+
+        HashMap<String, UserProfileBook> books = user.getBooks();
+
+        for (int i = 0; i < books.size(); i++) {
+            UserProfileBook currBook = books.get(String.valueOf(i));
+
+            View bookView = getLayoutInflater().inflate(R.layout.wishlist_book_item, null);
+
+            // add some spacing between the grid items
+            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+            params.setMargins(10, 10, 10, 10);
+
+            bookView.setLayoutParams(params);
+
+            // new book view details
+            ImageView book_image = bookView.findViewById(R.id.imgV_coverImage);
+            TextView book_title = bookView.findViewById(R.id.txtV_book_title);
+            TextView book_price = bookView.findViewById(R.id.txtV_book_price);
+            TextView book_condition = bookView.findViewById(R.id.txtV_book_condition);
+
+            // set book views image
+            Picasso.get().load(currBook.getCoverImgUrl()).into(book_image, new Callback() {
+                @Override
+                public void onSuccess() {
+                    book_image.setBackground(null);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    // do nothing -- keep image not found background
+                }
+            });
+
+            // set other book view details
+            book_condition.setText(currBook.getConditon());
+            book_title.setText(currBook.getTitle());
+            book_price.setText("$ " + currBook.getPrice());
+
+            bookView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("book", currBook.toString());
+//                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookDetailsFragment(currBook, UserBooksFragment.this)).addToBackStack(null).commit();
+                }
+            });
+
+            // add the book to the layout
+            gridL_books.addView(bookView);
+        }
     }
 }
