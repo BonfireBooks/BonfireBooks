@@ -151,28 +151,43 @@ public class BookOffersFragment extends Fragment {
             TextView book_price = bookView.findViewById(R.id.txtV_book_price);
 
             if(currBook.getPathsToImages() != null) {
-                firebaseStorage.getReference().child(currBook.getPathsToImages().get("0")).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if(task.isSuccessful()) {
-                            Log.d("getImage", "Successful");
-                        } else {
-                            Log.d("getImage", "Failed");
+                if(currBook.getPathsToImages().size() > 0) {
+                    firebaseStorage.getReference().child(currBook.getPathsToImages().get("0")).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                Log.d("getImage", "Successful");
+                            } else {
+                                Log.d("getImage", "Failed");
+                            }
+
+                            Picasso.get().load(task.getResult()).into(book_image, new Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    book_image.setBackground(null);
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    // do nothing -- keep image not found background
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    // set book views image
+                    Picasso.get().load(book.getCoverImgUrl()).into(book_image, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            book_image.setBackground(null);
                         }
 
-                        Picasso.get().load(task.getResult()).into(book_image, new Callback() {
-                            @Override
-                            public void onSuccess() {
-                                book_image.setBackground(null);
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-                                // do nothing -- keep image not found background
-                            }
-                        });
-                    }
-                });
+                        @Override
+                        public void onError(Exception e) {
+                            // do nothing -- keep image not found background
+                        }
+                    });
+                }
             } else {
                 // set book views image
                 Picasso.get().load(book.getCoverImgUrl()).into(book_image, new Callback() {
