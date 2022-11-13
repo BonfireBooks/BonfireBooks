@@ -7,15 +7,35 @@ public class UserProfileBook implements Serializable {
     private String path;
     private String title;
     private String coverImgUrl;
+    private String conditon;
+    private Double price;
 
     public UserProfileBook() {
 
     }
 
-    public UserProfileBook(String path, String title, String coverImgUrl) {
+    public UserProfileBook(String path, String title, String coverImgUrl, String conditon, Double price) {
         this.path = path;
         this.title = title;
         this.coverImgUrl = coverImgUrl;
+        this.conditon = conditon;
+        this.price = price;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public String getConditon() {
+        return conditon;
+    }
+
+    public void setConditon(String conditon) {
+        this.conditon = conditon;
     }
 
     public String getPath() {
@@ -48,6 +68,8 @@ public class UserProfileBook implements Serializable {
         str.append("UserProfile: \n");
         str.append("path: " + path + "\n");
         str.append("title: " + title + "\n");
+        str.append("condition: " + conditon + "\n");
+        str.append("price: " + price + "\n");
         str.append("coverImgUrl: " + coverImgUrl + "\n");
         return str.toString();
     }
