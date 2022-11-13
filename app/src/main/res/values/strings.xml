@@ -74,4 +74,5 @@
     <string name="seller">Seller:</string>
     <string name="message_seller">Message Seller</string>
     <string name="email_seller">Email Seller</string>
+    <string name="save_changes">Save Changes</string>
 </resources>
