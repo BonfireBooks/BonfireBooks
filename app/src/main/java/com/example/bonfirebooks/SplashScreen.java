@@ -129,7 +129,7 @@ public class SplashScreen extends AppCompatActivity {
                                                         int i = 0;
                                                         for (DocumentSnapshot doc : task.getResult().getDocuments()) {
                                                             // create a new book book with the document data
-                                                            UserProfileBook book = new UserProfileBook(doc.getString("path"), doc.getString("title"), doc.getString("coverImgUrl"), doc.getString("condition"), doc.getDouble("price"));
+                                                            UserProfileBook book = new UserProfileBook(doc.getId(), doc.getString("title"), doc.getString("coverImgUrl"), doc.getString("condition"), doc.getDouble("price"), (HashMap<Integer, String>) doc.get("images"));
 
                                                             // add the book to the users wishlist
                                                             books.put(String.valueOf(i), book);

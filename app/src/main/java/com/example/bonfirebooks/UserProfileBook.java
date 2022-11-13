@@ -1,25 +1,36 @@
 package com.example.bonfirebooks;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 public class UserProfileBook implements Serializable {
 
-    private String path;
+    private String bookId;
     private String title;
     private String coverImgUrl;
     private String conditon;
     private Double price;
+    HashMap<Integer, String> images;
 
     public UserProfileBook() {
 
     }
 
-    public UserProfileBook(String path, String title, String coverImgUrl, String conditon, Double price) {
-        this.path = path;
+    public UserProfileBook(String bookId, String title, String coverImgUrl, String conditon, Double price, HashMap<Integer, String> images) {
+        this.bookId = bookId;
         this.title = title;
         this.coverImgUrl = coverImgUrl;
         this.conditon = conditon;
         this.price = price;
+        this.images = images;
+    }
+
+    public HashMap<Integer, String> getImages() {
+        return images;
+    }
+
+    public void setImages(HashMap<Integer, String> images) {
+        this.images = images;
     }
 
     public Double getPrice() {
@@ -38,8 +49,8 @@ public class UserProfileBook implements Serializable {
         this.conditon = conditon;
     }
 
-    public String getPath() {
-        return path;
+    public String getBookId() {
+        return bookId;
     }
 
     public String getTitle() {
@@ -50,8 +61,8 @@ public class UserProfileBook implements Serializable {
         return coverImgUrl;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
     }
 
     public void setTitle(String title) {
@@ -66,7 +77,7 @@ public class UserProfileBook implements Serializable {
     public String toString() {
         StringBuilder str = new StringBuilder();
         str.append("UserProfile: \n");
-        str.append("path: " + path + "\n");
+        str.append("bookId: " + bookId + "\n");
         str.append("title: " + title + "\n");
         str.append("condition: " + conditon + "\n");
         str.append("price: " + price + "\n");
