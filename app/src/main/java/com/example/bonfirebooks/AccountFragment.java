@@ -186,7 +186,7 @@ public class AccountFragment extends Fragment {
         txtV_view_books.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // move fragments here
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UserBooksFragment()).addToBackStack(null).commit();
             }
         });
 
