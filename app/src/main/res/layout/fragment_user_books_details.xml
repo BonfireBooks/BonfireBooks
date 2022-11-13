@@ -3,12 +3,102 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".UserBooksDetailsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_book_details"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <HorizontalScrollView
+                android:id="@+id/horizScrollV_images"
+                android:layout_width="350dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/image_switcher"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/linlayout_image_scroll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+
+            </HorizontalScrollView>
+
+            <Button
+                android:id="@+id/btn_back"
+                android:layout_width="23dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/ic_arrow_back_black"
+                android:backgroundTint="@color/txt_gray"
+                app:layout_constraintLeft_toLeftOf="@id/horizScrollV_images"
+                app:layout_constraintTop_toTopOf="@id/horizScrollV_images" />
+
+            <TextView
+                android:id="@+id/txtV_book_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/sample_text"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toLeftOf="@id/horizScrollV_images"
+                app:layout_constraintTop_toBottomOf="@id/horizScrollV_images" />
+
+            <TextView
+                android:id="@+id/txtV_book_condition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sample_text"
+                android:textSize="19sp"
+                app:layout_constraintLeft_toLeftOf="@id/txtV_book_title"
+                app:layout_constraintTop_toBottomOf="@id/txtV_book_title" />
+
+            <TextView
+                android:id="@+id/txtV_book_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/price_here"
+                android:textColor="#FA6400"
+                android:textSize="19sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="@id/txtV_book_condition"
+                app:layout_constraintTop_toBottomOf="@id/txtV_book_condition" />
+
+            <Button
+                android:id="@+id/btn_edit_book"
+                android:layout_width="350dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:text="Edit Book"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txtV_book_price"
+                />
+            
+            <include
+                android:id="@+id/btn_view_uBooks"
+                layout="@layout/button_view_user_books"
+                android:layout_width="350dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_edit_book"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="10dp"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 </FrameLayout>
