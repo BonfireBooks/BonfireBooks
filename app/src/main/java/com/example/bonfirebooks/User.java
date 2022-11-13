@@ -1,8 +1,10 @@
 package com.example.bonfirebooks;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 public class User implements Parcelable {
@@ -18,9 +20,12 @@ public class User implements Parcelable {
     private HashMap<String, UserProfileChat> chats = null;
     private HashMap<String, UserProfileBook> books = null;
 
-    public User() {}
+    private String profileUri;
 
-    public User(String name, String uid, String email, String hofstraId, HashMap<String, WishlistBook> wishlist, HashMap<String, UserProfileChat> chats, HashMap<String, UserProfileBook> books) {
+    public User() {
+    }
+
+    public User(String name, String uid, String email, String hofstraId, HashMap<String, WishlistBook> wishlist, HashMap<String, UserProfileChat> chats, HashMap<String, UserProfileBook> books, String profileUri) {
         this.name = name;
         this.uid = uid;
         this.email = email;
@@ -28,6 +33,15 @@ public class User implements Parcelable {
         this.wishlist = wishlist;
         this.chats = chats;
         this.books = books;
+        this.profileUri = profileUri;
+    }
+
+    public String getProfileUri() {
+        return profileUri;
+    }
+
+    public void setProfileUri(String profileUri) {
+        this.profileUri = profileUri;
     }
 
     public String getName() {
@@ -115,6 +129,7 @@ public class User implements Parcelable {
         parcel.writeString(this.uid);
         parcel.writeString(this.email);
         parcel.writeString(this.hofstraId);
+        parcel.writeString(this.profileUri);
         parcel.writeSerializable(this.wishlist);
         parcel.writeSerializable(this.chats);
         parcel.writeSerializable(this.books);
@@ -135,6 +150,7 @@ public class User implements Parcelable {
         uid = in.readString();
         email = in.readString();
         hofstraId = in.readString();
+        profileUri = in.readString();
         wishlist = (HashMap<String, WishlistBook>) in.readSerializable();
         chats = (HashMap<String, UserProfileChat>) in.readSerializable();
         books = (HashMap<String, UserProfileBook>) in.readSerializable();
