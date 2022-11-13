@@ -39,6 +39,7 @@
                 android:layout_width="23dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/ic_arrow_back_black"
                 android:backgroundTint="@color/txt_gray"
                 app:layout_constraintLeft_toLeftOf="@id/horizScrollV_images"
@@ -59,9 +60,18 @@
                 android:id="@+id/txtV_book_condition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/sample_text"
+                android:text="Condition: "
                 android:textSize="19sp"
                 app:layout_constraintLeft_toLeftOf="@id/txtV_book_title"
+                app:layout_constraintTop_toBottomOf="@id/txtV_book_title" />
+
+            <TextView
+                android:id="@+id/txtV_book_condition_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sample_text"
+                android:textSize="19sp"
+                app:layout_constraintLeft_toRightOf="@id/txtV_book_condition"
                 app:layout_constraintTop_toBottomOf="@id/txtV_book_title" />
 
             <TextView
@@ -85,7 +95,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtV_book_price"
                 />
-            
+
             <include
                 android:id="@+id/btn_view_uBooks"
                 layout="@layout/button_view_user_books"
