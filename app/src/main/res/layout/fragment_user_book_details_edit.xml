@@ -3,12 +3,120 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".UserBookDetailsEditFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_book_details"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <HorizontalScrollView
+                android:id="@+id/horizScrollV_images"
+                android:layout_width="350dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/image_switcher"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/linlayout_image_scroll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+
+            </HorizontalScrollView>
+
+            <Button
+                android:id="@+id/btn_back"
+                android:layout_width="23dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/ic_arrow_back_black"
+                android:backgroundTint="@color/txt_gray"
+                app:layout_constraintLeft_toLeftOf="@id/horizScrollV_images"
+                app:layout_constraintTop_toTopOf="@id/horizScrollV_images" />
+
+            <Button
+                android:id="@+id/btn_change_photos"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:text="@string/change_photos"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/white"
+                android:background="@drawable/buttons_blue"
+                app:layout_constraintLeft_toLeftOf="@id/horizScrollV_images"
+                app:layout_constraintRight_toRightOf="@id/horizScrollV_images"
+                app:layout_constraintTop_toBottomOf="@id/horizScrollV_images"
+                />
+
+            <TextView
+                android:id="@+id/txtV_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/price"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toLeftOf="@id/horizScrollV_images"
+                app:layout_constraintTop_toBottomOf="@id/btn_change_photos" />
+
+            <EditText
+                android:id="@+id/txtE_price"
+                android:layout_width="350dp"
+                android:layout_height="55dp"
+                android:layout_marginTop="5dp"
+                android:hint="@string/empty"
+                android:background="@drawable/edit_text_inputs_starting_screens"
+                app:layout_constraintLeft_toLeftOf="@id/txtV_price"
+                app:layout_constraintTop_toBottomOf="@id/txtV_price"
+                android:importantForAutofill="no"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/txtV_condition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/condition"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toLeftOf="@id/txtE_price"
+                app:layout_constraintTop_toBottomOf="@id/txtE_price" />
+
+            <Spinner
+                android:id="@+id/spinner_condition"
+                android:layout_width="350dp"
+                android:layout_height="55dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/edit_text_inputs_starting_screens"
+                app:layout_constraintLeft_toLeftOf="@id/txtV_condition"
+                app:layout_constraintTop_toBottomOf="@id/txtV_condition"/>
+
+            <Button
+                android:id="@+id/btn_save_changes"
+                android:layout_width="350dp"
+                android:layout_height="65dp"
+                android:background="@drawable/buttons_green"
+                android:text="Save Changes"
+                android:textColor="@color/black"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@id/spinner_condition"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
 
 </FrameLayout>
