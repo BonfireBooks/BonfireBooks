@@ -131,7 +131,7 @@ public class UserBooksDetailsFragment extends Fragment {
         btn_edit_book.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UserBookDetailsEditFragment(userProfileBook)).addToBackStack(null).commit();
             }
         });
 
