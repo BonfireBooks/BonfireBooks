@@ -28,6 +28,7 @@ import android.widget.ViewSwitcher;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -86,6 +87,7 @@ public class BookOfferDetailsFragment extends Fragment {
     User user;
 
     FirebaseFirestore firestore;
+    FirebaseStorage firebaseStorage;
 
     HashMap<String, WishlistBook> userWishlsit;
 
@@ -109,6 +111,7 @@ public class BookOfferDetailsFragment extends Fragment {
         user = ((MainActivity)getActivity()).getUser();
 
         firestore = FirebaseFirestore.getInstance();
+        firebaseStorage = FirebaseStorage.getInstance();
 
         userWishlsit = user.getWishlist();
 
@@ -128,8 +131,20 @@ public class BookOfferDetailsFragment extends Fragment {
             addImageToScroll(book.getCoverImgUrl(), 0);
         } else {
             HashMap<String, String> paths = userBook.getPathsToImages();
+
             for (int i = 0; i < paths.size(); i++) {
-                addImageToScroll(paths.get(String.valueOf(i)), i);
+                int finalI = i;
+                firebaseStorage.getReference().child(paths.get(String.valueOf(i))).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if(task.isSuccessful()) {
+                            Log.d("getImage", "Successful");
+                            addImageToScroll(task.getResult(), finalI);
+                        } else {
+                            Log.d("getImage", "Failed");
+                        }
+                    }
+                });
             }
         }
 
@@ -225,6 +240,27 @@ public class BookOfferDetailsFragment extends Fragment {
         ImageView book_image = image.findViewById(R.id.imgV_image);
 
         Picasso.get().load(imgLink).into(book_image, new Callback() {
+            @Override
+            public void onSuccess() {
+                book_image.setBackground(null);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // do nothing -- keep image not found background
+            }
+        });
+
+        image.setPadding(0, 0, 20, 0);
+        linlayout_image_scroll.addView(image, i);
+
+    }
+
+    private void addImageToScroll(Uri imgUri, int i) {
+        View image = getLayoutInflater().inflate(R.layout.book_image_view, null);
+        ImageView book_image = image.findViewById(R.id.imgV_image);
+
+        Picasso.get().load(imgUri).into(book_image, new Callback() {
             @Override
             public void onSuccess() {
                 book_image.setBackground(null);

@@ -1,5 +1,7 @@
 package com.example.bonfirebooks;
 
+import android.app.ProgressDialog;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +21,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -70,22 +73,30 @@ public class BookOffersFragment extends Fragment {
     }
 
     FirebaseFirestore firestore;
+    FirebaseStorage firebaseStorage;
 
     TextView txtV_book_offers;
     GridLayout gridL_books;
 
     HashMap<Integer, UserBook> matchingBooks = new HashMap<>();
 
+    ProgressDialog progressDialog;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         firestore = FirebaseFirestore.getInstance();
+        firebaseStorage = FirebaseStorage.getInstance();
 
         txtV_book_offers = view.findViewById(R.id.txtV_book_offers);
         gridL_books = view.findViewById(R.id.gridL_books);
 
         txtV_book_offers.setText(book.getTitle());
+
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Loading Offers...");
+        progressDialog.show();
 
         getMatchingUserBooks();
     }
@@ -139,24 +150,43 @@ public class BookOffersFragment extends Fragment {
             TextView book_condition = bookView.findViewById(R.id.txtV_book_condition);
             TextView book_price = bookView.findViewById(R.id.txtV_book_price);
 
-            String imgPath = book.getCoverImgUrl();
-
             if(currBook.getPathsToImages() != null) {
-                imgPath = currBook.getPathsToImages().get(String.valueOf(0));
+                firebaseStorage.getReference().child(currBook.getPathsToImages().get("0")).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if(task.isSuccessful()) {
+                            Log.d("getImage", "Successful");
+                        } else {
+                            Log.d("getImage", "Failed");
+                        }
+
+                        Picasso.get().load(task.getResult()).into(book_image, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                book_image.setBackground(null);
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                // do nothing -- keep image not found background
+                            }
+                        });
+                    }
+                });
+            } else {
+                // set book views image
+                Picasso.get().load(book.getCoverImgUrl()).into(book_image, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        book_image.setBackground(null);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        // do nothing -- keep image not found background
+                    }
+                });
             }
-
-            // set book views image
-            Picasso.get().load(imgPath).into(book_image, new Callback() {
-                @Override
-                public void onSuccess() {
-                    book_image.setBackground(null);
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    // do nothing -- keep image not found background
-                }
-            });
 
             // set other book view details
             book_condition.setText(currBook.getCondition());
@@ -173,5 +203,7 @@ public class BookOffersFragment extends Fragment {
             // add the book to the layout
             gridL_books.addView(bookView);
         }
+
+        progressDialog.dismiss();;
     }
 }
