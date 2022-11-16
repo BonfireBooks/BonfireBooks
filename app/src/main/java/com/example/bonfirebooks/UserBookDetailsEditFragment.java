@@ -31,6 +31,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -99,6 +100,8 @@ public class UserBookDetailsEditFragment extends Fragment {
     Button btn_change_photos;
     Button btn_save_changes;
 
+    Switch switch_isPublic;
+
     LinearLayout linlayout_image_scroll;
 
     HashMap<String, String> imgPaths = new HashMap<>();
@@ -122,6 +125,7 @@ public class UserBookDetailsEditFragment extends Fragment {
         txtE_price = view.findViewById(R.id.txtE_price);
         btn_change_photos = view.findViewById(R.id.btn_change_photos);
         btn_save_changes = view.findViewById(R.id.btn_save_changes);
+        switch_isPublic = view.findViewById(R.id.switch_isPublic);
 
         progressDialog = new ProgressDialog(getContext());
 
@@ -132,6 +136,10 @@ public class UserBookDetailsEditFragment extends Fragment {
 
         // set formatting and filter for price
         txtE_price.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(3, 2)});
+
+        if(userProfileBook.getIsPublic()) {
+            switch_isPublic.setChecked(true);
+        }
 
         btn_change_photos.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,6 +172,7 @@ public class UserBookDetailsEditFragment extends Fragment {
     private void updateUserBook() {
         HashMap<String, Object> updatedData = new HashMap<>();
         updatedData.put("condition", spinner_condition.getSelectedItem().toString().toLowerCase());
+        updatedData.put("isPublic", switch_isPublic.isChecked());
 
         if(!TextUtils.isEmpty(txtE_price.getText())) {
             updatedData.put("price", Double.valueOf(txtE_price.getText().toString()));

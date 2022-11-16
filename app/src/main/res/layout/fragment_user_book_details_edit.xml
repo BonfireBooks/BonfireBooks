@@ -6,7 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".UserBookDetailsEditFragment">
 
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -59,15 +58,35 @@
                 />
 
             <TextView
-                android:id="@+id/txtV_price"
+                android:id="@+id/txtV_isPublic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/price"
+                android:layout_marginTop="10dp"
+                android:text="@string/set_public"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 app:layout_constraintLeft_toLeftOf="@id/horizScrollV_images"
                 app:layout_constraintTop_toBottomOf="@id/btn_change_photos" />
+
+            <Switch
+                android:id="@+id/switch_isPublic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/txtV_isPublic"
+                app:layout_constraintTop_toTopOf="@id/txtV_isPublic"
+                app:layout_constraintBottom_toBottomOf="@id/txtV_isPublic"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            <TextView
+                android:id="@+id/txtV_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/price"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toLeftOf="@id/txtV_isPublic"
+                app:layout_constraintTop_toBottomOf="@id/switch_isPublic" />
 
             <EditText
                 android:id="@+id/txtE_price"

@@ -76,4 +76,5 @@
     <string name="email_seller">Email Seller</string>
     <string name="save_changes">Save Changes</string>
     <string name="change_photos">Change Photos</string>
+    <string name="set_public">Set Public</string>
 </resources>
