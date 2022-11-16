@@ -10,19 +10,29 @@ public class UserProfileBook implements Serializable {
     private String coverImgUrl;
     private String conditon;
     private Double price;
+    private Boolean isPublic;
     HashMap<Integer, String> images;
 
     public UserProfileBook() {
 
     }
 
-    public UserProfileBook(String bookId, String title, String coverImgUrl, String conditon, Double price, HashMap<Integer, String> images) {
+    public UserProfileBook(String bookId, String title, String coverImgUrl, String conditon, Double price, Boolean isPublic, HashMap<Integer, String> images) {
         this.bookId = bookId;
         this.title = title;
         this.coverImgUrl = coverImgUrl;
         this.conditon = conditon;
         this.price = price;
+        this.isPublic = isPublic;
         this.images = images;
+    }
+
+    public Boolean getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(Boolean isPublic) {
+        this.isPublic = isPublic;
     }
 
     public HashMap<Integer, String> getImages() {
