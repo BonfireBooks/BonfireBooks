@@ -99,6 +99,7 @@ public class UserBookDetailsEditFragment extends Fragment {
 
     Button btn_change_photos;
     Button btn_save_changes;
+    Button btn_back;
 
     Switch switch_isPublic;
 
@@ -126,6 +127,7 @@ public class UserBookDetailsEditFragment extends Fragment {
         btn_change_photos = view.findViewById(R.id.btn_change_photos);
         btn_save_changes = view.findViewById(R.id.btn_save_changes);
         switch_isPublic = view.findViewById(R.id.switch_isPublic);
+        btn_back = view.findViewById(R.id.btn_back);
 
         progressDialog = new ProgressDialog(getContext());
 
@@ -140,6 +142,13 @@ public class UserBookDetailsEditFragment extends Fragment {
         if(userProfileBook.getIsPublic()) {
             switch_isPublic.setChecked(true);
         }
+
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).onBackPressed();
+            }
+        });
 
         btn_change_photos.setOnClickListener(new View.OnClickListener() {
             @Override
