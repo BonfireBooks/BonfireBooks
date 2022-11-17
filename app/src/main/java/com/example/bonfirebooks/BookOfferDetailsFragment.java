@@ -80,6 +80,17 @@ public class BookOfferDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        // if the book being loaded is one of the users books switch to another view
+        for(UserProfileBook uBook : ((MainActivity)getActivity()).getUser().getBooks().values()) {
+            if(uBook.getBookId().equals(userBook.getBookId())) {
+                // get this fragment off the backstack
+                getParentFragmentManager().popBackStack();
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UserBooksDetailsFragment(uBook)).addToBackStack(null).commit();
+                return null;
+            }
+        }
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_book_offer_details, container, false);
     }
