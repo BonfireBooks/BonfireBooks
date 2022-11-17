@@ -241,7 +241,7 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     Log.d("book" , currBook.toString());
-                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookDetailsFragment(currBook, HomeFragment.this)).addToBackStack(null).commit();
+                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookDetailsFragment(currBook)).addToBackStack(null).commit();
                 }
             });
 

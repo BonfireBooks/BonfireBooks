@@ -39,11 +39,9 @@ public class BookDetailsFragment extends Fragment {
     }
 
     Book book;
-    Fragment prevFragment;
 
-    public BookDetailsFragment(Book book, Fragment prevFragment) {
+    public BookDetailsFragment(Book book) {
         this.book = book;
-        this.prevFragment = prevFragment;
     }
 
     /**
@@ -135,7 +133,7 @@ public class BookDetailsFragment extends Fragment {
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, prevFragment).addToBackStack(null).commit();
+                ((MainActivity)getActivity()).onBackPressed();
             }
         });
 
