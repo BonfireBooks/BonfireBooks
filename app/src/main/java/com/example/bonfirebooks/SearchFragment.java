@@ -85,8 +85,21 @@ public class SearchFragment extends Fragment {
         search_bar = view.findViewById(R.id.search_bar);
 
         search_bar.setQuery(query, false);
+        search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new SearchFragment(s)).addToBackStack(null).commit();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
 
         books = getBooksMatchingQuery(books, query);
+
         Log.d("matchingBooks", books.toString());
 
         populateGridView(books, gridL_books);
