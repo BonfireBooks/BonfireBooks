@@ -11,15 +11,17 @@ public class UserBook {
     private String email;
     private String name;
     private String condition;
+    private String owner;
     private HashMap<String, String> images;
     private Timestamp time;
 
-    public UserBook(double price, String bookId, String email, String name, String condition, Timestamp time, HashMap<String, String> images) {
+    public UserBook(double price, String bookId, String email, String name, String condition, String owner, Timestamp time, HashMap<String, String> images) {
         this.price = price;
         this.bookId = bookId;
         this.email = email;
         this.name = name;
         this.condition = condition;
+        this.owner = owner;
         this.time = time;
         this.images = images;
     }
@@ -30,6 +32,30 @@ public class UserBook {
         this.name = name;
         this.condition = condition;
         this.time = time;
+        this.images = images;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public HashMap<String, String> getImages() {
+        return images;
+    }
+
+    public void setImages(HashMap<String, String> images) {
         this.images = images;
     }
 
