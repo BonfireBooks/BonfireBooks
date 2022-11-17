@@ -2,6 +2,8 @@ package com.example.bonfirebooks;
 
 import android.util.Log;
 
+import com.google.firebase.Timestamp;
+
 import java.util.HashMap;
 
 public class Book {
@@ -14,10 +16,11 @@ public class Book {
     private String coverImgUrl;
     private HashMap<String, String> authors;
     private HashMap<String, String> categories;
+    Timestamp time;
 
     public Book() {}
 
-    public Book(double price, String title, String isbn10, String isbn13, String description, String coverImgUrl, HashMap<String, String> authors, HashMap<String, String> categories) {
+    public Book(double price, String title, String isbn10, String isbn13, String description, String coverImgUrl, HashMap<String, String> authors, HashMap<String, String> categories, Timestamp time) {
         this.price = price;
         this.title = title;
         this.isbn10 = isbn10;
@@ -26,6 +29,19 @@ public class Book {
         this.coverImgUrl = coverImgUrl;
         this.authors = authors;
         this.categories = categories;
+        this.time = time;
+    }
+
+    public void setCoverImgUrl(String coverImgUrl) {
+        this.coverImgUrl = coverImgUrl;
+    }
+
+    public Timestamp getTime() {
+        return time;
+    }
+
+    public void setTime(Timestamp time) {
+        this.time = time;
     }
 
     public double getPrice() {

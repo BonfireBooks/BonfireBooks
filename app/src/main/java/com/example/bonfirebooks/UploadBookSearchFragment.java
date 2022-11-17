@@ -178,7 +178,7 @@ public class UploadBookSearchFragment extends Fragment {
                     DocumentSnapshot taskResult = documents.get(0);
                     firebaseBookId = taskResult.getId();
 
-                    book = new Book(taskResult.getDouble("price"), (String) taskResult.get("title"), (String) taskResult.get("isbn10"), (String) taskResult.get("isbn13"), (String) taskResult.get("description"), (String) taskResult.get("coverImgUrl"), (HashMap<String, String>) taskResult.get("authors"), (HashMap<String, String>) taskResult.get("categories"));
+                    book = new Book(taskResult.getDouble("price"), (String) taskResult.get("title"), (String) taskResult.get("isbn10"), (String) taskResult.get("isbn13"), (String) taskResult.get("description"), (String) taskResult.get("coverImgUrl"), (HashMap<String, String>) taskResult.get("authors"), (HashMap<String, String>) taskResult.get("categories"), taskResult.getTimestamp("time"));
                     updateUIElements();
                 }
             }
