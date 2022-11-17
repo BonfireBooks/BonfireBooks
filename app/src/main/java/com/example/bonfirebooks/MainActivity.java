@@ -97,17 +97,22 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         super.onBackPressed();
 
         // fragment being switched to
-        String fragName = getSupportFragmentManager().getFragments().get(0).getClass().getName();
+        if(getSupportFragmentManager().getFragments().size() > 0) {
+            String fragName = getSupportFragmentManager().getFragments().get(0).getClass().getName();
 
-        // set the bottom nav based on the fragment being switched into
-        if(fragName.equals(HomeFragment.class.getName())) {
-            navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
-        } else if(fragName.equals(WishlistFragment.class.getName())) {
-            navigationView.getMenu().findItem(R.id.nav_wish_list).setChecked(true);
-        } else if(fragName.equals(ChatFragment.class.getName())) {
-            navigationView.getMenu().findItem(R.id.nav_chats).setChecked(true);
-        } else if(fragName.equals(Account.class.getName())) {
-            navigationView.getMenu().findItem(R.id.nav_profile).setChecked(true);
+            // set the bottom nav based on the fragment being switched into
+            if (fragName.equals(HomeFragment.class.getName())) {
+                navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+            } else if (fragName.equals(WishlistFragment.class.getName())) {
+                navigationView.getMenu().findItem(R.id.nav_wish_list).setChecked(true);
+            } else if (fragName.equals(ChatFragment.class.getName())) {
+                navigationView.getMenu().findItem(R.id.nav_chats).setChecked(true);
+            } else if (fragName.equals(Account.class.getName())) {
+                navigationView.getMenu().findItem(R.id.nav_profile).setChecked(true);
+            }
+        } else {
+            // if the user presses back when there are no previous fragments visited we can exit the app
+            this.finishAffinity();
         }
     }
 }
