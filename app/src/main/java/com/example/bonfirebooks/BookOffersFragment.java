@@ -116,7 +116,7 @@ public class BookOffersFragment extends Fragment {
 
                             int i = 0;
                             for(DocumentSnapshot doc : task.getResult().getDocuments()) {
-                                UserBook book = new UserBook(doc.getDouble("price"), doc.getId(), doc.getString("email"), doc.getString("userName"), doc.getString("condition"), doc.getString("owner"), doc.getTimestamp("time"), (HashMap<String, String>) doc.get("images"));
+                                UserBook book = new UserBook(doc.getDouble("price"), doc.getId(), doc.getString("email"), doc.getString("userName"), doc.getString("condition"), doc.getString("owner"), doc.getBoolean("isPublic"), doc.getTimestamp("time"), (HashMap<String, String>) doc.get("images"));
                                 matchingBooks.put(i, book);
 
                                 i++;

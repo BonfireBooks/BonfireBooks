@@ -12,27 +12,28 @@ public class UserBook {
     private String name;
     private String condition;
     private String owner;
+    private boolean isPublic;
     private HashMap<String, String> images;
     private Timestamp time;
 
-    public UserBook(double price, String bookId, String email, String name, String condition, String owner, Timestamp time, HashMap<String, String> images) {
+    public UserBook(double price, String bookId, String email, String name, String condition, String owner, boolean isPublic, Timestamp time, HashMap<String, String> images) {
         this.price = price;
         this.bookId = bookId;
         this.email = email;
         this.name = name;
         this.condition = condition;
         this.owner = owner;
+        this.isPublic = isPublic;
         this.time = time;
         this.images = images;
     }
 
-    public UserBook(double price, String email, String name, String condition, Timestamp time, HashMap<String, String> images) {
-        this.price = price;
-        this.email = email;
-        this.name = name;
-        this.condition = condition;
-        this.time = time;
-        this.images = images;
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
     }
 
     public String getName() {
