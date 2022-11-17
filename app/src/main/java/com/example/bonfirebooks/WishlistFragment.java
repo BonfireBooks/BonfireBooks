@@ -76,8 +76,6 @@ public class WishlistFragment extends Fragment {
     // layout items
     ConstraintLayout layout_wishlist_empty;
     ConstraintLayout layout_wishlist_grid;
-//    ScrollView scrollV_wishlist;
-//    LinearLayout linlayout_wishlist;
     Button btn_explore;
     BottomNavigationView bottomNavigationView;
 
@@ -95,9 +93,6 @@ public class WishlistFragment extends Fragment {
         user = ((MainActivity) getActivity()).getUser();
 
         layout_wishlist_empty = view.findViewById(R.id.layout_wishlist_empty);
-
-//        scrollV_wishlist = view.findViewById(R.id.scrollV_wishlist);
-//        linlayout_wishlist = view.findViewById(R.id.linlayout_wishlist);
 
         layout_wishlist_grid = view.findViewById(R.id.layout_wishlist_grid);
         scrollV_books = view.findViewById(R.id.scrollV_books);
@@ -127,11 +122,10 @@ public class WishlistFragment extends Fragment {
             public void onRefresh() {
                 refreshWishlist();
                 pullToRefresh.setRefreshing(false);
-//                populateScrollViewWithFirebase(linlayout_wishlist);
                 populateScrollViewWithFirebase();
             }
         });
-//        populateScrollViewWithFirebase(linlayout_wishlist);
+
         populateScrollViewWithFirebase();
     }
 
@@ -172,7 +166,7 @@ public class WishlistFragment extends Fragment {
     private void populateScrollViewWithFirebase() {
 
         HashMap<String, WishlistBook> wishlist = user.getWishlist();
-        if (wishlist != null) {
+        if (wishlist.size() != 0) {
 
             gridL_books.removeAllViews();
 
@@ -228,37 +222,7 @@ public class WishlistFragment extends Fragment {
                 // add the book to the layout
                 gridL_books.addView(bookView);
             }
-//                View bookView = getLayoutInflater().inflate(R.layout.wishlist_book_item, null);
-//                bookView.setPadding(30, 0, 0, 0);
-//
-//                // new book view details
-//                ImageView book_image = bookView.findViewById(R.id.imgV_coverImage);
-//                TextView book_title = bookView.findViewById(R.id.txtV_book_title);
-//                TextView book_price = bookView.findViewById(R.id.txtV_book_price);
-//
-//                String strI = String.valueOf(i);
-//
-//                // set book views image
-//                Picasso.get().load(wishlist.get(strI).getCoverImgUrl()).into(book_image, new Callback() {
-//                    @Override
-//                    public void onSuccess() {
-//                        book_image.setBackground(null);
-//                    }
-//
-//                    @Override
-//                    public void onError(Exception e) {
-//                        // do nothing -- keep image not found background
-//                    }
-//                });
-//
-//                // set other book view details
-//                book_title.setText(wishlist.get(strI).getTitle());
-//                book_price.setText(wishlist.get(strI).getPrice().toString());
-//
-//                // add the book to the layout
-//                linearLayout.addView(bookView, i);
-    } else
-    {
+    } else {
         // change the visibility of the views
         layout_wishlist_empty.setVisibility(View.VISIBLE);
         layout_wishlist_grid.setVisibility(View.GONE);
