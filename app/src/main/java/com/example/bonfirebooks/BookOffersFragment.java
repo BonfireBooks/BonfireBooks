@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -103,32 +104,25 @@ public class BookOffersFragment extends Fragment {
 
     private void getMatchingUserBooks() {
 
-        firestore.collection("books").whereEqualTo("isPublic", true).whereEqualTo("isbn10", book.getIsbn10()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firestore.document("/books/" + book.getBookId()).collection("/users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                String path = task.getResult().getDocuments().get(0).getReference().getPath();
+                if (task.isSuccessful()) {
+                    Log.d("getDocument", "Successful");
 
-                firestore.document(path).collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()) {
-                            Log.d("getDocument", "Successful");
+                    int i = 0;
+                    for (DocumentSnapshot doc : task.getResult().getDocuments()) {
+                        UserBook book = new UserBook(doc.getDouble("price"), doc.getId(), doc.getString("email"), doc.getString("userName"), doc.getString("condition"), doc.getString("owner"), doc.getBoolean("isPublic"), doc.getTimestamp("time"), (HashMap<String, String>) doc.get("images"));
+                        matchingBooks.put(i, book);
 
-                            int i = 0;
-                            for(DocumentSnapshot doc : task.getResult().getDocuments()) {
-                                UserBook book = new UserBook(doc.getDouble("price"), doc.getId(), doc.getString("email"), doc.getString("userName"), doc.getString("condition"), doc.getString("owner"), doc.getBoolean("isPublic"), doc.getTimestamp("time"), (HashMap<String, String>) doc.get("images"));
-                                matchingBooks.put(i, book);
-
-                                i++;
-                            }
-
-                            populateGrid(gridL_books);
-
-                        } else {
-                            Log.d("getDocument", "Failed");
-                        }
+                        i++;
                     }
-                });
+
+                    populateGrid(gridL_books);
+
+                } else {
+                    Log.d("getDocument", "Failed");
+                }
             }
         });
     }
@@ -150,8 +144,8 @@ public class BookOffersFragment extends Fragment {
             TextView book_condition = bookView.findViewById(R.id.txtV_book_condition);
             TextView book_price = bookView.findViewById(R.id.txtV_book_price);
 
-            if(currBook.getPathsToImages() != null) {
-                if(currBook.getPathsToImages().size() > 0) {
+            if (currBook.getPathsToImages() != null) {
+                if (currBook.getPathsToImages().size() > 0) {
                     firebaseStorage.getReference().child(currBook.getPathsToImages().get("0")).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
@@ -219,6 +213,7 @@ public class BookOffersFragment extends Fragment {
             gridL_books.addView(bookView);
         }
 
-        progressDialog.dismiss();;
+        progressDialog.dismiss();
+        ;
     }
 }
