@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +77,9 @@ public class BookDetailsFragment extends Fragment {
     ImageView imgV_book_images;
 
     TextView txtV_book_title;
-    TextView txtV_book_price;
+    TextView txtV_retail_price_edit;
+    TextView txtV_cheapest_price_edit;
+    TextView txtV_cheapest_condition_edit;
     TextView txtV_author_edit;
     TextView txtV_isbn10_edit;
     TextView txtV_isbn13_edit;
@@ -93,7 +96,9 @@ public class BookDetailsFragment extends Fragment {
 
         imgV_book_images = view.findViewById(R.id.imgV_book_images);
         txtV_book_title = view.findViewById(R.id.txtV_book_title);
-        txtV_book_price = view.findViewById(R.id.txtV_book_price);
+        txtV_retail_price_edit = view.findViewById(R.id.txtV_retail_price_edit);
+        txtV_cheapest_price_edit = view.findViewById(R.id.txtV_cheapest_price_edit);
+        txtV_cheapest_condition_edit = view.findViewById(R.id.txtV_cheapest_condition_edit);
         txtV_author_edit = view.findViewById(R.id.txtV_author_edit);
         txtV_isbn10_edit = view.findViewById(R.id.txtV_isbn10_edit);
         txtV_isbn13_edit = view.findViewById(R.id.txtV_isbn13_edit);
@@ -113,7 +118,22 @@ public class BookDetailsFragment extends Fragment {
 
         // set other textviews with book data
         txtV_book_title.setText(book.getTitle());
-        txtV_book_price.setText("$ " + book.getPrice());
+
+        if(book.getPrice() > 0) {
+            txtV_retail_price_edit.setText("$" + book.getPrice());
+        } else {
+            txtV_retail_price_edit.setText("No Price Found");
+        }
+
+        if(book.getCheapestPrice() != null) {
+            txtV_cheapest_price_edit.setText("$ " + book.getCheapestPrice());
+            txtV_cheapest_condition_edit.setText("(" + book.getCheapestCondition() + ")");
+        } else {
+            txtV_cheapest_price_edit.setText("No Current Offers");
+            txtV_cheapest_condition_edit.setText(null);
+        }
+
+
         txtV_isbn10_edit.setText(book.getIsbn10());
         txtV_isbn13_edit.setText(book.getIsbn13());
         txtV_book_description_edit.setText(book.getDescription());
