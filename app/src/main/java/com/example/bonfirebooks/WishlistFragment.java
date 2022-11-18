@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -219,8 +220,42 @@ public class WishlistFragment extends Fragment {
                 bookView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.d("book", currBook.toString());
-//                        getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookOfferDetailsFragment(currBook, WishlistFragment.this)).addToBackStack(null).commit();
+                        //
+                        HashMap<Integer, Book> books = ((MainActivity)getActivity()).getBooksByTime();
+
+                        Book book = null;
+
+                        // find other details on book
+                        for(int i = 0; i < books.size(); i++) {
+                            if(books.get(i).getTitle().equals(currBook.getTitle())) {
+                                book = books.get(i);
+                            }
+                        }
+
+                        if(book == null) {
+                            Toast.makeText(getContext(), "Could Not Load Book", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Book finalBook = book;
+                            // get other book details
+                            firestore.document("/books/" + book.getBookId() + "/users/" + currBook.getBookId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if(task.isSuccessful()) {
+                                        Log.d("BookLocated", "Successful");
+
+                                        DocumentSnapshot taskDoc = task.getResult();
+
+                                        UserBook userBook = new UserBook(currBook.getPrice(), currBook.getBookId(), taskDoc.getString("email"), taskDoc.getString("name"), currBook.getCondition(),
+                                                taskDoc.getString("owner"), taskDoc.getBoolean("isPublic"), taskDoc.getTimestamp("time"), (HashMap<String, String>) taskDoc.get("images"));
+
+                                        getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookOfferDetailsFragment(finalBook, userBook)).addToBackStack(null).commit();
+
+                                    } else {
+                                        Log.d("BookLocated", "Failed");
+                                    }
+                                }
+                            });
+                        }
                     }
                 });
 
