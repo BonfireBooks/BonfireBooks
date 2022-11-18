@@ -133,6 +133,17 @@ public class BookDetailsFragment extends Fragment {
             txtV_cheapest_condition_edit.setText(null);
         }
 
+        txtV_book_description_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(txtV_book_description_edit.getMaxLines() == 10) {
+                    txtV_book_description_edit.setMaxLines(40);
+                } else {
+                    txtV_book_description_edit.setMaxLines(10);
+                }
+            }
+        });
+
 
         txtV_isbn10_edit.setText(book.getIsbn10());
         txtV_isbn13_edit.setText(book.getIsbn13());
