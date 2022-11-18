@@ -103,7 +103,7 @@ public class BookOffersFragment extends Fragment {
 
     private void getMatchingUserBooks() {
 
-        firestore.collection("books").whereEqualTo("isbn10", book.getIsbn10()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firestore.collection("books").whereEqualTo("isPublic", true).whereEqualTo("isbn10", book.getIsbn10()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 String path = task.getResult().getDocuments().get(0).getReference().getPath();
