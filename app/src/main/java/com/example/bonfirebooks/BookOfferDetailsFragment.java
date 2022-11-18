@@ -23,11 +23,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -36,6 +38,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -165,7 +168,6 @@ public class BookOfferDetailsFragment extends Fragment {
         txtV_seller_edit.setText(userBook.getUserName());
         txtV_condition_edit.setText(userBook.getCondition());
 
-
         // back button click
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -242,6 +244,55 @@ public class BookOfferDetailsFragment extends Fragment {
                     startActivity(intent);
                 }
 
+            }
+        });
+
+        btn_message_seller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // create a new chat with both parties
+                HashMap<String, String> uMap = new HashMap<>();
+                uMap.put(user.getUid(), user.getName());
+                uMap.put(userBook.getOwner(), userBook.getName());
+
+                HashMap<String, Object> users = new HashMap<>();
+                users.put("users", uMap);
+
+                firestore.collection("chats").whereEqualTo("users", users).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                        if(task.isSuccessful()) {
+                            Log.d("checkChatExists", "Successful");
+                            if(task.getResult().size() > 0) {
+                                Toast.makeText(getContext(), "Chat Already Exists", Toast.LENGTH_SHORT).show();
+
+                                // todo:
+                                // navigate to the already existing chat
+
+                            } else {
+                                firestore.collection("chats").document().set(users).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()) {
+                                            Log.d("createChat", "Successful");
+
+                                            // todo:
+                                            // add the chat fragment to the back stack
+                                            // switch into the users chat fragment
+
+                                        } else {
+                                            Log.d("createChat", "Failed");
+                                        }
+                                    }
+                                });
+                            }
+                        } else {
+                            Log.d("checkChatExists", "Failed");
+                            Toast.makeText(getContext(), "Action Could Not Be Preformed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
     }
