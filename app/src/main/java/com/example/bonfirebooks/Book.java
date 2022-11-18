@@ -10,6 +10,7 @@ public class Book {
 
     private double price;
     private Double cheapestPrice;
+    private String bookId;
     private String title;
     private String isbn10;
     private String isbn13;
@@ -22,8 +23,9 @@ public class Book {
 
     public Book() {}
 
-    public Book(double price, String title, String isbn10, String isbn13, String description, String coverImgUrl, HashMap<String, String> authors, HashMap<String, String> categories, Timestamp time) {
+    public Book(double price, String bookId, String title, String isbn10, String isbn13, String description, String coverImgUrl, HashMap<String, String> authors, HashMap<String, String> categories, Timestamp time) {
         this.price = price;
+        this.bookId = bookId;
         this.title = title;
         this.isbn10 = isbn10;
         this.isbn13 = isbn13;
@@ -32,6 +34,14 @@ public class Book {
         this.authors = authors;
         this.categories = categories;
         this.time = time;
+    }
+
+    public String getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
     }
 
     public String getCheapestCondition() {
