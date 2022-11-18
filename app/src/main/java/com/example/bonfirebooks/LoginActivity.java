@@ -76,6 +76,10 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(isValidInput()) {
                     // get the user email -- login gets called from this function
+
+                    txtE_password.setError(null);
+                    txtE_HofID.setError(null);
+
                     getUserEmail(txtE_HofID.getText().toString());
                 }
             }
