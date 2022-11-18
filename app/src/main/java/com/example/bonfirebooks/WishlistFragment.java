@@ -31,6 +31,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 /**
@@ -208,7 +209,11 @@ public class WishlistFragment extends Fragment {
 
                 // set other book view details
                 book_title.setText(currBook.getTitle());
-                book_price.setText("$ " + currBook.getPrice());
+
+                DecimalFormat decimalFormat = new DecimalFormat("0.00");
+
+                book_price.setText("$ " + decimalFormat.format(currBook.getPrice()));
+
                 book_condition.setText(currBook.getCondition());
 
                 bookView.setOnClickListener(new View.OnClickListener() {

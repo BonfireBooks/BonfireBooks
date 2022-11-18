@@ -22,6 +22,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -138,7 +139,14 @@ public class SearchFragment extends Fragment {
 
             // set other book view details
             book_title.setText(currBook.getTitle());
-            book_price.setText("$ " + currBook.getPrice());
+
+            DecimalFormat decimalFormat = new DecimalFormat("0.00");
+
+            if(currBook.getCheapestPrice() != null) {
+                book_price.setText("$ " + decimalFormat.format(currBook.getCheapestPrice()));
+            } else {
+                book_price.setText("$ " + decimalFormat.format(currBook.getPrice()));
+            }
 
             bookView.setOnClickListener(new View.OnClickListener() {
                 @Override

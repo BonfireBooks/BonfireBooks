@@ -20,6 +20,7 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 /**
@@ -112,7 +113,10 @@ public class UserBooksFragment extends Fragment {
             // set other book view details
             book_condition.setText(currBook.getConditon());
             book_title.setText(currBook.getTitle());
-            book_price.setText("$ " + currBook.getPrice());
+
+            DecimalFormat decimalFormat = new DecimalFormat("0.00");
+
+            book_price.setText("$ " + decimalFormat.format(currBook.getPrice()));
 
             bookView.setOnClickListener(new View.OnClickListener() {
                 @Override
