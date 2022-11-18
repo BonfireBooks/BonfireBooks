@@ -25,6 +25,7 @@ import org.w3c.dom.Text;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 /**
@@ -119,14 +120,16 @@ public class BookDetailsFragment extends Fragment {
         // set other textviews with book data
         txtV_book_title.setText(book.getTitle());
 
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+
         if(book.getPrice() > 0) {
-            txtV_retail_price_edit.setText("$" + book.getPrice());
+            txtV_retail_price_edit.setText("$" + decimalFormat.format(book.getPrice()));
         } else {
             txtV_retail_price_edit.setText("No Price Found");
         }
 
         if(book.getCheapestPrice() != null) {
-            txtV_cheapest_price_edit.setText("$ " + book.getCheapestPrice());
+            txtV_cheapest_price_edit.setText("$ " + decimalFormat.format(book.getCheapestPrice()));
             txtV_cheapest_condition_edit.setText("(" + book.getCheapestCondition() + ")");
         } else {
             txtV_cheapest_price_edit.setText("No Current Offers");
