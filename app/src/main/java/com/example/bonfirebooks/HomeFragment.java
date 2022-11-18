@@ -179,6 +179,14 @@ public class HomeFragment extends Fragment {
                     for (DocumentSnapshot taskDoc : task.getResult().getDocuments()) {
                         Book book = new Book(taskDoc.getDouble("price"), taskDoc.getString("title"), taskDoc.getString("isbn10"), taskDoc.getString("isbn13"), taskDoc.getString("description"), taskDoc.getString("coverImgUrl"), (HashMap<String, String>) taskDoc.get("authors"), (HashMap<String, String>) taskDoc.get("categories"), taskDoc.getTimestamp("time"));
 
+                        if(taskDoc.contains("cheapestPrice")) {
+                            book.setCheapestPrice(taskDoc.getDouble("cheapestPrice"));
+                        }
+
+                        if(taskDoc.contains("cheapestCondition")) {
+                            book.setCheapestCondition(taskDoc.getString("cheapestCondition"));
+                        }
+
                         if(order.equals("time")) {
                             booksByTime.put(i, book);
                         } else if(order.equals("title")) {

@@ -9,11 +9,13 @@ import java.util.HashMap;
 public class Book {
 
     private double price;
+    private Double cheapestPrice;
     private String title;
     private String isbn10;
     private String isbn13;
     private String description;
     private String coverImgUrl;
+    private String cheapestCondition;
     private HashMap<String, String> authors;
     private HashMap<String, String> categories;
     Timestamp time;
@@ -30,6 +32,22 @@ public class Book {
         this.authors = authors;
         this.categories = categories;
         this.time = time;
+    }
+
+    public String getCheapestCondition() {
+        return cheapestCondition;
+    }
+
+    public void setCheapestCondition(String cheapestCondition) {
+        this.cheapestCondition = cheapestCondition;
+    }
+
+    public Double getCheapestPrice() {
+        return cheapestPrice;
+    }
+
+    public void setCheapestPrice(Double cheapestPrice) {
+        this.cheapestPrice = cheapestPrice;
     }
 
     public void setCoverImgUrl(String coverImgUrl) {
