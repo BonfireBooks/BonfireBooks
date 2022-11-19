@@ -93,7 +93,8 @@ public class AllChatsFragment extends Fragment {
         listV_chats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                // todo -- open chat here
+                UserProfileChat userProfileChat = ((MainActivity)getActivity()).getUser().getChats().get(String.valueOf(i));
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new ChatFragment(userProfileChat)).addToBackStack(null).commit();
             }
         });
 
