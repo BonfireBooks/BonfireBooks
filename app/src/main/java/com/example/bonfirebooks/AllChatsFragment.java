@@ -21,7 +21,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Date;
@@ -98,31 +100,33 @@ public class AllChatsFragment extends Fragment {
             }
         });
 
+
+        getChats();
+
+        // force get chats
         final SwipeRefreshLayout pullToRefresh = view.findViewById(R.id.swipe_refresh_chats);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshChats();
+                getChats();
                 pullToRefresh.setRefreshing(false);
-                populateChatList();
             }
         });
 
-        populateChatList();
     }
 
-    private void refreshChats() {
+    private void getChats() {
         Log.d("wishlistChats", "Triggered");
 
         HashMap<String, UserProfileChat> chats = new HashMap<>();
 
-        firestore.collection("users").document(user.getUid()).collection("chats").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firestore.collection("users").document(user.getUid()).collection("chats").orderBy("time").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    // add log d
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error == null) {
+//                     add log d
                     int i = 0;
-                    for (DocumentSnapshot doc : task.getResult().getDocuments()) {
+                    for (DocumentSnapshot doc : value.getDocuments()) {
                         // create a new chat book with the document data
                         UserProfileChat chat = new UserProfileChat(doc.getId(), doc.getString("otherUserName"), doc.getString("content"), doc.getTimestamp("time").toDate());
 
@@ -133,11 +137,13 @@ public class AllChatsFragment extends Fragment {
                     }
 
                     user.setChats(chats);
+                    populateChatList();
                 } else {
                     // add log d
                 }
             }
         });
+
     }
 
     private void populateChatList() {
