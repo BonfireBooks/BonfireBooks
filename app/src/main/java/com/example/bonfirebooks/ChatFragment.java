@@ -205,7 +205,7 @@ public class ChatFragment extends Fragment {
             }
 
 
-            MessageListAdapter messageListAdapter = new MessageListAdapter(getActivity(), content, time, sender);
+            MessageListAdapter messageListAdapter = new MessageListAdapter(getActivity(), user, content, time, sender);
             listV_chats.setAdapter(messageListAdapter);
             progressDialog.dismiss();
         }
