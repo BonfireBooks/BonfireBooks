@@ -1,20 +1,19 @@
 package com.example.bonfirebooks;
 
-import com.google.firebase.Timestamp;
-
 import java.io.Serializable;
+import java.util.Date;
 
 public class UserProfileChat implements Serializable {
 
     private String otherUserName;
     private String content;
-    private Timestamp time;
+    private Date time;
 
     public UserProfileChat() {
 
     }
 
-    public UserProfileChat(String otherUserName, String content, Timestamp time) {
+    public UserProfileChat(String otherUserName, String content, Date time) {
         this.otherUserName = otherUserName;
         this.content = content;
         this.time = time;
@@ -28,7 +27,7 @@ public class UserProfileChat implements Serializable {
         return content;
     }
 
-    public Timestamp getTime() {
+    public Date getTime() {
         return time;
     }
 
@@ -40,7 +39,7 @@ public class UserProfileChat implements Serializable {
         this.content = content;
     }
 
-    public void setTime(Timestamp time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 
