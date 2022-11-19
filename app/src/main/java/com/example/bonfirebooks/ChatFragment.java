@@ -1,15 +1,36 @@
 package com.example.bonfirebooks;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TimeZone;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,8 +76,139 @@ public class ChatFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_chat, container, false);
     }
 
+    User user;
+
+    FirebaseFirestore firestore;
+
+    ConstraintLayout layout_header;
+    ConstraintLayout layout_send_bar;
+    ConstraintLayout layout_chats_empty;
+
+    TextView txtV_user_name;
+    TextView txtV_no_chats;
+
+    EditText txtE_message_content;
+    Button btn_send;
+
+    ListView listV_chats;
+
+    ProgressDialog progressDialog;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        user = ((MainActivity)getActivity()).getUser();
+
+        firestore = FirebaseFirestore.getInstance();
+
+        layout_header = view.findViewById(R.id.layout_header);
+        layout_send_bar = view.findViewById(R.id.layout_send_bar);
+        layout_chats_empty = view.findViewById(R.id.layout_chats_empty);
+        listV_chats = view.findViewById(R.id.listV_chats);
+        txtV_user_name = view.findViewById(R.id.txtV_user_name);
+        txtV_no_chats = view.findViewById(R.id.txtV_no_chats);
+        txtE_message_content = view.findViewById(R.id.txtE_message_content);
+        btn_send = view.findViewById(R.id.btn_send);
+
+        txtV_user_name.setText(userProfileChat.getOtherUserName());
+
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Loading Chats...");
+        progressDialog.show();
+
+        // load messages here
+        firestore.collection("chats").document(userProfileChat.getChatId()).collection("messages").orderBy("time").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    Log.d("loadMessages", "Successful");
+
+                    if(task.getResult().size() > 0) {
+                        Log.d("hasMessages", "true");
+
+                        List<DocumentSnapshot> docs = task.getResult().getDocuments();
+
+                        HashMap<String, UserMessage> messages = new HashMap<>();
+
+                        for(int i = 0; i < docs.size(); i++) {
+                            DocumentSnapshot doc = docs.get(i);
+                            messages.put(String.valueOf(i), new UserMessage(doc.getId(), doc.getString("content"), doc.getString("sender"), doc.getTimestamp("time").toDate())
+                            );
+                        }
+
+                        populateMessageList(messages);
+                    } else {
+                        Log.d("hasMessages", "false");
+                        txtV_no_chats.setVisibility(View.VISIBLE);
+                        progressDialog.dismiss();
+                    }
+
+                } else {
+                    Log.d("loadMessages", "Failed");
+                    Toast.makeText(getContext(), "Could Not Load Messages", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                }
+            }
+        });
+
+        btn_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isValidInput()) {
+                    HashMap<String, Object> data = new HashMap<>();
+                    data.put("content", txtE_message_content.getText().toString());
+                    data.put("time", Timestamp.now());
+                    data.put("sender", user.getUid());
+
+                    firestore.collection("chats").document(userProfileChat.getChatId()).collection("messages").document().set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d("sendMessage", "Successful");
+                                txtE_message_content.setText("");
+                            } else {
+                                Toast.makeText(getContext(), "Could Not Send Message", Toast.LENGTH_SHORT).show();
+                                Log.d("sendMessage", "Failed");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
+    private boolean isValidInput() {
+        // if the message content is empty -> input invalid
+        return !TextUtils.isEmpty(txtE_message_content.getText());
+    }
+
+    private void populateMessageList(HashMap<String, UserMessage> messages) {
+
+        if(messages != null && messages.size() != 0) {
+
+            listV_chats.setVisibility(View.VISIBLE);
+
+            String[] content = new String[messages.size()];
+            String[] time = new String[messages.size()];
+            String[] sender = new String[messages.size()];
+
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy\nhh:mm aa");
+            sdf.setTimeZone(TimeZone.getDefault());
+
+            for(int i = 0; i < messages.size(); i++) {
+                UserMessage userMessage = messages.get(String.valueOf(i));
+                content[i] = userMessage.getContent();
+                sender[i] = userMessage.getSenderId();
+                time[i] = sdf.format(userMessage.getTime());
+            }
+
+
+            MessageListAdapter messageListAdapter = new MessageListAdapter(getActivity(), content, time, sender);
+            listV_chats.setAdapter(messageListAdapter);
+            progressDialog.dismiss();
+        }
+
     }
 }
