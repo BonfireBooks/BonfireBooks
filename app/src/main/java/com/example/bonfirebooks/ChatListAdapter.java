@@ -7,16 +7,19 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.google.firebase.Timestamp;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class ChatListAdapter extends ArrayAdapter<String> {
 
     Activity context;
     String[] userName;
     String[] messageContents;
-    Timestamp[] times;
+    Date[] times;
 
-    public ChatListAdapter(Activity context, String[] userNames, String[] messageContents, Timestamp[] times) {
+    public ChatListAdapter(Activity context, String[] userNames, String[] messageContents, Date[] times) {
         super(context, R.layout.chat_list, userNames);
         this.context = context;
         this.userName = userNames;
@@ -34,7 +37,14 @@ public class ChatListAdapter extends ArrayAdapter<String> {
 
         txtV_name.setText(userName[position]);
         txtV_content.setText(messageContents[position]);
-        txtV_time.setText(String.valueOf(times[position].toDate().getTime()));
+
+        if(times[position] != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy\nhh:mm aa");
+            sdf.setTimeZone(TimeZone.getDefault());
+            txtV_time.setText(sdf.format(times[position]));
+        } else {
+            txtV_time.setText("");
+        }
 
         return rowView;
     }
