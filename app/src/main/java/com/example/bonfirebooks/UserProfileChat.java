@@ -48,9 +48,16 @@ public class UserProfileChat implements Serializable {
     public String toString() {
         StringBuilder str = new StringBuilder();
         str.append("UserProfileChat: \n");
-        str.append("otherUserName: " + otherUserName + "\n");
-        str.append("content: " + content + "\n");
-        str.append("time: " + time.toString() + "\n");
+        str.append("otherUserName: " + otherUserName);
+
+        if(content != null) {
+            str.append( "\ncontent: " + content);
+        }
+
+        if(time != null) {
+            str.append("\ntime: " + time.toString());
+        }
+
         return str.toString();
     }
 
