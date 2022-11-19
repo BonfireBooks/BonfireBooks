@@ -2,6 +2,7 @@ package com.example.bonfirebooks;
 
 import android.os.Bundle;
 
+import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -21,7 +22,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -29,7 +29,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,7 +51,6 @@ public class ChatFragment extends Fragment {
      *
      * @return A new instance of fragment ChatFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ChatFragment newInstance() {
         ChatFragment fragment = new ChatFragment();
         Bundle args = new Bundle();
@@ -85,7 +87,7 @@ public class ChatFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        user = ((MainActivity)getActivity()).getUser();
+        user = ((MainActivity) getActivity()).getUser();
 
         layout_chats_empty = view.findViewById(R.id.layout_chats_empty);
         txtV_no_chats = view.findViewById(R.id.txtV_no_chats);
@@ -128,7 +130,7 @@ public class ChatFragment extends Fragment {
                     int i = 0;
                     for (DocumentSnapshot doc : task.getResult().getDocuments()) {
                         // create a new chat book with the document data
-                        UserProfileChat chat = new UserProfileChat(doc.getString("otherUserName"), doc.getString("content"), doc.getTimestamp("time"));
+                        UserProfileChat chat = new UserProfileChat(doc.getString("otherUserName"), doc.getString("content"), doc.getTimestamp("time").toDate());
 
                         // add the book to the users wishlist
                         chats.put(String.valueOf(i), chat);
@@ -149,25 +151,25 @@ public class ChatFragment extends Fragment {
 
         if (chats != null && chats.size() != 0) {
 
-            layout_chats_empty.setVisibility(View.GONE);
+            txtV_no_chats.setVisibility(View.GONE);
             listV_chats.setVisibility(View.VISIBLE);
 
             String[] names = new String[chats.size()];
             String[] contents = new String[chats.size()];
-            Timestamp[] times = new Timestamp[chats.size()];
+            Date[] times = new Date[chats.size()];
 
-            for(int i = 0; i < chats.size(); i++) {
+            for (int i = 0; i < chats.size(); i++) {
                 UserProfileChat chat = chats.get(String.valueOf(i));
                 names[i] = chat.getOtherUserName();
                 contents[i] = chat.getContent();
                 times[i] = chat.getTime();
             }
 
-        ChatListAdapter chatAdapter = new ChatListAdapter(getActivity(), names, contents, times);
-        listV_chats.setAdapter(chatAdapter);
+            ChatListAdapter chatAdapter = new ChatListAdapter(getActivity(), names, contents, times);
+            listV_chats.setAdapter(chatAdapter);
 
         } else {
-            layout_chats_empty.setVisibility(View.VISIBLE);
+            txtV_no_chats.setVisibility(View.VISIBLE);
             listV_chats.setVisibility(View.GONE);
         }
     }
