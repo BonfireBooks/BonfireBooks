@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class UserProfileChat implements Serializable {
 
+    private String chatId;
     private String otherUserName;
     private String content;
     private Date time;
@@ -13,10 +14,19 @@ public class UserProfileChat implements Serializable {
 
     }
 
-    public UserProfileChat(String otherUserName, String content, Date time) {
+    public UserProfileChat(String chatId, String otherUserName, String content, Date time) {
+        this.chatId = chatId;
         this.otherUserName = otherUserName;
         this.content = content;
         this.time = time;
+    }
+
+    public String getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(String chatId) {
+        this.chatId = chatId;
     }
 
     public String getOtherUserName() {
@@ -47,6 +57,7 @@ public class UserProfileChat implements Serializable {
     public String toString() {
         StringBuilder str = new StringBuilder();
         str.append("UserProfileChat: \n");
+        str.append("chatId: " + chatId);
         str.append("otherUserName: " + otherUserName);
 
         if(content != null) {
