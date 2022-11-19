@@ -28,6 +28,7 @@ import android.widget.ViewSwitcher;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -255,10 +256,11 @@ public class BookOfferDetailsFragment extends Fragment {
                 uMap.put(user.getUid(), user.getName());
                 uMap.put(userBook.getOwner(), userBook.getName());
 
-                HashMap<String, Object> users = new HashMap<>();
-                users.put("users", uMap);
+                HashMap<String, Object> data = new HashMap<>();
+                data.put("users", uMap);
+                data.put("time", Timestamp.now());
 
-                firestore.collection("chats").whereEqualTo("users", users).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                firestore.collection("chats").whereEqualTo("users", uMap).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
@@ -271,7 +273,7 @@ public class BookOfferDetailsFragment extends Fragment {
                                 // navigate to the already existing chat
 
                             } else {
-                                firestore.collection("chats").document().set(users).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                firestore.collection("chats").document().set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if(task.isSuccessful()) {
