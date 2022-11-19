@@ -77,4 +77,7 @@
     <string name="save_changes">Save Changes</string>
     <string name="change_photos">Change Photos</string>
     <string name="set_public">Set Public</string>
+    <string name="no_message_history">No Message History</string>
+    <string name="username_bracket">[UserName]</string>
+    <string name="send">Send</string>
 </resources>
