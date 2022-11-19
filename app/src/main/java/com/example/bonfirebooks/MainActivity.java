@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new WishlistFragment()).addToBackStack(null).commit();
                 break;
             case R.id.nav_chats:
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new ChatFragment()).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new AllChatsFragment()).addToBackStack(null).commit();
                 break;
             case R.id.nav_profile:
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new AccountFragment()).addToBackStack(null).commit();
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
                 navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
             } else if (fragName.equals(WishlistFragment.class.getName())) {
                 navigationView.getMenu().findItem(R.id.nav_wish_list).setChecked(true);
-            } else if (fragName.equals(ChatFragment.class.getName())) {
+            } else if (fragName.equals(AllChatsFragment.class.getName())) {
                 navigationView.getMenu().findItem(R.id.nav_chats).setChecked(true);
             } else if (fragName.equals(Account.class.getName())) {
                 navigationView.getMenu().findItem(R.id.nav_profile).setChecked(true);
