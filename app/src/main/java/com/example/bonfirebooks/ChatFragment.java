@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -24,10 +25,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
@@ -94,6 +100,7 @@ public class ChatFragment extends Fragment {
 
     ProgressDialog progressDialog;
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -117,35 +124,29 @@ public class ChatFragment extends Fragment {
         progressDialog.setMessage("Loading Chats...");
         progressDialog.show();
 
-        // load messages here
-        firestore.collection("chats").document(userProfileChat.getChatId()).collection("messages").orderBy("time").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firestore.collection("chats").document(userProfileChat.getChatId()).collection("messages").orderBy("time").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()) {
-                    Log.d("loadMessages", "Successful");
-
-                    if(task.getResult().size() > 0) {
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error == null) {
+                    if (value.getDocuments().size() > 0) {
                         Log.d("hasMessages", "true");
 
-                        List<DocumentSnapshot> docs = task.getResult().getDocuments();
-
+                        List<DocumentSnapshot> docs = value.getDocuments();
                         HashMap<String, UserMessage> messages = new HashMap<>();
 
-                        for(int i = 0; i < docs.size(); i++) {
+                        for (int i = 0; i < docs.size(); i++) {
                             DocumentSnapshot doc = docs.get(i);
-                            messages.put(String.valueOf(i), new UserMessage(doc.getId(), doc.getString("content"), doc.getString("sender"), doc.getTimestamp("time").toDate())
-                            );
+                            messages.put(String.valueOf(i), new UserMessage(doc.getId(), doc.getString("content"), doc.getString("sender"), doc.getTimestamp("time").toDate()));
                         }
 
-                        populateMessageList(messages);
+                        updateMessageList(messages);
                     } else {
                         Log.d("hasMessages", "false");
                         txtV_no_chats.setVisibility(View.VISIBLE);
                         progressDialog.dismiss();
                     }
-
                 } else {
-                    Log.d("loadMessages", "Failed");
+                    Log.d("loadMessages", "Failed, code:" + error.getCode() + "message: " + error.getMessage());
                     Toast.makeText(getContext(), "Could Not Load Messages", Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
                 }
@@ -184,7 +185,7 @@ public class ChatFragment extends Fragment {
         return !TextUtils.isEmpty(txtE_message_content.getText());
     }
 
-    private void populateMessageList(HashMap<String, UserMessage> messages) {
+    private void updateMessageList(HashMap<String, UserMessage> messages) {
 
         if(messages != null && messages.size() != 0) {
 
@@ -203,7 +204,6 @@ public class ChatFragment extends Fragment {
                 sender[i] = userMessage.getSenderId();
                 time[i] = sdf.format(userMessage.getTime());
             }
-
 
             MessageListAdapter messageListAdapter = new MessageListAdapter(getActivity(), user, content, time, sender);
             listV_chats.setAdapter(messageListAdapter);
