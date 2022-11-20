@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -115,6 +116,7 @@ public class ChatFragment extends Fragment {
 
         BottomNavigationView navBar = getActivity().findViewById(R.id.bottomNavView);
         navBar.setVisibility(View.GONE);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         user = ((MainActivity)getActivity()).getUser();
 
