@@ -1,6 +1,7 @@
 package com.example.bonfirebooks;
 
 import android.app.ProgressDialog;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -29,6 +31,9 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import org.checkerframework.checker.units.qual.A;
 
@@ -85,6 +90,7 @@ public class ChatFragment extends Fragment {
     User user;
 
     FirebaseFirestore firestore;
+    FirebaseStorage firebaseStorage;
 
     ConstraintLayout layout_header;
     ConstraintLayout layout_send_bar;
@@ -93,13 +99,14 @@ public class ChatFragment extends Fragment {
     TextView txtV_user_name;
     TextView txtV_no_chats;
 
+    ImageView img_profile;
+
     EditText txtE_message_content;
     Button btn_send;
 
     ListView listV_chats;
 
     ProgressDialog progressDialog;
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -108,6 +115,7 @@ public class ChatFragment extends Fragment {
         user = ((MainActivity)getActivity()).getUser();
 
         firestore = FirebaseFirestore.getInstance();
+        firebaseStorage = FirebaseStorage.getInstance();
 
         layout_header = view.findViewById(R.id.layout_header);
         layout_send_bar = view.findViewById(R.id.layout_send_bar);
@@ -115,10 +123,34 @@ public class ChatFragment extends Fragment {
         listV_chats = view.findViewById(R.id.listV_chats);
         txtV_user_name = view.findViewById(R.id.txtV_user_name);
         txtV_no_chats = view.findViewById(R.id.txtV_no_chats);
+        img_profile = view.findViewById(R.id.img_profile);
         txtE_message_content = view.findViewById(R.id.txtE_message_content);
         btn_send = view.findViewById(R.id.btn_send);
 
         txtV_user_name.setText(userProfileChat.getOtherUserName());
+
+        // get user profile image
+        firebaseStorage.getReference().child("User Images").child(userProfileChat.getOtherUserId() + ".jpg").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+
+                if(task.getResult() == null) {
+
+                } else {
+                    Picasso.get().load(task.getResult()).into(img_profile, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            img_profile.setBackground(null);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            // do nothing -- keep image not found background
+                        }
+                    });
+                }
+            }
+        });
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading Chats...");
