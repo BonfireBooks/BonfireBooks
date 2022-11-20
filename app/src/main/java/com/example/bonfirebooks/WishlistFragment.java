@@ -117,21 +117,21 @@ public class WishlistFragment extends Fragment {
             }
         });
 
+        getWishlistFromFirebase();
+
         // handle swipe to refresh
         final SwipeRefreshLayout pullToRefresh = view.findViewById(R.id.swipe_refresh_wishlist);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshWishlist();
+                getWishlistFromFirebase();
                 pullToRefresh.setRefreshing(false);
-                populateScrollViewWithFirebase();
             }
         });
 
-        populateScrollViewWithFirebase();
     }
 
-    private void refreshWishlist() {
+    private void getWishlistFromFirebase() {
 
         Log.d("wishlistRefresh", "Triggered");
 
@@ -157,6 +157,7 @@ public class WishlistFragment extends Fragment {
                     }
 
                     user.setWishlist(wishlist);
+                    populateScrollView();
 
                 } else {
                     Log.d("loadWishlistFirebase", "Failed");
@@ -165,7 +166,7 @@ public class WishlistFragment extends Fragment {
         });
     }
 
-    private void populateScrollViewWithFirebase() {
+    private void populateScrollView() {
 
         HashMap<String, WishlistBook> wishlist = user.getWishlist();
         if (wishlist.size() != 0) {
