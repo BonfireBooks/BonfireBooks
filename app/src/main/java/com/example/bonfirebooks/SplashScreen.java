@@ -35,7 +35,7 @@ public class SplashScreen extends AppCompatActivity {
         currUser = FirebaseAuth.getInstance().getCurrentUser();
 
         // check if user is currently logged in
-        if(currUser == null) {
+        if (currUser == null) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -74,109 +74,53 @@ public class SplashScreen extends AppCompatActivity {
                     user.setEmail(taskResult.getString("email"));
                     user.setHofstraId(taskResult.getString("hofID"));
 
-                    // wishlist as hashmap
-                    HashMap<String, WishlistBook> wishlist = new HashMap<>();
-                    userDoc.collection("wishlist").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    // books as hashmap
+                    HashMap<String, UserProfileBook> books = new HashMap<>();
+                    userDoc.collection("books").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
                                 // add log d
                                 int i = 0;
                                 for (DocumentSnapshot doc : task.getResult().getDocuments()) {
-                                    // create a new wishlist book with the document data
-                                    WishlistBook wBook = new WishlistBook(doc.getId(), doc.getString("title"),
-                                            doc.getString("condition"), doc.getString("coverImgUrl"), doc.getDouble("price"));
+                                    // create a new book book with the document data
+                                    UserProfileBook book = new UserProfileBook(doc.getId(), doc.getString("title"), doc.getString("coverImgUrl"), doc.getString("condition"), doc.getDouble("price"), doc.getBoolean("isPublic"), (HashMap<Integer, String>) doc.get("images"));
 
                                     // add the book to the users wishlist
-                                    wishlist.put(String.valueOf(i), wBook);
+                                    books.put(String.valueOf(i), book);
 
                                     i++;
                                 }
 
                                 // set the users wishlists
-                                user.setWishlist(wishlist);
-                                Log.d("wishlistSet", user.toString());
+                                user.setBooks(books);
 
-                                // chat as hashmap
-                                HashMap<String, UserProfileChat> chats = new HashMap<>();
-                                userDoc.collection("chats").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                Log.d("booksSet", user.toString());
+
+
+                                FirebaseStorage.getInstance().getReference().child("User Images").child(currUser.getUid()).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                                     @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    public void onComplete(@NonNull Task<Uri> task) {
                                         if (task.isSuccessful()) {
-                                            // add log d
-                                            int i = 0;
-                                            for (DocumentSnapshot doc : task.getResult().getDocuments()) {
-                                                // create a new chat book with the document data
-                                                UserProfileChat chat = new UserProfileChat(doc.getId() ,doc.getString("otherUserName"), doc.getString("content"), doc.getTimestamp("time").toDate());
-
-                                                // add the book to the users wishlist
-                                                chats.put(String.valueOf(i), chat);
-
-                                                i++;
-                                            }
-
-                                            // set the users wishlists
-                                            user.setChats(chats);
-                                            Log.d("chatsSet", user.toString());
-
-                                            // books as hashmap
-                                            HashMap<String, UserProfileBook> books = new HashMap<>();
-                                            userDoc.collection("books").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                    if (task.isSuccessful()) {
-                                                        // add log d
-                                                        int i = 0;
-                                                        for (DocumentSnapshot doc : task.getResult().getDocuments()) {
-                                                            // create a new book book with the document data
-                                                            UserProfileBook book = new UserProfileBook(doc.getId(), doc.getString("title"), doc.getString("coverImgUrl"), doc.getString("condition"), doc.getDouble("price"), doc.getBoolean("isPublic"), (HashMap<Integer, String>) doc.get("images"));
-
-                                                            // add the book to the users wishlist
-                                                            books.put(String.valueOf(i), book);
-
-                                                            i++;
-                                                        }
-
-                                                        // set the users wishlists
-                                                        user.setBooks(books);
-
-                                                        Log.d("booksSet", user.toString());
-
-
-                                                        FirebaseStorage.getInstance().getReference().child("User Images").child(currUser.getUid()).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Uri> task) {
-                                                                if(task.isSuccessful()) {
-                                                                    Log.d("getUserProfile", "Successful");
-                                                                    user.setProfileUri(String.valueOf(task.getResult()));
-                                                                } else {
-                                                                    Log.d("getUserProfile", "Failed");
-                                                                }
-
-                                                                Intent intent = new Intent(SplashScreen.this, MainActivity.class);
-                                                                intent.putExtra("user", (Parcelable) user);
-                                                                startActivity(intent);
-
-                                                                finish();
-                                                            }
-                                                        });
-
-                                                    } else {
-                                                        // add log d
-                                                    }
-                                                }
-                                            });
+                                            Log.d("getUserProfile", "Successful");
+                                            user.setProfileUri(String.valueOf(task.getResult()));
                                         } else {
-                                            // add log d
+                                            Log.d("getUserProfile", "Failed");
                                         }
+
+                                        Intent intent = new Intent(SplashScreen.this, MainActivity.class);
+                                        intent.putExtra("user", (Parcelable) user);
+                                        startActivity(intent);
+
+                                        finish();
                                     }
                                 });
+
                             } else {
                                 // add log d
                             }
                         }
                     });
-
                 } else {
                     // add log d
                 }
