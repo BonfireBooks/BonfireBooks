@@ -25,6 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.Timestamp;
@@ -136,27 +138,29 @@ public class ChatFragment extends Fragment {
         txtV_user_name.setText(userProfileChat.getOtherUserName());
 
         // get user profile image
-        firebaseStorage.getReference().child("User Images").child(userProfileChat.getOtherUserId() + ".jpg").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+        firebaseStorage.getReference().child("User Images").child(userProfileChat.getOtherUserId()).getDownloadUrl().addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onComplete(@NonNull Task<Uri> task) {
+            public void onFailure(@NonNull Exception e) {
+                Log.d("chatGetProfileImg", "Failed");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.d("chatGetProfileImg", "Success");
+                Picasso.get().load(uri).into(img_profile, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        img_profile.setBackground(null);
+                    }
 
-                if(task.getResult() == null) {
-
-                } else {
-                    Picasso.get().load(task.getResult()).into(img_profile, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            img_profile.setBackground(null);
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            // do nothing -- keep image not found background
-                        }
-                    });
-                }
+                    @Override
+                    public void onError(Exception e) {
+                        // do nothing -- keep image not found background
+                    }
+                });
             }
         });
+
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading Chats...");
