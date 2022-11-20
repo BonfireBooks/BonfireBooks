@@ -128,7 +128,16 @@ public class AllChatsFragment extends Fragment {
                     int i = 0;
                     for (DocumentSnapshot doc : value.getDocuments()) {
                         // create a new chat book with the document data
-                        UserProfileChat chat = new UserProfileChat(doc.getId(), doc.getString("otherUserName"), doc.getString("content"), doc.getTimestamp("time").toDate());
+
+                        String otherUserId = "";
+
+                        for(String key : doc.getData().keySet()) {
+                            if(!key.equals("content") && !key.equals("time")) {
+                                otherUserId = key;
+                            }
+                        }
+
+                        UserProfileChat chat = new UserProfileChat(doc.getId(), otherUserId, doc.getString(otherUserId), doc.getString("content"), doc.getTimestamp("time").toDate());
 
                         // add the book to the users wishlist
                         chats.put(String.valueOf(i), chat);
