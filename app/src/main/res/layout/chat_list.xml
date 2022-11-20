@@ -7,13 +7,14 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="5dp">
 
         <TextView
             android:id="@+id/txtV_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="[UserName]"
+            android:text="@string/username_bracket"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:layout_marginTop="5dp"
@@ -25,9 +26,12 @@
             android:id="@+id/txtV_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="[Message Content]"
+            android:maxWidth="280dp"
+            android:ellipsize="end"
+            android:text="@string/message_content"
             android:textColor="@color/black"
             android:textSize="20sp"
+            android:maxLines="2"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txtV_name"
             />
@@ -36,7 +40,7 @@
             android:id="@+id/txtV_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="12:00 am"
+            android:text="@string/sample_time"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textAlignment="viewEnd"

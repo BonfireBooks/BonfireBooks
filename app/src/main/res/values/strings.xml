@@ -81,4 +81,6 @@
     <string name="username_bracket">[UserName]</string>
     <string name="send">Send</string>
     <string name="content">[content]</string>
+    <string name="message_content">[Message Content]</string>
+    <string name="sample_time">12:00 am</string>
 </resources>
