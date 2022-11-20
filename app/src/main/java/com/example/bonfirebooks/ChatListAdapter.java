@@ -1,6 +1,7 @@
 package com.example.bonfirebooks;
 
 import android.app.Activity;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +9,10 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 
+import androidx.annotation.RequiresApi;
+
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -39,9 +43,27 @@ public class ChatListAdapter extends ArrayAdapter<String> {
         txtV_content.setText(messageContents[position]);
 
         if(times[position] != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy\nhh:mm aa");
-            sdf.setTimeZone(TimeZone.getDefault());
-            txtV_time.setText(sdf.format(times[position]));
+            Date date1 = times[position];
+            Date date2 = new Date(System.currentTimeMillis());
+
+            Duration duration = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                duration = Duration.between(date1.toInstant(), date2.toInstant());
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if(duration.getSeconds() < 60) {
+                    txtV_time.setText(duration.getSeconds() + "s");
+                } else if(duration.toMinutes() < 60) {
+                    txtV_time.setText(duration.toMinutes() + "m");
+                } else if(duration.toHours() < 24) {
+                    txtV_time.setText(duration.toHours() + "h");
+                } else if(duration.toDays() < 30) {
+                    txtV_time.setText(duration.toDays() + "d");
+                }
+            }
+
+
         } else {
             txtV_time.setText("");
         }
