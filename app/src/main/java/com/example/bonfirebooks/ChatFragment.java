@@ -198,7 +198,7 @@ public class ChatFragment extends Fragment {
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy\nhh:mm aa");
             sdf.setTimeZone(TimeZone.getDefault());
 
-            for(int i = 0; i < messages.size(); i++) {
+            for(int i = messages.size()-1; i >= 0; i--) {
                 UserMessage userMessage = messages.get(String.valueOf(i));
                 content[i] = userMessage.getContent();
                 sender[i] = userMessage.getSenderId();
