@@ -1,5 +1,6 @@
 package com.example.bonfirebooks;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,8 +15,11 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import org.w3c.dom.Text;
 
@@ -97,24 +101,26 @@ public class BooksGridFragment extends Fragment {
             TextView book_price = bookView.findViewById(R.id.txtV_book_price);
 
             // set book views image
-            Picasso.get().load(currBook.getCoverImgUrl()).into(book_image, new Callback() {
+            Glide.with(getContext()).load(currBook.getCoverImgUrl()).listener(new RequestListener<Drawable>() {
                 @Override
-                public void onSuccess() {
-                    book_image.setBackground(null);
+                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    return false;
                 }
 
                 @Override
-                public void onError(Exception e) {
-                    // do nothing -- keep image not found background
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    // get rid of the background resource when image loads
+                    book_image.setBackground(null);
+                    return false;
                 }
-            });
+            }).into(book_image);
 
             // set other book view details
             book_title.setText(currBook.getTitle());
 
             DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
-            if(currBook.getCheapestPrice() != null) {
+            if (currBook.getCheapestPrice() != null) {
                 book_price.setText("$ " + decimalFormat.format(currBook.getCheapestPrice()));
             } else {
                 book_price.setText("$ " + decimalFormat.format(currBook.getPrice()));

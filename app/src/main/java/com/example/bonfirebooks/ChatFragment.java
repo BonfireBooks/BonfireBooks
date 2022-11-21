@@ -1,6 +1,7 @@
 package com.example.bonfirebooks;
 
 import android.app.ProgressDialog;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -24,6 +25,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,8 +42,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import org.checkerframework.checker.units.qual.A;
 
@@ -120,7 +124,7 @@ public class ChatFragment extends Fragment {
         navBar.setVisibility(View.GONE);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-        user = ((MainActivity)getActivity()).getUser();
+        user = ((MainActivity) getActivity()).getUser();
 
         firestore = FirebaseFirestore.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
@@ -147,20 +151,19 @@ public class ChatFragment extends Fragment {
             @Override
             public void onSuccess(Uri uri) {
                 Log.d("chatGetProfileImg", "Success");
-                Picasso.get().load(uri).into(img_profile, new Callback() {
+                Glide.with(getContext()).load(uri).listener(new RequestListener<Drawable>() {
                     @Override
-                    public void onSuccess() {
-                        img_profile.setBackground(null);
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
                     }
 
                     @Override
-                    public void onError(Exception e) {
-                        // do nothing -- keep image not found background
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        return false;
                     }
-                });
+                }).into(img_profile);
             }
         });
-
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading Chats...");
@@ -169,7 +172,7 @@ public class ChatFragment extends Fragment {
         firestore.collection("chats").document(userProfileChat.getChatId()).collection("messages").orderBy("time").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if(error == null) {
+                if (error == null) {
                     if (value.getDocuments().size() > 0) {
                         Log.d("hasMessages", "true");
 
@@ -198,7 +201,7 @@ public class ChatFragment extends Fragment {
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isValidInput()) {
+                if (isValidInput()) {
                     HashMap<String, Object> data = new HashMap<>();
                     data.put("content", txtE_message_content.getText().toString());
                     data.put("time", Timestamp.now());
@@ -229,7 +232,7 @@ public class ChatFragment extends Fragment {
 
     private void updateMessageList(HashMap<String, UserMessage> messages) {
 
-        if(messages != null && messages.size() != 0) {
+        if (messages != null && messages.size() != 0) {
 
             listV_chats.setVisibility(View.VISIBLE);
 
@@ -240,7 +243,7 @@ public class ChatFragment extends Fragment {
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy\nhh:mm aa");
             sdf.setTimeZone(TimeZone.getDefault());
 
-            for(int i = messages.size()-1; i >= 0; i--) {
+            for (int i = messages.size() - 1; i >= 0; i--) {
                 UserMessage userMessage = messages.get(String.valueOf(i));
                 content[i] = userMessage.getContent();
                 sender[i] = userMessage.getSenderId();

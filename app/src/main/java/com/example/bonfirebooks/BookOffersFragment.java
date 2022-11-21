@@ -1,6 +1,7 @@
 package com.example.bonfirebooks;
 
 import android.app.ProgressDialog;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -17,14 +18,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.List;
@@ -144,57 +148,47 @@ public class BookOffersFragment extends Fragment {
             TextView book_condition = bookView.findViewById(R.id.txtV_book_condition);
             TextView book_price = bookView.findViewById(R.id.txtV_book_price);
 
-            if (currBook.getPathsToImages() != null) {
-                if (currBook.getPathsToImages().size() > 0) {
-                    firebaseStorage.getReference().child(currBook.getPathsToImages().get("0")).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()) {
-                                Log.d("getImage", "Successful");
-                            } else {
-                                Log.d("getImage", "Failed");
+            if (currBook.getPathsToImages().size() != 0) {
+                firebaseStorage.getReference().child(currBook.getPathsToImages().get("0")).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("getImage", "Successful");
+                        } else {
+                            Log.d("getImage", "Failed");
+                        }
+
+                        Glide.with(getContext()).load(task.getResult()).listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                return false;
                             }
 
-                            Picasso.get().load(task.getResult()).into(book_image, new Callback() {
-                                @Override
-                                public void onSuccess() {
-                                    book_image.setBackground(null);
-                                }
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                // get rid of the background resource when image loads
+                                book_image.setBackground(null);
+                                return false;
+                            }
+                        }).into(book_image);
 
-                                @Override
-                                public void onError(Exception e) {
-                                    // do nothing -- keep image not found background
-                                }
-                            });
-                        }
-                    });
-                } else {
-                    // set book views image
-                    Picasso.get().load(book.getCoverImgUrl()).into(book_image, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            book_image.setBackground(null);
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            // do nothing -- keep image not found background
-                        }
-                    });
-                }
-            } else {
-                // set book views image
-                Picasso.get().load(book.getCoverImgUrl()).into(book_image, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        book_image.setBackground(null);
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        // do nothing -- keep image not found background
                     }
                 });
+            } else {
+                // set book views image
+                Glide.with(getContext()).load(book.getCoverImgUrl()).listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        // get rid of the background resource when image loads
+                        book_image.setBackground(null);
+                        return false;
+                    }
+                }).into(book_image);
             }
 
             // set other book view details
@@ -214,6 +208,5 @@ public class BookOffersFragment extends Fragment {
         }
 
         progressDialog.dismiss();
-        ;
     }
 }

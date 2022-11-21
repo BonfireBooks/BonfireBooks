@@ -1,5 +1,6 @@
 package com.example.bonfirebooks;
 
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -19,11 +20,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
@@ -105,21 +109,21 @@ public class UserBooksDetailsFragment extends Fragment {
         txtV_book_condition_edit.setText(userProfileBook.getConditon());
         txtV_book_price.setText("$" + userProfileBook.getPrice());
 
-        books = ((MainActivity)getActivity()).getBooksByTime();
+        books = ((MainActivity) getActivity()).getBooksByTime();
 
         Log.d("userProfileBook", userProfileBook.toString());
 
         // add images to the scroll view
-        HashMap<Integer, String> images = userProfileBook.getImages();
-        if(images != null) {
-            for(int i = 0; i < images.size(); i++) {
+        HashMap<String, String> images = userProfileBook.getImages();
+        if (images != null) {
+            for (int i = 0; i < images.size(); i++) {
                 int finalI = i;
-                firebaseStorage.getReference().child("User Images").child(images.get(i)).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                firebaseStorage.getReference().child(images.get(String.valueOf(i))).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Log.d("loadImage", "Successful");
-                            addImageToScroll(task.getResult(), finalI);
+                            addImageToScroll(task.getResult(), linlayout_image_scroll.getChildCount());
                         } else {
                             Log.d("loadImage", "Successful");
                         }
@@ -138,7 +142,7 @@ public class UserBooksDetailsFragment extends Fragment {
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).onBackPressed();
+                ((MainActivity) getActivity()).onBackPressed();
             }
         });
 
@@ -146,14 +150,14 @@ public class UserBooksDetailsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 boolean hasBook = false;
-                for(Book currBook : books.values()) {
-                    if(currBook.getTitle().equals(userProfileBook.getTitle())) {
+                for (Book currBook : books.values()) {
+                    if (currBook.getTitle().equals(userProfileBook.getTitle())) {
                         hasBook = true;
                         getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookOffersFragment(currBook)).addToBackStack(null).commit();
                     }
                 }
 
-                if(!hasBook) {
+                if (!hasBook) {
                     Toast.makeText(getContext(), "Books could not be loaded", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -164,17 +168,19 @@ public class UserBooksDetailsFragment extends Fragment {
         View image = getLayoutInflater().inflate(R.layout.book_image_view, null);
         ImageView book_image = image.findViewById(R.id.imgV_image);
 
-        Picasso.get().load(imgUri).into(book_image, new Callback() {
+        Glide.with(getContext()).load(imgUri).listener(new RequestListener<Drawable>() {
             @Override
-            public void onSuccess() {
-                book_image.setBackground(null);
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                return false;
             }
 
             @Override
-            public void onError(Exception e) {
-                // do nothing -- keep image not found background
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                // get rid of the background resource when image loads
+                book_image.setBackground(null);
+                return false;
             }
-        });
+        }).into(book_image);
 
         image.setPadding(0, 0, 20, 0);
         linlayout_image_scroll.addView(image, i);

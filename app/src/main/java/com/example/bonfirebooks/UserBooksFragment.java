@@ -1,5 +1,6 @@
 package com.example.bonfirebooks;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,8 +16,11 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import org.w3c.dom.Text;
 
@@ -71,7 +75,7 @@ public class UserBooksFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        user = ((MainActivity)getActivity()).getUser();
+        user = ((MainActivity) getActivity()).getUser();
 
         gridL_books = view.findViewById(R.id.gridL_books);
         txtV_my_books = view.findViewById(R.id.txtV_my_books);
@@ -98,17 +102,32 @@ public class UserBooksFragment extends Fragment {
             TextView book_condition = bookView.findViewById(R.id.txtV_book_condition);
 
             // set book views image
-            Picasso.get().load(currBook.getCoverImgUrl()).into(book_image, new Callback() {
+            Glide.with(getContext()).load(currBook.getCoverImgUrl()).listener(new RequestListener<Drawable>() {
                 @Override
-                public void onSuccess() {
-                    book_image.setBackground(null);
+                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    return false;
                 }
 
                 @Override
-                public void onError(Exception e) {
-                    // do nothing -- keep image not found background
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    return false;
                 }
-            });
+            }).into(book_image);
+
+
+            Glide.with(getContext()).load(currBook.getCoverImgUrl()).listener(new RequestListener<Drawable>() {
+                @Override
+                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    // get rid of the background resource when image loads
+                    book_image.setBackground(null);
+                    return false;
+                }
+            }).into(book_image);
 
             // set other book view details
             book_condition.setText(currBook.getConditon());

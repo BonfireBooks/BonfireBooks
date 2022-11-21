@@ -18,8 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import org.w3c.dom.Text;
 
@@ -122,13 +121,13 @@ public class BookDetailsFragment extends Fragment {
 
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
-        if(book.getPrice() > 0) {
+        if (book.getPrice() > 0) {
             txtV_retail_price_edit.setText("$" + decimalFormat.format(book.getPrice()));
         } else {
             txtV_retail_price_edit.setText("No Price Found");
         }
 
-        if(book.getCheapestPrice() != null) {
+        if (book.getCheapestPrice() != null) {
             txtV_cheapest_price_edit.setText("$ " + decimalFormat.format(book.getCheapestPrice()));
             txtV_cheapest_condition_edit.setText("(" + book.getCheapestCondition() + ")");
         } else {
@@ -139,7 +138,7 @@ public class BookDetailsFragment extends Fragment {
         txtV_book_description_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(txtV_book_description_edit.getMaxLines() == 10) {
+                if (txtV_book_description_edit.getMaxLines() == 10) {
                     txtV_book_description_edit.setMaxLines(40);
                 } else {
                     txtV_book_description_edit.setMaxLines(10);
@@ -152,22 +151,12 @@ public class BookDetailsFragment extends Fragment {
         txtV_isbn13_edit.setText(book.getIsbn13());
         txtV_book_description_edit.setText(book.getDescription());
 
-        Picasso.get().load(book.getCoverImgUrl()).into(imgV_book_images, new Callback() {
-            @Override
-            public void onSuccess() {
-                imgV_book_images.setBackground(null);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                // do nothing -- keep image not found background
-            }
-        });
+        Glide.with(getContext()).load(book.getCoverImgUrl()).error(R.drawable.ic_image_failed).into(imgV_book_images);
 
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).onBackPressed();
+                ((MainActivity) getActivity()).onBackPressed();
             }
         });
 

@@ -1,5 +1,6 @@
 package com.example.bonfirebooks;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -29,8 +35,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -197,17 +201,19 @@ public class WishlistFragment extends Fragment {
                 TextView book_condition = bookView.findViewById(R.id.txtV_book_condition);
 
                 // set book views image
-                Picasso.get().load(currBook.getCoverImgUrl()).into(book_image, new Callback() {
+                Glide.with(getContext()).load(currBook.getCoverImgUrl()).listener(new RequestListener<Drawable>() {
                     @Override
-                    public void onSuccess() {
-                        book_image.setBackground(null);
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
                     }
 
                     @Override
-                    public void onError(Exception e) {
-                        // do nothing -- keep image not found background
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        // get rid of the background resource when image loads
+                        book_image.setBackground(null);
+                        return false;
                     }
-                });
+                }).into(book_image);
 
                 // set other book view details
                 book_title.setText(currBook.getTitle());
@@ -222,18 +228,18 @@ public class WishlistFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         //
-                        HashMap<Integer, Book> books = ((MainActivity)getActivity()).getBooksByTime();
+                        HashMap<Integer, Book> books = ((MainActivity) getActivity()).getBooksByTime();
 
                         Book book = null;
 
                         // find other details on book
-                        for(int i = 0; i < books.size(); i++) {
-                            if(books.get(i).getTitle().equals(currBook.getTitle())) {
+                        for (int i = 0; i < books.size(); i++) {
+                            if (books.get(i).getTitle().equals(currBook.getTitle())) {
                                 book = books.get(i);
                             }
                         }
 
-                        if(book == null) {
+                        if (book == null) {
                             Toast.makeText(getContext(), "Could Not Load Book", Toast.LENGTH_SHORT).show();
                         } else {
                             Book finalBook = book;
@@ -241,7 +247,7 @@ public class WishlistFragment extends Fragment {
                             firestore.document("/books/" + book.getBookId() + "/users/" + currBook.getBookId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if(task.isSuccessful()) {
+                                    if (task.isSuccessful()) {
                                         Log.d("BookLocated", "Successful");
 
                                         DocumentSnapshot taskDoc = task.getResult();
@@ -263,11 +269,11 @@ public class WishlistFragment extends Fragment {
                 // add the book to the layout
                 gridL_books.addView(bookView);
             }
-    } else {
-        // change the visibility of the views
-        layout_wishlist_empty.setVisibility(View.VISIBLE);
-        layout_wishlist_grid.setVisibility(View.GONE);
-    }
+        } else {
+            // change the visibility of the views
+            layout_wishlist_empty.setVisibility(View.VISIBLE);
+            layout_wishlist_grid.setVisibility(View.GONE);
+        }
 
-}
+    }
 }

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,14 +27,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -86,8 +86,8 @@ public class BookOfferDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // if the book being loaded is one of the users books switch to another view
-        for(UserProfileBook uBook : ((MainActivity)getActivity()).getUser().getBooks().values()) {
-            if(uBook.getBookId().equals(userBook.getBookId())) {
+        for (UserProfileBook uBook : ((MainActivity) getActivity()).getUser().getBooks().values()) {
+            if (uBook.getBookId().equals(userBook.getBookId())) {
                 // get this fragment off the backstack
                 getParentFragmentManager().popBackStack();
                 getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UserBooksDetailsFragment(uBook)).addToBackStack(null).commit();
@@ -106,6 +106,8 @@ public class BookOfferDetailsFragment extends Fragment {
 
     HashMap<String, WishlistBook> userWishlsit;
 
+    ImageView imgV_coverImage;
+
     HorizontalScrollView horizScrollV_images;
     LinearLayout linlayout_image_scroll;
 
@@ -123,13 +125,14 @@ public class BookOfferDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        user = ((MainActivity)getActivity()).getUser();
+        user = ((MainActivity) getActivity()).getUser();
 
         firestore = FirebaseFirestore.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
 
         userWishlsit = user.getWishlist();
 
+        imgV_coverImage = view.findViewById(R.id.imgV_coverImage);
         horizScrollV_images = view.findViewById(R.id.horizScrollV_images);
         linlayout_image_scroll = view.findViewById(R.id.linlayout_image_scroll);
         txtV_book_title = view.findViewById(R.id.txtV_book_title);
@@ -142,17 +145,19 @@ public class BookOfferDetailsFragment extends Fragment {
         btn_wishlist = view.findViewById(R.id.btn_wishlist);
 
         // set the images for the book
-        if (userBook.getPathsToImages() == null) {
-            addImageToScroll(book.getCoverImgUrl(), 0);
+        if (userBook.getPathsToImages().isEmpty()) {
+            imgV_coverImage.setVisibility(View.VISIBLE);
+            horizScrollV_images.setVisibility(View.GONE);
+            Glide.with(getContext()).load(book.getCoverImgUrl()).error("").into(imgV_coverImage);
         } else {
             HashMap<String, String> paths = userBook.getPathsToImages();
 
             for (int i = 0; i < paths.size(); i++) {
-                int finalI = i;
+                int finalI = linlayout_image_scroll.getChildCount();
                 firebaseStorage.getReference().child(paths.get(String.valueOf(i))).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Log.d("getImage", "Successful");
                             addImageToScroll(task.getResult(), finalI);
                         } else {
@@ -180,9 +185,9 @@ public class BookOfferDetailsFragment extends Fragment {
         final boolean[] inWishlist = {false};
 
         // set the background of the wishlist button
-        if(userWishlsit != null) {
+        if (userWishlsit != null) {
             for (int i = 0; i < userWishlsit.size(); i++) {
-                if(userBook.getBookId().equals(userWishlsit.get(String.valueOf(i)).getBookId())) {
+                if (userBook.getBookId().equals(userWishlsit.get(String.valueOf(i)).getBookId())) {
                     btn_wishlist.setBackground(getResources().getDrawable(R.drawable.ic_heart_filled));
                     inWishlist[0] = true;
                     break;
@@ -195,12 +200,12 @@ public class BookOfferDetailsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // the book is wishlisted
-                if(inWishlist[0]) {
+                if (inWishlist[0]) {
                     // unwishlist
                     firestore.collection("users").document(user.getUid()).collection("wishlist").document(userBook.getBookId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()) {
+                            if (task.isSuccessful()) {
                                 Log.d("removeFromWishlist", "Successful");
                                 inWishlist[0] = false;
                                 btn_wishlist.setBackground(getResources().getDrawable(R.drawable.ic_heart_empty));
@@ -215,7 +220,7 @@ public class BookOfferDetailsFragment extends Fragment {
                     firestore.collection("users").document(user.getUid()).collection("wishlist").document(userBook.getBookId()).set(wishBook).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()) {
+                            if (task.isSuccessful()) {
                                 Log.d("addToWishlist", "Successful");
                                 inWishlist[0] = true;
                                 btn_wishlist.setBackground(getResources().getDrawable(R.drawable.ic_heart_filled));
@@ -236,7 +241,7 @@ public class BookOfferDetailsFragment extends Fragment {
                 // create the intent
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("message/rfc822");
-                intent.putExtra(Intent.EXTRA_EMAIL, new String[] { userBook.getEmail() });
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{userBook.getEmail()});
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Regarding Your " + book.getTitle() + " Posting On Bonfire");
 
                 // set up a chooser for the available e-mail apps
@@ -264,9 +269,9 @@ public class BookOfferDetailsFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Log.d("checkChatExists", "Successful");
-                            if(task.getResult().size() > 0) {
+                            if (task.getResult().size() > 0) {
                                 Toast.makeText(getContext(), "Chat Already Exists", Toast.LENGTH_SHORT).show();
 
                                 // todo:
@@ -276,7 +281,7 @@ public class BookOfferDetailsFragment extends Fragment {
                                 firestore.collection("chats").document().set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        if(task.isSuccessful()) {
+                                        if (task.isSuccessful()) {
                                             Log.d("createChat", "Successful");
 
                                             // todo:
@@ -303,19 +308,8 @@ public class BookOfferDetailsFragment extends Fragment {
         View image = getLayoutInflater().inflate(R.layout.book_image_view, null);
         ImageView book_image = image.findViewById(R.id.imgV_image);
 
-        Picasso.get().load(imgLink).into(book_image, new Callback() {
-            @Override
-            public void onSuccess() {
-                book_image.setBackground(null);
-            }
+        Glide.with(image.getContext()).load(imgLink).error("").into(book_image);
 
-            @Override
-            public void onError(Exception e) {
-                // do nothing -- keep image not found background
-            }
-        });
-
-        image.setPadding(0, 0, 20, 0);
         linlayout_image_scroll.addView(image, i);
 
     }
@@ -324,19 +318,8 @@ public class BookOfferDetailsFragment extends Fragment {
         View image = getLayoutInflater().inflate(R.layout.book_image_view, null);
         ImageView book_image = image.findViewById(R.id.imgV_image);
 
-        Picasso.get().load(imgUri).into(book_image, new Callback() {
-            @Override
-            public void onSuccess() {
-                book_image.setBackground(null);
-            }
+        Glide.with(image.getContext()).load(imgUri).error("").into(book_image);
 
-            @Override
-            public void onError(Exception e) {
-                // do nothing -- keep image not found background
-            }
-        });
-
-        image.setPadding(0, 0, 20, 0);
         linlayout_image_scroll.addView(image, i);
 
     }

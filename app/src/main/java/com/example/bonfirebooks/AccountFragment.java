@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -28,6 +29,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,8 +47,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -142,18 +147,8 @@ public class AccountFragment extends Fragment {
 
 
         if (user.getProfileUri() != null) {
-            Picasso.get().load(Uri.parse(user.getProfileUri())).into(img_profile, new Callback() {
-                @Override
-                public void onSuccess() {
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    img_profile.setBackgroundResource(R.drawable.stock_user);
-                }
-            });
+            Glide.with(getContext()).load(Uri.parse(user.getProfileUri())).error(R.drawable.stock_user).into(img_profile);
         }
-
 
         // set edit text hints
         txtE_user_name.setHint(user.getName());
@@ -170,11 +165,11 @@ public class AccountFragment extends Fragment {
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(drawer_account_edit.getVisibility() == View.VISIBLE) {
+                if (drawer_account_edit.getVisibility() == View.VISIBLE) {
                     drawer_account.setVisibility(View.VISIBLE);
                     drawer_account_edit.setVisibility(View.GONE);
                 } else {
-                    ((MainActivity)getActivity()).onBackPressed();
+                    ((MainActivity) getActivity()).onBackPressed();
                 }
             }
         });
@@ -248,18 +243,10 @@ public class AccountFragment extends Fragment {
                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                             if (task.isSuccessful()) {
                                 Log.d("uploadUserProfile", "Successful");
+
                                 user.setProfileUri(userProfileImage.toString());
-                                Picasso.get().load(userProfileImage).into(img_profile, new Callback() {
-                                    @Override
-                                    public void onSuccess() {
+                                Glide.with(getContext()).load(userProfileImage).error(R.drawable.ic_image_failed).into(img_profile);
 
-                                    }
-
-                                    @Override
-                                    public void onError(Exception e) {
-                                        // do nothing -- keep image not found background
-                                    }
-                                });
                                 firebaseUser.reload();
                             } else {
                                 Log.d("uploadUserProfile", "Failed");
@@ -358,7 +345,8 @@ public class AccountFragment extends Fragment {
         public void onActivityResult(ActivityResult result) {
             if (result != null && result.getResultCode() == Activity.RESULT_OK) {
                 userProfileImage = result.getData().getData();
-                Picasso.get().load(userProfileImage).into(img_profile);
+
+                Glide.with(getContext()).load(userProfileImage).error(R.drawable.stock_user).into(img_profile);
             }
         }
     });

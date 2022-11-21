@@ -11,13 +11,13 @@ public class UserProfileBook implements Serializable {
     private String conditon;
     private Double price;
     private Boolean isPublic;
-    HashMap<Integer, String> images;
+    HashMap<String, String> images;
 
     public UserProfileBook() {
 
     }
 
-    public UserProfileBook(String bookId, String title, String coverImgUrl, String conditon, Double price, Boolean isPublic, HashMap<Integer, String> images) {
+    public UserProfileBook(String bookId, String title, String coverImgUrl, String conditon, Double price, Boolean isPublic, HashMap<String, String> images) {
         this.bookId = bookId;
         this.title = title;
         this.coverImgUrl = coverImgUrl;
@@ -35,11 +35,11 @@ public class UserProfileBook implements Serializable {
         this.isPublic = isPublic;
     }
 
-    public HashMap<Integer, String> getImages() {
+    public HashMap<String, String> getImages() {
         return images;
     }
 
-    public void setImages(HashMap<Integer, String> images) {
+    public void setImages(HashMap<String, String> images) {
         this.images = images;
     }
 

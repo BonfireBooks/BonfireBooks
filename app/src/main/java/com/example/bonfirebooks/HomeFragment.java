@@ -1,6 +1,7 @@
 package com.example.bonfirebooks;
 
 import android.app.ProgressDialog;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,11 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,8 +34,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -51,7 +55,6 @@ public class HomeFragment extends Fragment {
      *
      * @return A new instance of fragment HomeFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -100,9 +103,9 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // data from main activity
-        user = ((MainActivity)getActivity()).getUser();
-        booksByTitle = ((MainActivity)getActivity()).getBooksByTitle();
-        booksByTime = ((MainActivity)getActivity()).getBooksByTime();
+        user = ((MainActivity) getActivity()).getUser();
+        booksByTitle = ((MainActivity) getActivity()).getBooksByTitle();
+        booksByTime = ((MainActivity) getActivity()).getBooksByTime();
 
         // views from layout
         horizontal_new_additions = view.findViewById(R.id.horizontal_new_additions);
@@ -124,7 +127,7 @@ public class HomeFragment extends Fragment {
         currUser = FirebaseAuth.getInstance().getCurrentUser();
         storage = FirebaseStorage.getInstance();
 
-        if(booksByTitle.size() == 0 || booksByTime.size() == 0) {
+        if (booksByTitle.size() == 0 || booksByTime.size() == 0) {
             getBooksFirebase("time");
             getBooksFirebase("title");
         } else {
@@ -166,13 +169,13 @@ public class HomeFragment extends Fragment {
         firestore.collection("books").orderBy(order).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()) {
+                if (task.isSuccessful()) {
                     Log.d("RetrieveBooks", "Success");
 
                     int i = 0;
                     boolean reverse = false;
 
-                    if(order.equals("time")) {
+                    if (order.equals("time")) {
                         i = task.getResult().getDocuments().size() - 1;
                         reverse = true;
                     }
@@ -180,29 +183,29 @@ public class HomeFragment extends Fragment {
                     for (DocumentSnapshot taskDoc : task.getResult().getDocuments()) {
                         Book book = new Book(taskDoc.getDouble("price"), taskDoc.getId(), taskDoc.getString("title"), taskDoc.getString("isbn10"), taskDoc.getString("isbn13"), taskDoc.getString("description"), taskDoc.getString("coverImgUrl"), (HashMap<String, String>) taskDoc.get("authors"), (HashMap<String, String>) taskDoc.get("categories"), taskDoc.getTimestamp("time"));
 
-                        if(taskDoc.contains("cheapestPrice")) {
+                        if (taskDoc.contains("cheapestPrice")) {
                             book.setCheapestPrice(taskDoc.getDouble("cheapestPrice"));
                         }
 
-                        if(taskDoc.contains("cheapestCondition")) {
+                        if (taskDoc.contains("cheapestCondition")) {
                             book.setCheapestCondition(taskDoc.getString("cheapestCondition"));
                         }
 
-                        if(order.equals("time")) {
+                        if (order.equals("time")) {
                             booksByTime.put(i, book);
-                        } else if(order.equals("title")) {
+                        } else if (order.equals("title")) {
                             booksByTitle.put(i, book);
                         }
 
-                        i = reverse ? i-1 : i+1;
+                        i = reverse ? i - 1 : i + 1;
                     }
 
                     // set the books in the main activity-
-                    if(order.equals("time")) {
-                        ((MainActivity)getActivity()).setBooksByTime(booksByTime);
+                    if (order.equals("time")) {
+                        ((MainActivity) getActivity()).setBooksByTime(booksByTime);
                         populateScrollViewWithFirebase(linlayout_image_scroll_new, booksByTime);
-                    } else if(order.equals("title")) {
-                        ((MainActivity)getActivity()).setBooksByTitle(booksByTitle);
+                    } else if (order.equals("title")) {
+                        ((MainActivity) getActivity()).setBooksByTitle(booksByTitle);
                         populateScrollViewWithFirebase(linlayout_image_scroll_all, booksByTitle);
 
                         // dismiss loading
@@ -218,7 +221,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void populateScrollViewWithFirebase(LinearLayout linearLayout, HashMap<Integer, Book> books) {
-        for(int i = 0; i < 20; i++) {
+        for (int i = 0; i < 20; i++) {
             Book currBook = books.get(i);
 
             View bookView = getLayoutInflater().inflate(R.layout.home_book_item, null);
@@ -230,24 +233,26 @@ public class HomeFragment extends Fragment {
             TextView book_price = bookView.findViewById(R.id.txtV_book_price);
 
             // set book views image
-            Picasso.get().load(currBook.getCoverImgUrl()).into(book_image, new Callback() {
+            Glide.with(getContext()).load(currBook.getCoverImgUrl()).listener(new RequestListener<Drawable>() {
                 @Override
-                public void onSuccess() {
-                    book_image.setBackground(null);
+                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    return false;
                 }
 
                 @Override
-                public void onError(Exception e) {
-                    // do nothing -- keep image not found background
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    // get rid of the background resource when image loads
+                    book_image.setBackground(null);
+                    return false;
                 }
-            });
+            }).into(book_image);
 
             // set other book view details
             book_title.setText(currBook.getTitle());
 
             DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
-            if(currBook.getCheapestPrice() != null) {
+            if (currBook.getCheapestPrice() != null) {
                 book_price.setText("$ " + decimalFormat.format(currBook.getCheapestPrice()));
             } else {
                 book_price.setText("$ " + decimalFormat.format(currBook.getPrice()));
@@ -256,7 +261,7 @@ public class HomeFragment extends Fragment {
             bookView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("book" , currBook.toString());
+                    Log.d("book", currBook.toString());
                     getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookDetailsFragment(currBook)).addToBackStack(null).commit();
                 }
             });

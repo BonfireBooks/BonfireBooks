@@ -23,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -34,7 +35,6 @@ import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.FirebaseFunctionsException;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.storage.FirebaseStorage;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -252,7 +252,9 @@ public class UploadBookSearchFragment extends Fragment {
 
         // update the ImageView
         imgV_coverImage.setVisibility(View.VISIBLE);
-        Picasso.get().load(book.getCoverImgUrl()).into(imgV_coverImage);
+
+        Glide.with(getContext()).load(book.getCoverImgUrl()).into(imgV_coverImage);
+
         imgV_coverImage.setMinimumHeight(500);
 
         // make the finish upload button visible and clickable
