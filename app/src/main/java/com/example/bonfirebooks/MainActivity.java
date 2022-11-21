@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.bumptech.glide.manager.SupportRequestManagerFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -97,8 +98,14 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         super.onBackPressed();
 
         // fragment being switched to
-        if(getSupportFragmentManager().getFragments().size() > 0) {
+        if (getSupportFragmentManager().getFragments().size() > 0) {
+
             String fragName = getSupportFragmentManager().getFragments().get(0).getClass().getName();
+
+            // check that Glide hasn't taken over the top of the backstack
+            if (fragName.equals(SupportRequestManagerFragment.class.getName())) {
+                fragName = getSupportFragmentManager().getFragments().get(1).getClass().getName();
+            }
 
             // set the bottom nav based on the fragment being switched into
             if (fragName.equals(HomeFragment.class.getName())) {
@@ -107,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
                 navigationView.getMenu().findItem(R.id.nav_wish_list).setChecked(true);
             } else if (fragName.equals(AllChatsFragment.class.getName())) {
                 navigationView.getMenu().findItem(R.id.nav_chats).setChecked(true);
-            } else if (fragName.equals(Account.class.getName())) {
+            } else if (fragName.equals(AccountFragment.class.getName())) {
                 navigationView.getMenu().findItem(R.id.nav_profile).setChecked(true);
             }
         } else {
