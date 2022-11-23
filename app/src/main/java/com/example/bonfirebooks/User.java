@@ -170,24 +170,52 @@ public class User implements Parcelable {
                                 user.setBooks(books);
                                 Log.d("booksSet", user.toString());
 
-                                FirebaseStorage.getInstance().getReference().child("User Images").child(getUid()).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        if (task.isSuccessful()) {
-                                            Log.d("getUserProfile", "Successful");
-                                            user.setProfileUri(String.valueOf(task.getResult()));
-                                        } else {
-                                            Log.d("getUserProfile", "Failed");
-                                        }
+                                HashMap<String, WishlistBook> wishlist = new HashMap<>();
 
-                                        // create the new intent and switch activities
-                                        Intent intent = new Intent(currActivity.getApplication(), MainActivity.class);
-                                        intent.putExtra("user", (Parcelable) user);
-                                        currActivity.startActivity(intent);
-                                        currActivity.finish();
+                                // get wishlist from firebase
+                                userDoc.collection("wishlist").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("loadWishlistFirebase", "Successful");
+
+                                            int i = 0;
+                                            for (DocumentSnapshot doc : task.getResult().getDocuments()) {
+                                                // create a new wishlist book with the document data
+                                                WishlistBook wBook = new WishlistBook(doc.getId(), doc.getString("title"),
+                                                        doc.getString("condition"), doc.getString("coverImgUrl"), doc.getDouble("price"));
+
+                                                // add the book to the users wishlist
+                                                wishlist.put(String.valueOf(i), wBook);
+
+                                                i++;
+                                            }
+
+                                            user.setWishlist(wishlist);
+
+                                            FirebaseStorage.getInstance().getReference().child("User Images").child(getUid()).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Uri> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Log.d("getUserProfile", "Successful");
+                                                        user.setProfileUri(String.valueOf(task.getResult()));
+                                                    } else {
+                                                        Log.d("getUserProfile", "Failed");
+                                                    }
+
+                                                    // create the new intent and switch activities
+                                                    Intent intent = new Intent(currActivity.getApplication(), MainActivity.class);
+                                                    intent.putExtra("user", (Parcelable) user);
+                                                    currActivity.startActivity(intent);
+                                                    currActivity.finish();
+                                                }
+                                            });
+
+                                        } else {
+                                            Log.d("loadWishlistFirebase", "Failed");
+                                        }
                                     }
                                 });
-
                             } else {
                                 Log.d("getUserBooks", "Failed");
                             }
