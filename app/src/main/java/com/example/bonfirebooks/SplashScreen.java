@@ -25,17 +25,17 @@ import java.util.HashMap;
 
 public class SplashScreen extends AppCompatActivity {
 
-    private FirebaseUser currUser;
+    private FirebaseUser firebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        currUser = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         // check if user is currently logged in
-        if (currUser == null) {
+        if (firebaseUser == null) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -48,84 +48,17 @@ public class SplashScreen extends AppCompatActivity {
                 @Override
                 public void run() {
 
+                    // create user with id
                     User user = new User();
+                    user.setUid(firebaseUser.getUid());
 
-                    // set user uid
-                    user.setUid(currUser.getUid());
-
-                    DocumentReference userDoc = FirebaseFirestore.getInstance().collection("users").document(user.getUid());
-                    setUser(user, userDoc);
+                    // get user info and handle navigation
+                    user.setUser(user, SplashScreen.this);
                 }
             }, 0); // add artificial delay
         }
 
     }
 
-    private void setUser(User user, DocumentReference userDoc) {
-        userDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    // add log d
-                    DocumentSnapshot taskResult = task.getResult();
 
-                    // add user data to user object
-                    user.setName(taskResult.getString("name"));
-                    user.setEmail(taskResult.getString("email"));
-                    user.setHofstraId(taskResult.getString("hofID"));
-
-                    // books as hashmap
-                    HashMap<String, UserProfileBook> books = new HashMap<>();
-                    userDoc.collection("books").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                // add log d
-                                int i = 0;
-                                for (DocumentSnapshot doc : task.getResult().getDocuments()) {
-                                    // create a new book book with the document data
-                                    UserProfileBook book = new UserProfileBook(doc.getId(), doc.getString("title"), doc.getString("coverImgUrl"), doc.getString("condition"), doc.getDouble("price"), doc.getBoolean("isPublic"), (HashMap<String, String>) doc.get("images"));
-
-                                    // add the book to the users wishlist
-                                    books.put(String.valueOf(i), book);
-
-                                    i++;
-                                }
-
-                                // set the users wishlists
-                                user.setBooks(books);
-
-                                Log.d("booksSet", user.toString());
-
-
-                                FirebaseStorage.getInstance().getReference().child("User Images").child(currUser.getUid()).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        if (task.isSuccessful()) {
-                                            Log.d("getUserProfile", "Successful");
-                                            user.setProfileUri(String.valueOf(task.getResult()));
-                                        } else {
-                                            Log.d("getUserProfile", "Failed");
-                                        }
-
-                                        Intent intent = new Intent(SplashScreen.this, MainActivity.class);
-                                        intent.putExtra("user", (Parcelable) user);
-                                        startActivity(intent);
-
-                                        finish();
-                                    }
-                                });
-
-                            } else {
-                                // add log d
-                            }
-                        }
-                    });
-                } else {
-                    // add log d
-                }
-            }
-        });
-//        startActivity(new Intent(SplashScreen.this, MainActivity.class));
-    }
 }

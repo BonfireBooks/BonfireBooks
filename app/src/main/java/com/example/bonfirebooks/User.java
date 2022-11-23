@@ -1,8 +1,21 @@
 package com.example.bonfirebooks;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -117,6 +130,75 @@ public class User implements Parcelable {
         return str.toString();
     }
 
+    public void setUser(User user, Activity currActivity) {
+
+        DocumentReference userDoc = FirebaseFirestore.getInstance().collection("users").document(user.getUid());
+
+        userDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    Log.d("getUserDoc", "Success");
+
+                    DocumentSnapshot taskResult = task.getResult();
+
+                    // add user data to user object
+                    user.setName(taskResult.getString("name"));
+                    user.setEmail(taskResult.getString("email"));
+                    user.setHofstraId(taskResult.getString("hofID"));
+
+                    // books as hashmap
+                    HashMap<String, UserProfileBook> books = new HashMap<>();
+                    userDoc.collection("books").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                Log.d("getUserBooks", "Success");
+
+                                int i = 0;
+                                for (DocumentSnapshot doc : task.getResult().getDocuments()) {
+                                    // create a new book book with the document data
+                                    UserProfileBook book = new UserProfileBook(doc.getId(), doc.getString("title"), doc.getString("coverImgUrl"), doc.getString("condition"), doc.getDouble("price"), doc.getBoolean("isPublic"), (HashMap<String, String>) doc.get("images"));
+
+                                    // add the book to the users wishlist
+                                    books.put(String.valueOf(i), book);
+
+                                    i++;
+                                }
+
+                                // set the users wishlists
+                                user.setBooks(books);
+                                Log.d("booksSet", user.toString());
+
+                                FirebaseStorage.getInstance().getReference().child("User Images").child(getUid()).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("getUserProfile", "Successful");
+                                            user.setProfileUri(String.valueOf(task.getResult()));
+                                        } else {
+                                            Log.d("getUserProfile", "Failed");
+                                        }
+
+                                        // create the new intent and switch activities
+                                        Intent intent = new Intent(currActivity.getApplication(), MainActivity.class);
+                                        intent.putExtra("user", (Parcelable) user);
+                                        currActivity.startActivity(intent);
+                                        currActivity.finish();
+                                    }
+                                });
+
+                            } else {
+                                Log.d("getUserBooks", "Failed");
+                            }
+                        }
+                    });
+                } else {
+                    Log.d("getUserDoc", "Failed");
+                }
+            }
+        });
+    }
 
     @Override
     public int describeContents() {

@@ -28,6 +28,8 @@ import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private FirebaseAuth auth;
+
     private TextView forgotPass;
 
     private EditText txtE_HofID;
@@ -41,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        auth = FirebaseAuth.getInstance();
 
         forgotPass = findViewById(R.id.txtV_forgot_password);
         txtE_HofID = findViewById(R.id.txtE_HofID);
@@ -107,7 +111,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginUser(String email, String password) {
         // login the user with the fetched email and the password entered by the user
-        FirebaseAuth auth = FirebaseAuth.getInstance();
         auth.signInWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
@@ -124,17 +127,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void emailIsVerified() {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
-        if(user.isEmailVerified()) {
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            finish();
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+
+        if(firebaseUser.isEmailVerified()) {
+            User user = new User();
+            user.setUid(firebaseUser.getUid());
+            user.setUser(user, LoginActivity.this);
         } else {
             // Todo -- notify user that they must first verify their email
             Toast.makeText(this, "Please verify your email before logging in.", Toast.LENGTH_SHORT).show();
 
             // send the user a verification email
-            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+            firebaseUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()) {
