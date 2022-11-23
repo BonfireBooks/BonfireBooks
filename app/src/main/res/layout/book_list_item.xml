@@ -68,6 +68,19 @@
             app:layout_constraintBottom_toBottomOf="@id/card_profile"
             app:layout_constraintRight_toRightOf="parent" />
 
+        <Button
+            android:id="@+id/btn_edit_book"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-10dp"
+            android:background="@drawable/button_message_owner"
+            android:padding="5dp"
+            android:text="@string/edit_book"
+            android:textColor="@color/btntxt_blue"
+            app:layout_constraintBottom_toBottomOf="@id/card_profile"
+            app:layout_constraintRight_toRightOf="parent" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

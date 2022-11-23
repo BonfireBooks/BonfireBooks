@@ -91,4 +91,5 @@
     <string name="book_title_plain">Book Title</string>
     <string name="book_authors">Book Authors</string>
     <string name="book_description">Book Description</string>
+    <string name="edit_book">Edit Book</string>
 </resources>

@@ -53,6 +53,7 @@ public class BookOfferAdapter extends ArrayAdapter<UserBook> {
         TextView txtV_book_condition = bookListItem.findViewById(R.id.txtV_book_condition);
         TextView txtV_book_price = bookListItem.findViewById(R.id.txtV_book_price);
         Button btn_message_seller = bookListItem.findViewById(R.id.btn_message_seller);
+        Button btn_edit_book = bookListItem.findViewById(R.id.btn_edit_book);
 
         // set text views
         txtV_book_condition.setText(userBook[position].getCondition());
@@ -76,6 +77,18 @@ public class BookOfferAdapter extends ArrayAdapter<UserBook> {
             // set the view with the default cover image
             Glide.with(getContext()).load(book.getCoverImgUrl()).into(imgV_book_cover);
         }
+
+        if(userBook[position].getOwner().equals(user.getUid())) {
+            btn_message_seller.setVisibility(View.GONE);
+            btn_edit_book.setVisibility(View.VISIBLE);
+            btn_edit_book.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {;
+                    UserProfileBook userProfileBook = new UserProfileBook(userBook[position].getBookId(), book.getTitle(), book.getCoverImgUrl(), userBook[position].getCondition(), userBook[position].getPrice(), true, userBook[position].getImages());
+                    fragmentManager.beginTransaction().replace(R.id.frame_container, new UserBookDetailsEditFragment(userProfileBook)).addToBackStack(null).commit();
+                }
+            });
+       }
 
         // set a list item listener here -- switch to details fragment
         bookListItem.setOnClickListener(new View.OnClickListener() {
