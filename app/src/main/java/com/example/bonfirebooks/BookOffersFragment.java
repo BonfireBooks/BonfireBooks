@@ -85,7 +85,7 @@ public class BookOffersFragment extends Fragment {
     FirebaseFirestore firestore;
     FirebaseStorage firebaseStorage;
 
-    TextView txtV_no_books_found;
+    View img_no_books_found;
     ListView listV_books;
 
     HashMap<Integer, UserBook> matchingBooks = new HashMap<>();
@@ -101,7 +101,7 @@ public class BookOffersFragment extends Fragment {
         firestore = FirebaseFirestore.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
 
-        txtV_no_books_found = view.findViewById(R.id.txtV_no_books_found);
+        img_no_books_found = view.findViewById(R.id.img_no_books_found);
         listV_books = view.findViewById(R.id.listV_books);
 
         progressDialog = new ProgressDialog(getContext());
@@ -147,7 +147,7 @@ public class BookOffersFragment extends Fragment {
 
     private void populateChatList() {
         if(matchingBooks.size() > 0) {
-            txtV_no_books_found.setVisibility(View.GONE);
+            img_no_books_found.setVisibility(View.GONE);
             listV_books.setVisibility(View.VISIBLE);
 
             UserBook[] userBook = new UserBook[matchingBooks.size()];
@@ -160,7 +160,7 @@ public class BookOffersFragment extends Fragment {
             BookOfferAdapter bookOfferAdapter = new BookOfferAdapter(getActivity(), user, book, userBook, getParentFragmentManager());
             listV_books.setAdapter(bookOfferAdapter);
         } else {
-            txtV_no_books_found.setVisibility(View.VISIBLE);
+            img_no_books_found.setVisibility(View.VISIBLE);
             listV_books.setVisibility(View.GONE);
         }
 
