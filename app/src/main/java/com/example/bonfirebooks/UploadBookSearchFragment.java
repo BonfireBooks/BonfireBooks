@@ -100,7 +100,6 @@ public class UploadBookSearchFragment extends Fragment {
     // book details
     Book book = new Book();
     String isbn;
-    String firebaseBookId = "";
 
     ProgressDialog progressDialog;
 
@@ -176,7 +175,6 @@ public class UploadBookSearchFragment extends Fragment {
                 } else {
                     Log.d("firestoreHasBook", "true");
                     DocumentSnapshot taskResult = documents.get(0);
-                    firebaseBookId = taskResult.getId();
 
                     book = new Book(taskResult.getDouble("price"), taskResult.getId(), taskResult.getString("title"), taskResult.getString("isbn10"), taskResult.getString("isbn13"), taskResult.getString("description"), taskResult.getString("coverImgUrl"), (HashMap<String, String>) taskResult.get("authors"), (HashMap<String, String>) taskResult.get("categories"), taskResult.getTimestamp("time"));
                     updateUIElements();
@@ -206,6 +204,7 @@ public class UploadBookSearchFragment extends Fragment {
                         Log.d("addBookUsingApi", "Success " + taskResult.get("message"));
 
                         // add data to book object here
+                        book.setBookId((String) taskResult.get("docID"));
                         book.setTitle((String) taskResult.get("title"));
                         book.setPrice(Double.valueOf(String.valueOf(taskResult.get("price"))));
                         book.setDescription((String) taskResult.get("description"));
@@ -263,7 +262,7 @@ public class UploadBookSearchFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // switch to the uploadBookFragment
-                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UploadBookFragment(book, firebaseBookId)).addToBackStack(null).commit();
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UploadBookFragment(book)).addToBackStack(null).commit();
             }
         });
     }

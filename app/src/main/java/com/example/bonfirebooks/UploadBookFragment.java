@@ -66,22 +66,17 @@ import java.util.Locale;
  */
 public class UploadBookFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     private Book book;
-    private String bookId;
 
     public UploadBookFragment() {
         // Required empty public constructor
     }
 
 
-    public UploadBookFragment(Book book, String bookId) {
+    public UploadBookFragment(Book book) {
         this.book = book;
-        this.bookId = bookId;
     }
 
     /**
@@ -91,9 +86,8 @@ public class UploadBookFragment extends Fragment {
      * @param book the book.
      * @return A new instance of fragment UploadBookFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static UploadBookFragment newInstance(Book book, String bookId) {
-        UploadBookFragment fragment = new UploadBookFragment(book, bookId);
+    public static UploadBookFragment newInstance(Book book) {
+        UploadBookFragment fragment = new UploadBookFragment(book);
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -104,7 +98,6 @@ public class UploadBookFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             book = (Book) getArguments().get(ARG_PARAM1);
-            bookId = (String) getArguments().get(ARG_PARAM2);
         }
     }
 
@@ -163,7 +156,7 @@ public class UploadBookFragment extends Fragment {
         firebaseFunctions = FirebaseFunctions.getInstance();
 
         // user book path and id
-        userBookPath = firestore.collection("books").document(bookId).collection("users").document().getPath();
+        userBookPath = firestore.collection("books").document(book.getBookId()).collection("users").document().getPath();
         userBookID = firestore.document(userBookPath).getId();
 
         // set options for the spinner
@@ -314,7 +307,7 @@ public class UploadBookFragment extends Fragment {
 
                 // book data to used in the firebase function
                 HashMap<String, Object> data = new HashMap<>();
-                data.put("bookId", bookId);
+                data.put("bookId", book.getBookId());
                 data.put("condition", spinner_condition.getSelectedItem().toString().toLowerCase());
                 data.put("name", name);
                 data.put("price", Double.valueOf(txtE_price.getText().toString()));
