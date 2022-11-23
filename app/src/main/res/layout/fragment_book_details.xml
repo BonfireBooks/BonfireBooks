@@ -38,11 +38,13 @@
                     android:id="@+id/txtV_book_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
+                    android:maxWidth="300dp"
                     android:text="@string/sample_text"
                     android:textColor="@color/black"
                     android:textSize="20sp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
                     app:layout_constraintLeft_toLeftOf="@id/imgV_book_images"
                     app:layout_constraintTop_toBottomOf="@id/imgV_book_images" />
 
