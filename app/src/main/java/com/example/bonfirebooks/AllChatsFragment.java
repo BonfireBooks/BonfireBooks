@@ -85,9 +85,6 @@ public class AllChatsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        BottomNavigationView navBar = getActivity().findViewById(R.id.bottomNavView);
-        navBar.setVisibility(View.VISIBLE);
-
         user = ((MainActivity) getActivity()).getUser();
 
         layout_chats_empty = view.findViewById(R.id.layout_chats_empty);

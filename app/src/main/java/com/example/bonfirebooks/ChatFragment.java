@@ -256,4 +256,11 @@ public class ChatFragment extends Fragment {
         }
 
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        BottomNavigationView navBar = getActivity().findViewById(R.id.bottomNavView);
+        navBar.setVisibility(View.VISIBLE);
+    }
 }
