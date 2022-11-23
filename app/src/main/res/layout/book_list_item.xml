@@ -76,6 +76,7 @@
             android:background="@drawable/button_message_owner"
             android:padding="5dp"
             android:text="@string/edit_book"
+            android:visibility="gone"
             android:textColor="@color/btntxt_blue"
             app:layout_constraintBottom_toBottomOf="@id/card_profile"
             app:layout_constraintRight_toRightOf="parent" />

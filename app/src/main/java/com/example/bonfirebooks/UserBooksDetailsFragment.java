@@ -86,7 +86,7 @@ public class UserBooksDetailsFragment extends Fragment {
 
     Button btn_back;
     Button btn_edit_book;
-    ConstraintLayout btn_view_uBooks;
+    Button btn_view_uBooks;
 
     HashMap<Integer, Book> books;
 
