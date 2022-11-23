@@ -130,10 +130,10 @@ public class UploadBookSearchFragment extends Fragment {
             public void onClick(View view) {
                 // reset any errors & text views holding details
                 txtE_ISBN.setError(null);
-                txtV_book_authors.setText(null);
-                txtV_book_description.setText(null);
-                txtV_book_title.setText(null);
-                imgV_coverImage.setVisibility(View.GONE);
+                txtV_book_authors.setText(R.string.book_authors);
+                txtV_book_description.setText(R.string.book_description);
+                txtV_book_title.setText(R.string.book_title);
+                imgV_coverImage.setImageResource(R.mipmap.ic_launcher_foreground);
 
                 btn_finish_upload.setVisibility(View.GONE);
 
