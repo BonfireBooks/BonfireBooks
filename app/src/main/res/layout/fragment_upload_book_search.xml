@@ -4,184 +4,174 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/logo_orange"
     tools:context=".UploadBookSearchFragment">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:padding="20dp">
 
-        <Button
-            android:id="@+id/btn_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/ic_arrow_back"
-            android:backgroundTint="@color/black"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_rounded"
+                android:padding="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/txtV_upload_search_book"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="@string/book_search"
-            android:textColor="@color/black"
-            android:textSize="22sp"
-            app:layout_constraintBottom_toBottomOf="@id/btn_back"
-            app:layout_constraintLeft_toRightOf="@id/btn_back"
-            app:layout_constraintTop_toTopOf="@id/btn_back" />
+                <ImageView
+                    android:id="@+id/imgV_coverImage"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:src="@mipmap/ic_launcher_foreground"
+                    android:contentDescription="@string/book_cover_image"
+                    android:minHeight="150dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+                <TextView
+                    android:id="@+id/txtV_isbn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/enter_isbn"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toLeftOf="@id/txtE_isbn"
+                    app:layout_constraintTop_toBottomOf="@id/imgV_coverImage" />
 
-        <TextView
-            android:id="@+id/txtV_isbn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="@string/enter_isbn"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintLeft_toLeftOf="@id/txtE_isbn"
-            app:layout_constraintTop_toBottomOf="@id/txtV_upload_search_book" />
+                <EditText
+                    android:id="@+id/txtE_isbn"
+                    android:layout_width="300dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/edit_text_inputs_starting_screens"
+                    android:hint="@string/empty"
+                    android:importantForAutofill="no"
+                    android:maxLength="13"
+                    android:textColor="@color/logo_brown"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtV_isbn" />
 
-        <EditText
-            android:id="@+id/txtE_isbn"
-            android:layout_width="350dp"
-            android:layout_height="55dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/edit_text_inputs_starting_screens"
-            android:hint="@string/empty"
-            android:importantForAutofill="no"
-            android:inputType="number"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txtV_isbn" />
+                <!--    Book Details    -->
 
-        <!--    Book Details    -->
-        <TextView
-            android:id="@+id/txtV_book_img_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Book Cover Image:"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintLeft_toLeftOf="@id/txtE_isbn"
-            app:layout_constraintTop_toBottomOf="@id/txtE_isbn" />
+                <TextView
+                    android:id="@+id/txtV_book_title_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/book_title"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toLeftOf="@id/txtE_isbn"
+                    app:layout_constraintTop_toBottomOf="@id/txtE_isbn" />
 
-        <ImageView
-            android:id="@+id/imgV_coverImage"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txtV_book_img_header"
-            />
+                <TextView
+                    android:id="@+id/txtV_book_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/book_title_plain"
+                    android:ellipsize="end"
+                    android:maxWidth="300dp"
+                    android:maxLines="2"
+                    android:textSize="14sp"
+                    app:layout_constraintLeft_toLeftOf="@id/txtV_book_title_header"
+                    app:layout_constraintTop_toBottomOf="@id/txtV_book_title_header" />
 
-        <TextView
-            android:id="@+id/txtV_book_title_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/book_title"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintLeft_toLeftOf="@id/txtV_book_img_header"
-            app:layout_constraintTop_toBottomOf="@id/imgV_coverImage" />
+                <TextView
+                    android:id="@+id/txtV_book_authors_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/author_s"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toLeftOf="@id/txtV_book_title"
+                    app:layout_constraintTop_toBottomOf="@id/txtV_book_title" />
 
-        <TextView
-            android:id="@+id/txtV_book_title"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:minHeight="55dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/edit_text_inputs_starting_screens"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            app:layout_constraintLeft_toLeftOf="@id/txtV_book_title_header"
-            app:layout_constraintTop_toBottomOf="@id/txtV_book_title_header" />
+                <TextView
+                    android:id="@+id/txtV_book_authors"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:ellipsize="end"
+                    android:text="@string/book_authors"
+                    android:maxWidth="300dp"
+                    android:maxLines="5"
+                    android:textSize="14sp"
+                    app:layout_constraintLeft_toLeftOf="@id/txtV_book_authors_header"
+                    app:layout_constraintTop_toBottomOf="@id/txtV_book_authors_header" />
 
-        <TextView
-            android:id="@+id/txtV_book_description_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/description"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintLeft_toLeftOf="@id/txtV_book_title"
-            app:layout_constraintTop_toBottomOf="@id/txtV_book_title" />
+                <TextView
+                    android:id="@+id/txtV_book_description_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/description"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toLeftOf="@id/txtV_book_authors"
+                    app:layout_constraintTop_toBottomOf="@id/txtV_book_authors" />
 
-        <TextView
-            android:id="@+id/txtV_book_description"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:minHeight="55dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/edit_text_inputs_starting_screens"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            app:layout_constraintLeft_toLeftOf="@id/txtV_book_description_header"
-            app:layout_constraintTop_toBottomOf="@id/txtV_book_description_header" />
+                <TextView
+                    android:id="@+id/txtV_book_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:ellipsize="end"
+                    android:text="@string/book_description"
+                    android:maxWidth="300dp"
+                    android:maxLines="5"
+                    android:textSize="11sp"
+                    app:layout_constraintLeft_toLeftOf="@id/txtV_book_description_header"
+                    app:layout_constraintTop_toBottomOf="@id/txtV_book_description_header" />
 
-        <TextView
-            android:id="@+id/txtV_book_authors_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/author_s"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintLeft_toLeftOf="@id/txtV_book_description"
-            app:layout_constraintTop_toBottomOf="@id/txtV_book_description" />
+                <Button
+                    android:id="@+id/btn_search_isbn"
+                    android:layout_width="250dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/buttons_orange"
+                    android:text="@string/search_ISBN"
+                    android:textAllCaps="false"
+                    android:textColor="@color/logo_brown"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtV_book_description" />
 
-        <TextView
-            android:id="@+id/txtV_book_authors"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:minHeight="55dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/edit_text_inputs_starting_screens"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            app:layout_constraintLeft_toLeftOf="@id/txtV_book_authors_header"
-            app:layout_constraintTop_toBottomOf="@id/txtV_book_authors_header" />
+                <Button
+                    android:id="@+id/btn_finish_upload"
+                    android:layout_width="250dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/buttons_brown"
+                    android:text="@string/finish_upload"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/btn_search_isbn" />
 
-        <Button
-            android:id="@+id/btn_search_isbn"
-            android:layout_width="350dp"
-            android:layout_height="65dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/buttons_green"
-            android:text="@string/search_ISBN"
-            android:textColor="@color/black"
-            app:layout_constraintTop_toBottomOf="@id/txtV_book_authors"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <Button
-            android:visibility="gone"
-            android:id="@+id/btn_finish_upload"
-            android:layout_width="350dp"
-            android:layout_height="65dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/buttons_blue"
-            android:text="@string/finish_upload"
-            android:textColor="@color/white"
-            app:layout_constraintTop_toBottomOf="@id/btn_search_isbn"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
 </FrameLayout>

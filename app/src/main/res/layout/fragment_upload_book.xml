@@ -98,17 +98,6 @@
             app:layout_constraintLeft_toLeftOf="@id/txtE_price"
             app:layout_constraintTop_toBottomOf="@id/txtE_price" />
 
-<!--        <EditText-->
-<!--            android:id="@+id/txtE_condition"-->
-<!--            android:layout_width="350dp"-->
-<!--            android:layout_height="55dp"-->
-<!--            android:layout_marginTop="5dp"-->
-<!--            android:background="@drawable/edit_text_inputs_starting_screens"-->
-<!--            app:layout_constraintLeft_toLeftOf="@id/txtV_condition"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/txtV_condition"-->
-<!--            android:importantForAutofill="no"-->
-<!--            android:inputType="text" />-->
-
         <Spinner
             android:id="@+id/spinner_condition"
             android:layout_width="350dp"

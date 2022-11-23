@@ -87,4 +87,8 @@
     <string name="message_owner">Message Owner</string>
     <string name="no_books_found">No Books Found</string>
     <string name="book_thumbnail">Book Thumbnail</string>
+    <string name="book_cover_image">Book Cover Image</string>
+    <string name="book_title_plain">Book Title</string>
+    <string name="book_authors">Book Authors</string>
+    <string name="book_description">Book Description</string>
 </resources>
