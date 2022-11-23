@@ -85,8 +85,9 @@ public class BookDetailsFragment extends Fragment {
     TextView txtV_isbn13_edit;
     TextView txtV_book_description_edit;
 
-    Button btn_back;
-    ConstraintLayout btn_view_uBooks;
+    Button btn_view_uBooks;
+
+    ConstraintLayout layout_wrapper;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -103,8 +104,8 @@ public class BookDetailsFragment extends Fragment {
         txtV_isbn10_edit = view.findViewById(R.id.txtV_isbn10_edit);
         txtV_isbn13_edit = view.findViewById(R.id.txtV_isbn13_edit);
         txtV_book_description_edit = view.findViewById(R.id.txtV_book_description_edit);
-        btn_back = view.findViewById(R.id.btn_back);
         btn_view_uBooks = view.findViewById(R.id.btn_view_uBooks);
+        layout_wrapper = view.findViewById(R.id.layout_wrapper);
 
         // iterate through the authors map and set the textview with its data
         HashMap<String, String> authors = book.getAuthors();
@@ -112,7 +113,7 @@ public class BookDetailsFragment extends Fragment {
         for (int i = 0; i < authors.size(); i++) {
             authorsStr.append(authors.get(String.valueOf(i)));
             if (i < authors.size() - 1)
-                authorsStr.append(", ");
+                authorsStr.append("\n");
         }
         txtV_author_edit.setText(authorsStr);
 
@@ -135,13 +136,24 @@ public class BookDetailsFragment extends Fragment {
             txtV_cheapest_condition_edit.setText(null);
         }
 
+        txtV_author_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (txtV_author_edit.getMaxLines() == 3){
+                    txtV_author_edit.setMaxLines(15);
+                } else {
+                    txtV_author_edit.setMaxLines(3);
+                }
+            }
+        });
+
         txtV_book_description_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (txtV_book_description_edit.getMaxLines() == 10) {
-                    txtV_book_description_edit.setMaxLines(40);
+                if (txtV_book_description_edit.getMaxLines() == 5) {
+                    txtV_book_description_edit.setMaxLines(15);
                 } else {
-                    txtV_book_description_edit.setMaxLines(10);
+                    txtV_book_description_edit.setMaxLines(5);
                 }
             }
         });
@@ -152,13 +164,6 @@ public class BookDetailsFragment extends Fragment {
         txtV_book_description_edit.setText(book.getDescription());
 
         Glide.with(getContext()).load(book.getCoverImgUrl()).error(R.drawable.ic_image_failed).into(imgV_book_images);
-
-        btn_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity) getActivity()).onBackPressed();
-            }
-        });
 
         btn_view_uBooks.setOnClickListener(new View.OnClickListener() {
             @Override

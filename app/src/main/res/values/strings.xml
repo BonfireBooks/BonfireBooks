@@ -92,4 +92,7 @@
     <string name="book_authors">Book Authors</string>
     <string name="book_description">Book Description</string>
     <string name="edit_book">Edit Book</string>
+    <string name="retail_price">Retail Price:</string>
+    <string name="cheapest_offer">Cheapest Offer:</string>
+    <string name="condition_bracket">[CONDITION]</string>
 </resources>
