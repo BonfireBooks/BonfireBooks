@@ -30,7 +30,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".LoginPassReset"
+            android:name=".PasswordResetActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan">
             <meta-data

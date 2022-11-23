@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="10dp"
-        android:text="E-mail:"
+        android:text="@string/e_mail"
         android:textColor="@color/txt_white50"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,7 +30,7 @@
         app:layout_constraintTop_toBottomOf="@id/txtV_HofID" />
 
     <Button
-        android:id="@+id/btn_login"
+        android:id="@+id/btn_reset_pass"
         android:layout_width="350dp"
         android:layout_height="55dp"
         android:layout_marginTop="33dp"
