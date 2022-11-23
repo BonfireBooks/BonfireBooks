@@ -8,12 +8,15 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 
@@ -193,24 +196,58 @@ public class User implements Parcelable {
 
                                             user.setWishlist(wishlist);
 
-                                            FirebaseStorage.getInstance().getReference().child("User Images").child(getUid()).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Uri> task) {
-                                                    if (task.isSuccessful()) {
-                                                        Log.d("getUserProfile", "Successful");
-                                                        user.setProfileUri(String.valueOf(task.getResult()));
-                                                    } else {
-                                                        Log.d("getUserProfile", "Failed");
-                                                    }
+                                            HashMap<String, UserProfileChat> chats = new HashMap<>();
 
-                                                    // create the new intent and switch activities
-                                                    Intent intent = new Intent(currActivity.getApplication(), MainActivity.class);
-                                                    intent.putExtra("user", (Parcelable) user);
-                                                    currActivity.startActivity(intent);
-                                                    currActivity.finish();
+                                            userDoc.collection("chats").orderBy("time").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Log.d("loadUserChats", "Successful");
+                                                        int i = 0;
+                                                        for (DocumentSnapshot doc : task.getResult().getDocuments()) {
+                                                            // create a new chat book with the document data
+
+                                                            String otherUserId = "";
+
+                                                            for (String key : doc.getData().keySet()) {
+                                                                if (!key.equals("content") && !key.equals("time")) {
+                                                                    otherUserId = key;
+                                                                }
+                                                            }
+
+                                                            UserProfileChat chat = new UserProfileChat(doc.getId(), otherUserId, doc.getString(otherUserId), doc.getString("content"), doc.getTimestamp("time").toDate());
+
+                                                            // add the book to the users wishlist
+                                                            chats.put(String.valueOf(i), chat);
+
+                                                            i++;
+                                                        }
+
+                                                        user.setChats(chats);
+
+
+                                                        FirebaseStorage.getInstance().getReference().child("User Images").child(getUid()).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Uri> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    Log.d("getUserProfile", "Successful");
+                                                                    user.setProfileUri(String.valueOf(task.getResult()));
+                                                                } else {
+                                                                    Log.d("getUserProfile", "Failed");
+                                                                }
+
+                                                                // create the new intent and switch activities
+                                                                Intent intent = new Intent(currActivity.getApplication(), MainActivity.class);
+                                                                intent.putExtra("user", (Parcelable) user);
+                                                                currActivity.startActivity(intent);
+                                                                currActivity.finish();
+                                                            }
+                                                        });
+                                                    } else {
+                                                        Log.d("loadUserChats", "Failed");
+                                                    }
                                                 }
                                             });
-
                                         } else {
                                             Log.d("loadWishlistFirebase", "Failed");
                                         }
