@@ -152,6 +152,16 @@ public class UploadBookSearchFragment extends Fragment {
             }
         });
 
+        txtV_book_authors.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (txtV_book_authors.getMaxLines() == 3){
+                    txtV_book_authors.setMaxLines(15);
+                } else {
+                    txtV_book_authors.setMaxLines(3);
+                }
+            }
+        });
 
         txtV_book_description.setOnClickListener(new View.OnClickListener() {
             @Override
