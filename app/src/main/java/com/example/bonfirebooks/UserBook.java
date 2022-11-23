@@ -21,11 +21,25 @@ public class UserBook {
         this.bookId = bookId;
         this.email = email;
         this.name = name;
-        this.condition = condition;
         this.owner = owner;
         this.isPublic = isPublic;
         this.time = time;
         this.images = images;
+
+        switch(condition) {
+            case "like-new":
+                this.condition = "Like-New";
+                break;
+            case "good":
+                this.condition = "Good";
+                break;
+            case "fair":
+                this.condition = "Fair";
+                break;
+            case "poor":
+                this.condition = "Poor";
+                break;
+        }
     }
 
     public boolean isPublic() {
@@ -77,7 +91,20 @@ public class UserBook {
     }
 
     public void setCondition(String condition) {
-        this.condition = condition;
+        switch(condition) {
+            case "like-new":
+                this.condition = "Like-New";
+                break;
+            case "good":
+                this.condition = "Good";
+                break;
+            case "fair":
+                this.condition = "Fair";
+                break;
+            case "poor":
+                this.condition = "Poor";
+                break;
+        }
     }
 
     public void setTime(Timestamp time) { this.time = time; }

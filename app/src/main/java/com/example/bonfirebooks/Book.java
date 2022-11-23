@@ -49,7 +49,20 @@ public class Book {
     }
 
     public void setCheapestCondition(String cheapestCondition) {
-        this.cheapestCondition = cheapestCondition;
+        switch(cheapestCondition) {
+            case "like-new":
+                this.cheapestCondition = "Like-New";
+                break;
+            case "good":
+                this.cheapestCondition = "Good";
+                break;
+            case "fair":
+                this.cheapestCondition = "Fair";
+                break;
+            case "poor":
+                this.cheapestCondition = "Poor";
+                break;
+        }
     }
 
     public Double getCheapestPrice() {

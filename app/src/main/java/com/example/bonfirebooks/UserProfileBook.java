@@ -21,10 +21,24 @@ public class UserProfileBook implements Serializable {
         this.bookId = bookId;
         this.title = title;
         this.coverImgUrl = coverImgUrl;
-        this.conditon = conditon;
         this.price = price;
         this.isPublic = isPublic;
         this.images = images;
+
+        switch(conditon) {
+            case "like-new":
+                this.conditon = "Like-New";
+                break;
+            case "good":
+                this.conditon = "Good";
+                break;
+            case "fair":
+                this.conditon = "Fair";
+                break;
+            case "poor":
+                this.conditon = "Poor";
+                break;
+        }
     }
 
     public Boolean getIsPublic() {

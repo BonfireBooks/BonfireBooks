@@ -15,16 +15,23 @@ public class WishlistBook implements Serializable {
     public WishlistBook(String bookId, String title, String condition, String coverImgUrl, Double price) {
         this.bookId = bookId;
         this.title = title;
-        this.condition = condition;
         this.coverImgUrl = coverImgUrl;
         this.price = price;
-    }
 
-    public WishlistBook(String title, String condition, String coverImgUrl, double price) {
-        this.title = title;
-        this.condition = condition;
-        this.coverImgUrl = coverImgUrl;
-        this.price = price;
+        switch(condition) {
+            case "like-new":
+                this.condition = "Like-New";
+                break;
+            case "good":
+                this.condition = "Good";
+                break;
+            case "fair":
+                this.condition = "Fair";
+                break;
+            case "poor":
+                this.condition = "Poor";
+                break;
+        }
     }
 
     public String getBookId() {
@@ -54,7 +61,20 @@ public class WishlistBook implements Serializable {
     }
 
     public void setCondition(String condition) {
-        this.condition = condition;
+        switch(condition) {
+            case "like-new":
+                this.condition = "Like-New";
+                break;
+            case "good":
+                this.condition = "Good";
+                break;
+            case "fair":
+                this.condition = "Fair";
+                break;
+            case "poor":
+                this.condition = "Poor";
+                break;
+        }
     }
 
     public void setCoverImgUrl(String coverImgUrl) {
