@@ -62,13 +62,13 @@
             <ScrollView
                 android:id="@+id/scrollV_books"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:visibility="gone">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_wishlist_grid"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone">
+                    android:layout_height="match_parent">
 
                     <TextView
                         android:id="@+id/txtV_all_books"

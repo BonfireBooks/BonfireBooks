@@ -179,7 +179,7 @@ public class WishlistFragment extends Fragment {
 
             // change the visibilty of the views
             layout_wishlist_empty.setVisibility(View.GONE);
-            layout_wishlist_grid.setVisibility(View.VISIBLE);
+            scrollV_books.setVisibility(View.VISIBLE);
 
             Log.d("wishlist", wishlist.toString());
             for (int i = 0; i < wishlist.size(); i++) {
@@ -272,7 +272,7 @@ public class WishlistFragment extends Fragment {
         } else {
             // change the visibility of the views
             layout_wishlist_empty.setVisibility(View.VISIBLE);
-            layout_wishlist_grid.setVisibility(View.GONE);
+            scrollV_books.setVisibility(View.GONE);
         }
 
     }
