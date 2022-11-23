@@ -31,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -256,7 +257,7 @@ public class BookOfferDetailsFragment extends Fragment {
         btn_message_seller.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // create a new chat with both parties
+                // get the chat data in a map
                 HashMap<String, String> uMap = new HashMap<>();
                 uMap.put(user.getUid(), user.getName());
                 uMap.put(userBook.getOwner(), userBook.getName());
@@ -268,25 +269,32 @@ public class BookOfferDetailsFragment extends Fragment {
                 firestore.collection("chats").whereEqualTo("users", uMap).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
                         if (task.isSuccessful()) {
                             Log.d("checkChatExists", "Successful");
+
                             if (task.getResult().size() > 0) {
+                                // switch to the AllChatsFragment if the chat exists
                                 Toast.makeText(getContext(), "Chat Already Exists", Toast.LENGTH_SHORT).show();
-
-                                // todo:
-                                // navigate to the already existing chat
-
+                                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new AllChatsFragment()).addToBackStack(null).commit();
                             } else {
-                                firestore.collection("chats").document().set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                // create a new doc with the chat data
+                                DocumentReference docRef = firestore.collection("chats").document();
+                                docRef.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
                                             Log.d("createChat", "Successful");
 
-                                            // todo:
-                                            // add the chat fragment to the back stack
-                                            // switch into the users chat fragment
+                                            // create placeholder chat
+                                            UserProfileChat userProfileChat = new UserProfileChat(docRef.getId(), userBook.getOwner(), userBook.getUserName(), "", Timestamp.now().toDate());
+
+                                            // add the chat to the chats collection
+                                            HashMap<String, UserProfileChat> chats = user.getChats();
+                                            chats.put(String.valueOf(chats.size()), userProfileChat);
+                                            user.setChats(chats);
+
+                                            // switch into the chat
+                                            getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new ChatFragment(userProfileChat)).addToBackStack(null).commit();
 
                                         } else {
                                             Log.d("createChat", "Failed");
