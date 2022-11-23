@@ -13,8 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,11 +80,13 @@ public class BookOffersFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_book_offers, container, false);
     }
 
+    User user;
+
     FirebaseFirestore firestore;
     FirebaseStorage firebaseStorage;
 
-    TextView txtV_book_offers;
-    GridLayout gridL_books;
+    TextView txtV_no_books_found;
+    ListView listV_books;
 
     HashMap<Integer, UserBook> matchingBooks = new HashMap<>();
 
@@ -91,19 +96,28 @@ public class BookOffersFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        user = ((MainActivity)getActivity()).getUser();
+
         firestore = FirebaseFirestore.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
 
-        txtV_book_offers = view.findViewById(R.id.txtV_book_offers);
-        gridL_books = view.findViewById(R.id.gridL_books);
-
-        txtV_book_offers.setText(book.getTitle());
+        txtV_no_books_found = view.findViewById(R.id.txtV_no_books_found);
+        listV_books = view.findViewById(R.id.listV_books);
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading Offers...");
         progressDialog.show();
 
         getMatchingUserBooks();
+
+        // despite being the same method used in the all chats fragment it does not work here
+//        listV_books.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                Log.d("itemClick", "true");
+//                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookOfferDetailsFragment(book, matchingBooks.get(i))).commit();
+//            }
+//        });
     }
 
     private void getMatchingUserBooks() {
@@ -122,7 +136,7 @@ public class BookOffersFragment extends Fragment {
                         i++;
                     }
 
-                    populateGrid(gridL_books);
+                    populateChatList();
 
                 } else {
                     Log.d("getDocument", "Failed");
@@ -131,80 +145,23 @@ public class BookOffersFragment extends Fragment {
         });
     }
 
-    private void populateGrid(GridLayout gridL_books) {
-        for (int i = 0; i < matchingBooks.size(); i++) {
-            UserBook currBook = matchingBooks.get(i);
+    private void populateChatList() {
+        if(matchingBooks.size() > 0) {
+            txtV_no_books_found.setVisibility(View.GONE);
+            listV_books.setVisibility(View.VISIBLE);
 
-            View bookView = getLayoutInflater().inflate(R.layout.offer_book_fragment, null);
+            UserBook[] userBook = new UserBook[matchingBooks.size()];
 
-            // add some spacing between the grid items
-            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-            params.setMargins(10, 10, 10, 10);
-
-            bookView.setLayoutParams(params);
-
-            // new book view details
-            ImageView book_image = bookView.findViewById(R.id.imgV_coverImage);
-            TextView book_condition = bookView.findViewById(R.id.txtV_book_condition);
-            TextView book_price = bookView.findViewById(R.id.txtV_book_price);
-
-            if (currBook.getPathsToImages().size() != 0) {
-                firebaseStorage.getReference().child(currBook.getPathsToImages().get("0")).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("getImage", "Successful");
-                        } else {
-                            Log.d("getImage", "Failed");
-                        }
-
-                        Glide.with(getContext()).load(task.getResult()).listener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                // get rid of the background resource when image loads
-                                book_image.setBackground(null);
-                                return false;
-                            }
-                        }).into(book_image);
-
-                    }
-                });
-            } else {
-                // set book views image
-                Glide.with(getContext()).load(book.getCoverImgUrl()).listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        // get rid of the background resource when image loads
-                        book_image.setBackground(null);
-                        return false;
-                    }
-                }).into(book_image);
+            for (int i = 0; i < matchingBooks.size(); i++) {
+                userBook[i] = matchingBooks.get(i);
             }
 
-            // set other book view details
-            book_condition.setText(currBook.getCondition());
-            book_price.setText("$ " + currBook.getPrice());
-
-            bookView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d("book", currBook.toString());
-                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookOfferDetailsFragment(book, currBook)).addToBackStack(null).commit();
-                }
-            });
-
-            // add the book to the layout
-            gridL_books.addView(bookView);
+            // create and set the adapter for the list
+            BookOfferAdapter bookOfferAdapter = new BookOfferAdapter(getActivity(), user, book, userBook, getParentFragmentManager());
+            listV_books.setAdapter(bookOfferAdapter);
+        } else {
+            txtV_no_books_found.setVisibility(View.VISIBLE);
+            listV_books.setVisibility(View.GONE);
         }
 
         progressDialog.dismiss();
