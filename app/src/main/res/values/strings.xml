@@ -84,4 +84,7 @@
     <string name="message_content">[Message Content]</string>
     <string name="sample_time">12:00 am</string>
     <string name="e_mail">E-mail:</string>
+    <string name="message_owner">Message Owner</string>
+    <string name="no_books_found">No Books Found</string>
+    <string name="book_thumbnail">Book Thumbnail</string>
 </resources>

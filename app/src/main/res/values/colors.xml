@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
 
     <!--  Logo Colors  -->
+    <color name="price_orange">#FA6400</color>
     <color name="logo_orange">#F4B32D</color>
     <color name="logo_brown">#5C382D</color>
 
@@ -20,6 +21,7 @@
     <color name="btn_outline_gray">#DCDCDC</color>
 
     <!--  Button Text Colors  -->
+    <color name="btntxt_blue">#414B5A</color>
     <color name="btntxt_brown">#5C382D</color>
     <color name="btntxt_white">#FFFFFF</color>
 
