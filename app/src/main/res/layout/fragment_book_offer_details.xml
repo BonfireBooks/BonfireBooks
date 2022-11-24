@@ -4,16 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/logo_orange"
     tools:context=".BookOfferDetailsFragment">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingVertical="20dp"
+        android:scrollbars="none">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_book_details"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/card_rounded"
+            android:padding="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_wrapper"
@@ -25,9 +36,8 @@
 
                 <ImageView
                     android:id="@+id/imgV_coverImage"
-                    android:layout_width="350dp"
+                    android:layout_width="300dp"
                     android:layout_height="200dp"
-                    android:layout_marginTop="40dp"
                     android:background="@drawable/image_switcher"
                     android:paddingHorizontal="5dp"
                     android:visibility="gone"
@@ -37,9 +47,8 @@
 
                 <HorizontalScrollView
                     android:id="@+id/horizScrollV_images"
-                    android:layout_width="350dp"
+                    android:layout_width="300dp"
                     android:layout_height="200dp"
-                    android:layout_marginTop="40dp"
                     android:background="@drawable/image_switcher"
                     android:paddingHorizontal="5dp"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -54,25 +63,15 @@
                         android:orientation="horizontal" />
 
                 </HorizontalScrollView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <Button
-                android:id="@+id/btn_back"
-                android:layout_width="23dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="50dp"
-                android:background="@drawable/ic_arrow_back_black"
-                android:backgroundTint="@color/txt_gray"
-                app:layout_constraintLeft_toLeftOf="@id/layout_wrapper"
-                app:layout_constraintTop_toTopOf="@id/layout_wrapper" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button
                 android:id="@+id/btn_wishlist"
                 android:layout_width="23dp"
                 android:layout_height="20dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
                 android:background="@drawable/ic_heart_empty"
                 android:backgroundTint="@color/txt_gray"
                 app:layout_constraintRight_toRightOf="@id/layout_wrapper"
@@ -82,23 +81,38 @@
                 android:id="@+id/txtV_book_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
+                android:ellipsize="end"
+                android:maxWidth="300dp"
+                android:maxLines="2"
                 android:text="@string/sample_text"
+                android:textColor="@color/black"
                 android:textSize="20sp"
                 app:layout_constraintLeft_toLeftOf="@id/layout_wrapper"
                 app:layout_constraintTop_toBottomOf="@id/layout_wrapper" />
 
             <TextView
+                android:id="@+id/txtV_book_price_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/price"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toLeftOf="@id/txtV_book_title"
+                app:layout_constraintTop_toBottomOf="@id/txtV_book_title" />
+
+            <TextView
                 android:id="@+id/txtV_book_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:text="@string/price_here"
                 android:textColor="#FA6400"
-                android:textSize="19sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                app:layout_constraintLeft_toLeftOf="@id/txtV_book_title"
-                app:layout_constraintTop_toBottomOf="@id/txtV_book_title" />
+                app:layout_constraintBottom_toBottomOf="@id/txtV_book_price_header"
+                app:layout_constraintLeft_toRightOf="@id/txtV_book_price_header"
+                app:layout_constraintTop_toTopOf="@id/txtV_book_price_header" />
 
             <TextView
                 android:id="@+id/txtV_seller"
@@ -106,9 +120,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:text="@string/seller"
-                android:textSize="18sp"
-                app:layout_constraintLeft_toLeftOf="@id/txtV_book_price"
-                app:layout_constraintTop_toBottomOf="@id/txtV_book_price" />
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toLeftOf="@id/txtV_book_price_header"
+                app:layout_constraintTop_toBottomOf="@id/txtV_book_price_header" />
 
             <TextView
                 android:id="@+id/txtV_seller_edit"
@@ -118,16 +133,17 @@
                 android:layout_marginTop="15dp"
                 android:maxWidth="275dp"
                 android:text="@string/sample_text"
-                android:textSize="18sp"
+                android:textSize="15sp"
                 app:layout_constraintLeft_toRightOf="@id/txtV_seller"
-                app:layout_constraintTop_toBottomOf="@id/txtV_book_price" />
+                app:layout_constraintTop_toBottomOf="@id/txtV_book_price_header" />
 
             <TextView
                 android:id="@+id/txtV_condition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/condition"
-                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:textSize="15sp"
                 app:layout_constraintLeft_toLeftOf="@id/txtV_seller"
                 app:layout_constraintTop_toBottomOf="@id/txtV_seller_edit" />
 
@@ -137,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:text="@string/sample_text"
-                android:textSize="18sp"
+                android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="@id/txtV_condition"
                 app:layout_constraintLeft_toRightOf="@id/txtV_condition"
                 app:layout_constraintTop_toTopOf="@id/txtV_condition" />
@@ -152,18 +168,26 @@
 
                 <Button
                     android:id="@+id/btn_email_seller"
-                    android:layout_width="150dp"
+                    android:layout_width="140dp"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/buttons_orange"
                     android:text="@string/email_seller"
+                    android:textAllCaps="false"
+                    android:textColor="@color/logo_brown"
+                    android:textSize="15sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
                     android:id="@+id/btn_message_seller"
-                    android:layout_width="150dp"
+                    android:layout_width="140dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/buttons_orange"
                     android:text="@string/message_seller"
+                    android:textAllCaps="false"
+                    android:textColor="@color/logo_brown"
+                    android:textSize="15sp"
                     app:layout_constraintLeft_toRightOf="@id/btn_email_seller"
                     app:layout_constraintTop_toTopOf="parent" />
 

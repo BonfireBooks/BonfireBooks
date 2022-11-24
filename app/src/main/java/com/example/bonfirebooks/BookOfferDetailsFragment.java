@@ -117,7 +117,6 @@ public class BookOfferDetailsFragment extends Fragment {
     TextView txtV_seller_edit;
     TextView txtV_condition_edit;
 
-    Button btn_back;
     Button btn_wishlist;
     Button btn_email_seller;
     Button btn_message_seller;
@@ -140,10 +139,11 @@ public class BookOfferDetailsFragment extends Fragment {
         txtV_book_price = view.findViewById(R.id.txtV_book_price);
         txtV_seller_edit = view.findViewById(R.id.txtV_seller_edit);
         txtV_condition_edit = view.findViewById(R.id.txtV_condition_edit);
-        btn_back = view.findViewById(R.id.btn_back);
         btn_email_seller = view.findViewById(R.id.btn_email_seller);
         btn_message_seller = view.findViewById(R.id.btn_message_seller);
         btn_wishlist = view.findViewById(R.id.btn_wishlist);
+
+        Log.d("wishlistBook", userBook.toString());
 
         // set the images for the book
         if (userBook.getPathsToImages().isEmpty()) {
@@ -174,14 +174,6 @@ public class BookOfferDetailsFragment extends Fragment {
         txtV_book_price.setText("$ " + userBook.getPrice());
         txtV_seller_edit.setText(userBook.getUserName());
         txtV_condition_edit.setText(userBook.getCondition());
-
-        // back button click
-        btn_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity) getActivity()).onBackPressed();
-            }
-        });
 
         final boolean[] inWishlist = {false};
 
@@ -217,7 +209,7 @@ public class BookOfferDetailsFragment extends Fragment {
                     });
                 } else {
                     // add to wishlist
-                    WishlistBook wishBook = new WishlistBook(userBook.getBookId(), book.getTitle(), userBook.getCondition(), book.getCoverImgUrl(), userBook.getPrice());
+                    WishlistBook wishBook = new WishlistBook(userBook.getBookId(), book.getTitle(), userBook.getCondition().toLowerCase(), book.getCoverImgUrl(), userBook.getPrice());
                     firestore.collection("users").document(user.getUid()).collection("wishlist").document(userBook.getBookId()).set(wishBook).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
