@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 /**
@@ -108,7 +109,9 @@ public class UserBookDetailsFragment extends Fragment {
 
         txtV_book_title.setText(userProfileBook.getTitle());
         txtV_book_condition_edit.setText(userProfileBook.getConditon());
-        txtV_book_price.setText("$" + userProfileBook.getPrice());
+
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        txtV_book_price.setText("$ " + decimalFormat.format(userProfileBook.getPrice()));
 
         books = ((MainActivity) getActivity()).getBooksByTime();
 

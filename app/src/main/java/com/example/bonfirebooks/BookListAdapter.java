@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 public class BookListAdapter extends ArrayAdapter<Book> {
@@ -37,7 +38,9 @@ public class BookListAdapter extends ArrayAdapter<Book> {
 
         Glide.with(getContext()).load(books[position].getCoverImgUrl()).into(imgV_book_cover);
         txtV_book_title.setText(books[position].getTitle());
-        txtV_book_price.setText("$" + books[position].getPrice());
+
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        txtV_book_price.setText("$ " + decimalFormat.format(books[position].getPrice()));
 
         return bookListItem;
     }

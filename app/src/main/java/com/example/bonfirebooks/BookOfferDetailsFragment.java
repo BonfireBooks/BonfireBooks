@@ -40,6 +40,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -171,9 +172,11 @@ public class BookOfferDetailsFragment extends Fragment {
 
         // set the details of the book
         txtV_book_title.setText(book.getTitle());
-        txtV_book_price.setText("$ " + userBook.getPrice());
         txtV_seller_edit.setText(userBook.getUserName());
         txtV_condition_edit.setText(userBook.getCondition());
+
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        txtV_book_price.setText("$ " + decimalFormat.format(userBook.getPrice()));
 
         final boolean[] inWishlist = {false};
 

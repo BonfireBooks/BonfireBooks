@@ -24,6 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 public class BookOfferListAdapter extends ArrayAdapter<UserBook> {
@@ -56,7 +57,9 @@ public class BookOfferListAdapter extends ArrayAdapter<UserBook> {
 
         // set text views
         txtV_book_condition.setText(userBook[position].getCondition());
-        txtV_book_price.setText("$" + String.valueOf(userBook[position].getPrice()));
+
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        txtV_book_price.setText("$ " + decimalFormat.format(userBook[position].getPrice()));
 
         // set image view
         if (userBook[position].getPathsToImages().size() > 0) {
