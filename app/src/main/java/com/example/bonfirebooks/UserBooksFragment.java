@@ -11,8 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -67,9 +69,7 @@ public class UserBooksFragment extends Fragment {
 
     User user;
 
-    TextView txtV_my_books;
-
-    GridLayout gridL_books;
+    ListView listV_books;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -77,76 +77,35 @@ public class UserBooksFragment extends Fragment {
 
         user = ((MainActivity) getActivity()).getUser();
 
-        gridL_books = view.findViewById(R.id.gridL_books);
-        txtV_my_books = view.findViewById(R.id.txtV_my_books);
+        listV_books = view.findViewById(R.id.listV_books);
 
-        txtV_my_books.setText("My Books");
+        populateListView();
 
+        listV_books.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UserBookDetailsFragment(user.getBooks().get(String.valueOf(i)))).addToBackStack(null).commit();
+            }
+        });
+    }
+
+    private void populateListView() {
         HashMap<String, UserProfileBook> books = user.getBooks();
+        if (books.size() != 0) {
+            // change the visibilty of the views
+            listV_books.setVisibility(View.VISIBLE);
 
-        for (int i = 0; i < books.size(); i++) {
-            UserProfileBook currBook = books.get(String.valueOf(i));
+            UserProfileBook[] userProfileBooks = new UserProfileBook[books.size()];
 
-            View bookView = getLayoutInflater().inflate(R.layout.wishlist_book_item, null);
+            for (int i = 0; i < books.size(); i++) {
+                userProfileBooks[i] = books.get(String.valueOf(i));
+            }
 
-            // add some spacing between the grid items
-            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-            params.setMargins(10, 10, 10, 10);
-
-            bookView.setLayoutParams(params);
-
-            // new book view details
-            ImageView book_image = bookView.findViewById(R.id.imgV_coverImage);
-            TextView book_title = bookView.findViewById(R.id.txtV_book_title);
-            TextView book_price = bookView.findViewById(R.id.txtV_book_price);
-            TextView book_condition = bookView.findViewById(R.id.txtV_book_condition);
-
-            // set book views image
-            Glide.with(getContext()).load(currBook.getCoverImgUrl()).listener(new RequestListener<Drawable>() {
-                @Override
-                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                    return false;
-                }
-
-                @Override
-                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                    return false;
-                }
-            }).into(book_image);
-
-
-            Glide.with(getContext()).load(currBook.getCoverImgUrl()).listener(new RequestListener<Drawable>() {
-                @Override
-                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                    return false;
-                }
-
-                @Override
-                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                    // get rid of the background resource when image loads
-                    book_image.setBackground(null);
-                    return false;
-                }
-            }).into(book_image);
-
-            // set other book view details
-            book_condition.setText(currBook.getConditon());
-            book_title.setText(currBook.getTitle());
-
-            DecimalFormat decimalFormat = new DecimalFormat("0.00");
-
-            book_price.setText("$ " + decimalFormat.format(currBook.getPrice()));
-
-            bookView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d("book", currBook.toString());
-                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UserBookDetailsFragment(currBook)).addToBackStack(null).commit();
-                }
-            });
-
-            // add the book to the layout
-            gridL_books.addView(bookView);
+            // create and set the adapter for the list
+            UserBooksListAdapter userBooksListAdapter = new UserBooksListAdapter(getActivity(), userProfileBooks);
+            listV_books.setAdapter(userBooksListAdapter);
+        } else {
+            listV_books.setVisibility(View.GONE);
         }
     }
 }
