@@ -95,4 +95,5 @@
     <string name="retail_price">Retail Price:</string>
     <string name="cheapest_offer">Cheapest Offer:</string>
     <string name="condition_bracket">[CONDITION]</string>
+    <string name="add_photos">Add Photos</string>
 </resources>

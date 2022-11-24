@@ -4,122 +4,142 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/logo_orange"
     tools:context=".UploadBookFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingVertical="20dp"
+        android:scrollbars="none">
 
-        <Button
-            android:id="@+id/btn_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/ic_arrow_back"
-            android:backgroundTint="@color/black"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/txtV_upload_book"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="@string/upload_book"
-            android:textColor="@color/black"
-            android:textSize="22sp"
-            app:layout_constraintBottom_toBottomOf="@id/btn_back"
-            app:layout_constraintLeft_toRightOf="@id/btn_back"
-            app:layout_constraintTop_toTopOf="@id/btn_back" />
-
-        <HorizontalScrollView
-            android:id="@+id/horizontal_scroll_view_images"
-            android:layout_width="350dp"
-            android:layout_height="200dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txtV_upload_book"
-            >
-
-            <LinearLayout
-                android:id="@+id/linlayout_image_scroll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-
-        </HorizontalScrollView>
-
-        <Button
-            android:id="@+id/btn_add_photo"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:text="Add Photos"
-            android:textColor="@color/white"
-            android:background="@drawable/buttons_blue"
-            android:layout_marginBottom="5dp"
-            app:layout_constraintLeft_toLeftOf="@id/horizontal_scroll_view_images"
-            app:layout_constraintRight_toRightOf="@id/horizontal_scroll_view_images"
-            app:layout_constraintTop_toBottomOf="@id/horizontal_scroll_view_images"
-            />
-
-        <TextView
-            android:id="@+id/txtV_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/price"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintLeft_toLeftOf="@id/horizontal_scroll_view_images"
-            app:layout_constraintTop_toBottomOf="@id/btn_add_photo" />
-
-        <EditText
-            android:id="@+id/txtE_price"
-            android:layout_width="350dp"
-            android:layout_height="55dp"
-            android:layout_marginTop="5dp"
-            android:hint="@string/empty"
-            android:background="@drawable/edit_text_inputs_starting_screens"
-            app:layout_constraintLeft_toLeftOf="@id/txtV_price"
-            app:layout_constraintTop_toBottomOf="@id/txtV_price"
-            android:importantForAutofill="no"
-            android:inputType="numberDecimal" />
-
-        <TextView
-            android:id="@+id/txtV_condition"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="@string/condition"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintLeft_toLeftOf="@id/txtE_price"
-            app:layout_constraintTop_toBottomOf="@id/txtE_price" />
-
-        <Spinner
-            android:id="@+id/spinner_condition"
-            android:layout_width="350dp"
-            android:layout_height="55dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/edit_text_inputs_starting_screens"
-            app:layout_constraintLeft_toLeftOf="@id/txtV_condition"
-            app:layout_constraintTop_toBottomOf="@id/txtV_condition"/>
-
-        <Button
-            android:id="@+id/btn_publish_book"
-            android:layout_width="350dp"
-            android:layout_height="65dp"
-            android:background="@drawable/buttons_green"
-            android:text="@string/publish_book"
-            android:textColor="@color/black"
-            android:layout_marginBottom="20dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/card_rounded"
+            android:padding="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <HorizontalScrollView
+                android:id="@+id/horizontal_scroll_view_images"
+                android:layout_width="300dp"
+                android:layout_height="200dp"
+                android:background="@drawable/image_switcher"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/linlayout_image_scroll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+
+            </HorizontalScrollView>
+
+            <Button
+                android:id="@+id/btn_add_photo"
+                android:layout_width="250dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="5dp"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/buttons_orange"
+                android:text="@string/add_photos"
+                android:textColor="@color/btntxt_brown"
+                android:textAllCaps="false"
+                app:layout_constraintLeft_toLeftOf="@id/horizontal_scroll_view_images"
+                app:layout_constraintRight_toRightOf="@id/horizontal_scroll_view_images"
+                app:layout_constraintTop_toBottomOf="@id/horizontal_scroll_view_images" />
+
+            <TextView
+                android:id="@+id/txtV_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/book_title"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toLeftOf="@id/horizontal_scroll_view_images"
+                app:layout_constraintTop_toBottomOf="@id/btn_add_photo" />
+
+            <TextView
+                android:id="@+id/txtE_title_edit"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginTop="5dp"
+                android:text="@string/sample_text"
+                app:layout_constraintLeft_toLeftOf="@id/txtV_title"
+                app:layout_constraintTop_toBottomOf="@id/txtV_title" />
+
+            <TextView
+                android:id="@+id/txtV_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/price"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toLeftOf="@id/txtE_title_edit"
+                app:layout_constraintTop_toBottomOf="@id/txtE_title_edit" />
+
+            <EditText
+                android:id="@+id/txtE_price"
+                android:layout_width="300dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:textSize="16sp"
+                android:background="@drawable/edit_text_inputs_starting_screens"
+                android:hint="@string/empty"
+                android:importantForAutofill="no"
+                android:inputType="numberDecimal"
+                app:layout_constraintLeft_toLeftOf="@id/txtV_price"
+                app:layout_constraintTop_toBottomOf="@id/txtV_price" />
+
+            <TextView
+                android:id="@+id/txtV_condition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/condition"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toLeftOf="@id/txtE_price"
+                app:layout_constraintTop_toBottomOf="@id/txtE_price" />
+
+            <Spinner
+                android:id="@+id/spinner_condition"
+                android:layout_width="300dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:textSize="16sp"
+                android:background="@drawable/edit_text_inputs_starting_screens"
+                app:layout_constraintLeft_toLeftOf="@id/txtV_condition"
+                app:layout_constraintTop_toBottomOf="@id/txtV_condition" />
+
+            <Button
+                android:id="@+id/btn_publish_book"
+                android:layout_width="250dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp"
+                android:textSize="16sp"
+                android:background="@drawable/buttons_brown"
+                android:text="@string/publish_book"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spinner_condition" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 </FrameLayout>

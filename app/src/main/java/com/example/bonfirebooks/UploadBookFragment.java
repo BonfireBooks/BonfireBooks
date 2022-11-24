@@ -34,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -117,6 +118,7 @@ public class UploadBookFragment extends Fragment {
     FirebaseFunctions firebaseFunctions;
 
     // layout items
+    TextView txtE_title_edit;
     EditText txtE_price;
     Spinner spinner_condition;
     Button btn_publish_book;
@@ -141,11 +143,12 @@ public class UploadBookFragment extends Fragment {
 
         user = ((MainActivity) getActivity()).getUser();
 
-        horizontal_scroll_view_images = view.findViewById(R.id.horizontal_scroll_view_images);
+        txtE_title_edit = view.findViewById(R.id.txtE_title_edit);
         txtE_price = view.findViewById(R.id.txtE_price);
         spinner_condition = view.findViewById(R.id.spinner_condition);
         btn_publish_book = view.findViewById(R.id.btn_publish_book);
         btn_add_photo = view.findViewById(R.id.btn_add_photo);
+        horizontal_scroll_view_images = view.findViewById(R.id.horizontal_scroll_view_images);
         linlayout_image_scroll = view.findViewById(R.id.linlayout_image_scroll);
 
         progressDialog = new ProgressDialog(getContext());
@@ -164,6 +167,8 @@ public class UploadBookFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_condition.setAdapter(adapter);
 
+        txtE_title_edit.setText(book.getTitle());
+
         // set formatting and filter for price
         txtE_price.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(3, 2)});
 
@@ -171,7 +176,7 @@ public class UploadBookFragment extends Fragment {
         if(book.getPrice() == 0) {
             txtE_price.setHint("Enter a Price");
         } else {
-            txtE_price.setHint("Enter a Price <= " + book.getPrice());
+            txtE_price.setHint("Enter a Price (" + book.getPrice() + ") or less");
         }
 
         // insert the book into the firebase collection
