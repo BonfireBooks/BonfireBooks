@@ -33,18 +33,18 @@ import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link UserBooksDetailsFragment#newInstance} factory method to
+ * Use the {@link UserBookDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserBooksDetailsFragment extends Fragment {
+public class UserBookDetailsFragment extends Fragment {
 
-    public UserBooksDetailsFragment() {
+    public UserBookDetailsFragment() {
         // Required empty public constructor
     }
 
     UserProfileBook userProfileBook;
 
-    public UserBooksDetailsFragment(UserProfileBook userProfileBook) {
+    public UserBookDetailsFragment(UserProfileBook userProfileBook) {
         this.userProfileBook = userProfileBook;
     }
 
@@ -52,10 +52,10 @@ public class UserBooksDetailsFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment UserBooksDetailsFragment.
+     * @return A new instance of fragment UserBookDetailsFragment.
      */
-    public static UserBooksDetailsFragment newInstance() {
-        UserBooksDetailsFragment fragment = new UserBooksDetailsFragment();
+    public static UserBookDetailsFragment newInstance() {
+        UserBookDetailsFragment fragment = new UserBookDetailsFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;

@@ -91,7 +91,7 @@ public class BookOfferDetailsFragment extends Fragment {
             if (uBook.getBookId().equals(userBook.getBookId())) {
                 // get this fragment off the backstack
                 getParentFragmentManager().popBackStack();
-                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UserBooksDetailsFragment(uBook)).addToBackStack(null).commit();
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UserBookDetailsFragment(uBook)).addToBackStack(null).commit();
                 return null;
             }
         }
