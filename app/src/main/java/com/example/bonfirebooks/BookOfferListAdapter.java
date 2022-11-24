@@ -26,7 +26,7 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.HashMap;
 
-public class BookOfferAdapter extends ArrayAdapter<UserBook> {
+public class BookOfferListAdapter extends ArrayAdapter<UserBook> {
 
     Activity context;
     User user;
@@ -34,7 +34,7 @@ public class BookOfferAdapter extends ArrayAdapter<UserBook> {
     Book book;
     UserBook[] userBook;
 
-    public BookOfferAdapter(Activity context, User user, Book book, UserBook[] userBook, FragmentManager fragmentManager) {
+    public BookOfferListAdapter(Activity context, User user, Book book, UserBook[] userBook, FragmentManager fragmentManager) {
         super(context, R.layout.offer_book_list_item, userBook);
         this.context = context;
         this.user = user;
