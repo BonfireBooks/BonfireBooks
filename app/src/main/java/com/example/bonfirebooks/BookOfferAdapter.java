@@ -56,7 +56,7 @@ public class BookOfferAdapter extends ArrayAdapter<UserBook> {
 
         // set text views
         txtV_book_condition.setText(userBook[position].getCondition());
-        txtV_book_price.setText(String.valueOf(userBook[position].getPrice()));
+        txtV_book_price.setText("$" + String.valueOf(userBook[position].getPrice()));
 
         // set image view
         if (userBook[position].getPathsToImages().size() > 0) {
