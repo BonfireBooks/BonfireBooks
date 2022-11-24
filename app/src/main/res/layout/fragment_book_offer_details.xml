@@ -158,8 +158,8 @@
                 app:layout_constraintLeft_toRightOf="@id/txtV_condition"
                 app:layout_constraintTop_toTopOf="@id/txtV_condition" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -168,8 +168,9 @@
 
                 <Button
                     android:id="@+id/btn_email_seller"
-                    android:layout_width="140dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:background="@drawable/buttons_orange"
                     android:text="@string/email_seller"
                     android:textAllCaps="false"
@@ -180,8 +181,9 @@
 
                 <Button
                     android:id="@+id/btn_message_seller"
-                    android:layout_width="140dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:layout_marginStart="10dp"
                     android:background="@drawable/buttons_orange"
                     android:text="@string/message_seller"
@@ -191,7 +193,7 @@
                     app:layout_constraintLeft_toRightOf="@id/btn_email_seller"
                     app:layout_constraintTop_toTopOf="parent" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
