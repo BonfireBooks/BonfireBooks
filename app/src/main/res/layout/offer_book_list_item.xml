@@ -80,8 +80,7 @@
             android:textColor="@color/btntxt_blue"
             app:layout_constraintBottom_toBottomOf="@id/card_profile"
             app:layout_constraintRight_toRightOf="parent" />
-
-
+        
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

@@ -20,7 +20,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -36,7 +35,7 @@ public class BookOfferAdapter extends ArrayAdapter<UserBook> {
     UserBook[] userBook;
 
     public BookOfferAdapter(Activity context, User user, Book book, UserBook[] userBook, FragmentManager fragmentManager) {
-        super(context, R.layout.book_list_item, userBook);
+        super(context, R.layout.offer_book_list_item, userBook);
         this.context = context;
         this.user = user;
         this.book = book;
@@ -46,7 +45,7 @@ public class BookOfferAdapter extends ArrayAdapter<UserBook> {
 
     public View getView(int position, View view, ViewGroup viewgroup) {
         LayoutInflater inflater = context.getLayoutInflater();
-        View bookListItem = inflater.inflate(R.layout.book_list_item, null, true);
+        View bookListItem = inflater.inflate(R.layout.offer_book_list_item, null, true);
 
         // layout views
         ImageView imgV_book_cover = bookListItem.findViewById(R.id.imgV_book_cover);
