@@ -14,10 +14,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,16 +83,13 @@ public class WishlistFragment extends Fragment {
 
     // layout items
     ConstraintLayout layout_wishlist_empty;
-    ConstraintLayout layout_wishlist_grid;
+    ListView listV_books;
     Button btn_explore;
     BottomNavigationView bottomNavigationView;
 
     // Firebase
     FirebaseFirestore firestore;
     FirebaseUser currUser;
-
-    ScrollView scrollV_books;
-    GridLayout gridL_books;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -99,11 +98,7 @@ public class WishlistFragment extends Fragment {
         user = ((MainActivity) getActivity()).getUser();
 
         layout_wishlist_empty = view.findViewById(R.id.layout_wishlist_empty);
-
-        layout_wishlist_grid = view.findViewById(R.id.layout_wishlist_grid);
-        scrollV_books = view.findViewById(R.id.scrollV_books);
-        gridL_books = view.findViewById(R.id.gridL_books);
-
+        listV_books = view.findViewById(R.id.listV_books);
         btn_explore = view.findViewById(R.id.btn_explore);
         bottomNavigationView = getActivity().findViewById(R.id.bottomNavView);
 
@@ -130,6 +125,50 @@ public class WishlistFragment extends Fragment {
             public void onRefresh() {
                 getWishlistFromFirebase();
                 pullToRefresh.setRefreshing(false);
+            }
+        });
+
+        listV_books.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                WishlistBook currBook = user.getWishlist().get(String.valueOf(i));
+
+                HashMap<Integer, Book> books = ((MainActivity) getActivity()).getBooksByTime();
+
+                Book book = null;
+
+                // find other details on book
+                for (int j = 0; j < books.size(); j++) {
+                    if (books.get(j).getTitle().equals(currBook.getTitle())) {
+                        book = books.get(j);
+                    }
+                }
+
+                if (book == null) {
+                    Toast.makeText(getContext(), "Could Not Load Book", Toast.LENGTH_SHORT).show();
+                } else {
+                    Book finalBook = book;
+                    // get other book details
+                    firestore.document("/books/" + book.getBookId() + "/users/" + currBook.getBookId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                Log.d("BookLocated", "Successful");
+
+                                DocumentSnapshot taskDoc = task.getResult();
+
+                                UserBook userBook = new UserBook(currBook.getPrice(), currBook.getBookId(), taskDoc.getString("email"), taskDoc.getString("name"), currBook.getCondition(),
+                                        taskDoc.getString("owner"), taskDoc.getBoolean("isPublic"), taskDoc.getTimestamp("time"), (HashMap<String, String>) taskDoc.get("images"));
+
+                                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookOfferDetailsFragment(finalBook, userBook)).addToBackStack(null).commit();
+
+                            } else {
+                                Log.d("BookLocated", "Failed");
+                            }
+                        }
+                    });
+                }
             }
         });
 
@@ -174,106 +213,22 @@ public class WishlistFragment extends Fragment {
 
         HashMap<String, WishlistBook> wishlist = user.getWishlist();
         if (wishlist.size() != 0) {
-
-            gridL_books.removeAllViews();
-
             // change the visibilty of the views
             layout_wishlist_empty.setVisibility(View.GONE);
-            scrollV_books.setVisibility(View.VISIBLE);
+            listV_books.setVisibility(View.VISIBLE);
 
-            Log.d("wishlist", wishlist.toString());
+            WishlistBook[] wishlistBooks = new WishlistBook[wishlist.size()];
+
             for (int i = 0; i < wishlist.size(); i++) {
-
-                WishlistBook currBook = wishlist.get(String.valueOf(i));
-
-                View bookView = getLayoutInflater().inflate(R.layout.wishlist_book_item, null);
-
-                // add some spacing between the grid items
-                GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-                params.setMargins(10, 10, 10, 10);
-
-                bookView.setLayoutParams(params);
-
-                // new book view details
-                ImageView book_image = bookView.findViewById(R.id.imgV_coverImage);
-                TextView book_title = bookView.findViewById(R.id.txtV_book_title);
-                TextView book_price = bookView.findViewById(R.id.txtV_book_price);
-                TextView book_condition = bookView.findViewById(R.id.txtV_book_condition);
-
-                // set book views image
-                Glide.with(getContext()).load(currBook.getCoverImgUrl()).listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        // get rid of the background resource when image loads
-                        book_image.setBackground(null);
-                        return false;
-                    }
-                }).into(book_image);
-
-                // set other book view details
-                book_title.setText(currBook.getTitle());
-
-                DecimalFormat decimalFormat = new DecimalFormat("0.00");
-
-                book_price.setText("$ " + decimalFormat.format(currBook.getPrice()));
-
-                book_condition.setText(currBook.getCondition());
-
-                bookView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //
-                        HashMap<Integer, Book> books = ((MainActivity) getActivity()).getBooksByTime();
-
-                        Book book = null;
-
-                        // find other details on book
-                        for (int i = 0; i < books.size(); i++) {
-                            if (books.get(i).getTitle().equals(currBook.getTitle())) {
-                                book = books.get(i);
-                            }
-                        }
-
-                        if (book == null) {
-                            Toast.makeText(getContext(), "Could Not Load Book", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Book finalBook = book;
-                            // get other book details
-                            firestore.document("/books/" + book.getBookId() + "/users/" + currBook.getBookId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d("BookLocated", "Successful");
-
-                                        DocumentSnapshot taskDoc = task.getResult();
-
-                                        UserBook userBook = new UserBook(currBook.getPrice(), currBook.getBookId(), taskDoc.getString("email"), taskDoc.getString("name"), currBook.getCondition(),
-                                                taskDoc.getString("owner"), taskDoc.getBoolean("isPublic"), taskDoc.getTimestamp("time"), (HashMap<String, String>) taskDoc.get("images"));
-
-                                        getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookOfferDetailsFragment(finalBook, userBook)).addToBackStack(null).commit();
-
-                                    } else {
-                                        Log.d("BookLocated", "Failed");
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
-
-                // add the book to the layout
-                gridL_books.addView(bookView);
+                wishlistBooks[i] = wishlist.get(String.valueOf(i));
             }
-        } else {
-            // change the visibility of the views
-            layout_wishlist_empty.setVisibility(View.VISIBLE);
-            scrollV_books.setVisibility(View.GONE);
-        }
 
+            // create and set the adapter for the list
+            WishlistBookListAdapter bookOfferAdapter = new WishlistBookListAdapter(getActivity(), wishlistBooks);
+            listV_books.setAdapter(bookOfferAdapter);
+        } else {
+            layout_wishlist_empty.setVisibility(View.VISIBLE);
+            listV_books.setVisibility(View.GONE);
+        }
     }
 }
