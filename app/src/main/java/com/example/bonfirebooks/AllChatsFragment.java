@@ -27,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Date;
@@ -123,7 +124,7 @@ public class AllChatsFragment extends Fragment {
 
         HashMap<String, UserProfileChat> chats = new HashMap<>();
 
-        firestore.collection("users").document(user.getUid()).collection("chats").orderBy("time").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        firestore.collection("users").document(user.getUid()).collection("chats").orderBy("time", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if(error == null) {
