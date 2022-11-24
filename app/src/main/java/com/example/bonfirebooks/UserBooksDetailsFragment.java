@@ -80,11 +80,12 @@ public class UserBooksDetailsFragment extends Fragment {
     HorizontalScrollView horizScrollV_images;
     LinearLayout linlayout_image_scroll;
 
+    ImageView imgV_book_images;
+
     TextView txtV_book_title;
     TextView txtV_book_condition_edit;
     TextView txtV_book_price;
 
-    Button btn_back;
     Button btn_edit_book;
     Button btn_view_uBooks;
 
@@ -98,10 +99,10 @@ public class UserBooksDetailsFragment extends Fragment {
 
         horizScrollV_images = view.findViewById(R.id.horizScrollV_images);
         linlayout_image_scroll = view.findViewById(R.id.linlayout_image_scroll);
+        imgV_book_images = view.findViewById(R.id.imgV_book_images);
         txtV_book_title = view.findViewById(R.id.txtV_book_title);
         txtV_book_condition_edit = view.findViewById(R.id.txtV_book_condition_edit);
         txtV_book_price = view.findViewById(R.id.txtV_book_price);
-        btn_back = view.findViewById(R.id.btn_back);
         btn_edit_book = view.findViewById(R.id.btn_edit_book);
         btn_view_uBooks = view.findViewById(R.id.btn_view_uBooks);
 
@@ -115,7 +116,7 @@ public class UserBooksDetailsFragment extends Fragment {
 
         // add images to the scroll view
         HashMap<String, String> images = userProfileBook.getImages();
-        if (images != null) {
+        if (images.size() != 0) {
             for (int i = 0; i < images.size(); i++) {
                 int finalI = i;
                 firebaseStorage.getReference().child(images.get(String.valueOf(i))).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -130,19 +131,16 @@ public class UserBooksDetailsFragment extends Fragment {
                     }
                 });
             }
+        } else {
+            horizScrollV_images.setVisibility(View.GONE);
+            imgV_book_images.setVisibility(View.VISIBLE);
+            Glide.with(getContext()).load(userProfileBook.getCoverImgUrl()).error(R.drawable.ic_image_failed).into(imgV_book_images);
         }
 
         btn_edit_book.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UserBookDetailsEditFragment(userProfileBook)).addToBackStack(null).commit();
-            }
-        });
-
-        btn_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity) getActivity()).onBackPressed();
             }
         });
 
