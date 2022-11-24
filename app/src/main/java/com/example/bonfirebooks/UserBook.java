@@ -26,7 +26,7 @@ public class UserBook {
         this.time = time;
         this.images = images;
 
-        switch(condition) {
+        switch(condition.toLowerCase()) {
             case "like-new":
                 this.condition = "Like-New";
                 break;
@@ -91,7 +91,7 @@ public class UserBook {
     }
 
     public void setCondition(String condition) {
-        switch(condition) {
+        switch(condition.toLowerCase()) {
             case "like-new":
                 this.condition = "Like-New";
                 break;

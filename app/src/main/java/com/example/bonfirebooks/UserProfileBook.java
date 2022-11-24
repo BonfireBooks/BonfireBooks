@@ -25,7 +25,7 @@ public class UserProfileBook implements Serializable {
         this.isPublic = isPublic;
         this.images = images;
 
-        switch(conditon) {
+        switch(conditon.toLowerCase()) {
             case "like-new":
                 this.conditon = "Like-New";
                 break;

@@ -18,7 +18,7 @@ public class WishlistBook implements Serializable {
         this.coverImgUrl = coverImgUrl;
         this.price = price;
 
-        switch(condition) {
+        switch(condition.toLowerCase()) {
             case "like-new":
                 this.condition = "Like-New";
                 break;
@@ -61,7 +61,7 @@ public class WishlistBook implements Serializable {
     }
 
     public void setCondition(String condition) {
-        switch(condition) {
+        switch(condition.toLowerCase()) {
             case "like-new":
                 this.condition = "Like-New";
                 break;
