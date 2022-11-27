@@ -193,7 +193,9 @@ public class UserBookDetailsEditFragment extends Fragment {
             }
         }
 
-        firestore.collection("books").document().collection("users").document(userProfileBook.getBookId()).set(updatedData, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+
+        firestore.collection("books").document(userProfileBook.getParentBookId()).collection("users").document(userProfileBook.getBookId()).set(updatedData, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {

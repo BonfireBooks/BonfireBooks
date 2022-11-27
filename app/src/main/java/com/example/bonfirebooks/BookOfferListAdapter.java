@@ -86,7 +86,7 @@ public class BookOfferListAdapter extends ArrayAdapter<UserBook> {
             btn_edit_book.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {;
-                    UserProfileBook userProfileBook = new UserProfileBook(userBook[position].getBookId(), book.getTitle(), book.getCoverImgUrl(), userBook[position].getCondition(), userBook[position].getPrice(), true, userBook[position].getImages());
+                    UserProfileBook userProfileBook = new UserProfileBook(userBook[position].getBookId(), book.getTitle(), book.getCoverImgUrl(), userBook[position].getCondition(), book.getBookId(), userBook[position].getPrice(), true, userBook[position].getImages());
                     fragmentManager.beginTransaction().replace(R.id.frame_container, new UserBookDetailsEditFragment(userProfileBook)).addToBackStack(null).commit();
                 }
             });

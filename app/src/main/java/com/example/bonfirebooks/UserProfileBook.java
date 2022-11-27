@@ -9,6 +9,7 @@ public class UserProfileBook implements Serializable {
     private String title;
     private String coverImgUrl;
     private String conditon;
+    private String parentBookId;
     private Double price;
     private Boolean isPublic;
     HashMap<String, String> images;
@@ -17,10 +18,11 @@ public class UserProfileBook implements Serializable {
 
     }
 
-    public UserProfileBook(String bookId, String title, String coverImgUrl, String conditon, Double price, Boolean isPublic, HashMap<String, String> images) {
+    public UserProfileBook(String bookId, String title, String coverImgUrl, String conditon, String parentBookId, Double price, Boolean isPublic, HashMap<String, String> images) {
         this.bookId = bookId;
         this.title = title;
         this.coverImgUrl = coverImgUrl;
+        this.parentBookId = parentBookId;
         this.price = price;
         this.isPublic = isPublic;
         this.images = images;
@@ -39,6 +41,22 @@ public class UserProfileBook implements Serializable {
                 this.conditon = "Poor";
                 break;
         }
+    }
+
+    public String getParentBookId() {
+        return parentBookId;
+    }
+
+    public void setParentBookId(String parentBookId) {
+        this.parentBookId = parentBookId;
+    }
+
+    public Boolean getPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(Boolean aPublic) {
+        isPublic = aPublic;
     }
 
     public Boolean getIsPublic() {
