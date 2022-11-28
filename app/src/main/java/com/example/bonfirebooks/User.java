@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -132,6 +133,33 @@ public class User implements Parcelable {
         if (books != null)
             str.append("books: " + books.toString() + "\n");
         return str.toString();
+    }
+
+    public void setBooksFirebase() {
+        HashMap<String, UserProfileBook> books = new HashMap<>();
+
+        FirebaseFirestore.getInstance().collection("users").document(getUid()).collection("books").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    Log.d("getUserBooks", "Success");
+
+                    int i = 0;
+                    for (DocumentSnapshot doc : task.getResult().getDocuments()) {
+                        // create a new book book with the document data
+                        UserProfileBook book = new UserProfileBook(doc.getId(), doc.getString("title"), doc.getString("coverImgUrl"), doc.getString("condition"), doc.getString("parentBookId"), doc.getDouble("price"), doc.getDouble("maxPrice"), doc.getBoolean("isPublic"), (HashMap<String, String>) doc.get("images"));
+
+                        // add the book to the users wishlist
+                        books.put(String.valueOf(i), book);
+
+                        i++;
+
+                    }
+
+                    setBooks(books);
+                }
+            }
+        });
     }
 
     public void setUser(User user, Activity currActivity) {
