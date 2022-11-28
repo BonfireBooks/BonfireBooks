@@ -135,7 +135,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/buttons_orange"
-                    android:text="@string/edit_book"
+                    android:text="@string/edit"
                     android:textAllCaps="false"
                     android:textColor="@color/btntxt_brown"
                     android:textSize="15sp"
@@ -150,13 +150,28 @@
                     android:layout_weight="1"
                     android:background="@drawable/buttons_orange"
                     android:padding="10dp"
-                    android:text="@string/view_user_books"
+                    android:text="@string/view_all"
                     android:textAllCaps="false"
                     android:textColor="@color/logo_brown"
                     android:textSize="15sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/btn_edit_book"
                     app:layout_constraintTop_toTopOf="@id/btn_edit_book" />
+
+                <Button
+                    android:id="@+id/btn_delete_book"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/buttons_orange"
+                    android:backgroundTint="#FF0000"
+                    android:text="@string/delete"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

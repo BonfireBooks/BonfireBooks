@@ -27,7 +27,9 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -76,6 +78,9 @@ public class UserBookDetailsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_user_books_details, container, false);
     }
 
+    User user;
+
+    FirebaseFirestore firestore;
     FirebaseStorage firebaseStorage;
 
     HorizontalScrollView horizScrollV_images;
@@ -89,6 +94,7 @@ public class UserBookDetailsFragment extends Fragment {
 
     Button btn_edit_book;
     Button btn_view_uBooks;
+    Button btn_delete_book;
 
     HashMap<Integer, Book> books;
 
@@ -96,6 +102,7 @@ public class UserBookDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        firestore = FirebaseFirestore.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
 
         imgV_coverImage = view.findViewById(R.id.imgV_coverImage);
@@ -106,6 +113,7 @@ public class UserBookDetailsFragment extends Fragment {
         txtV_book_price = view.findViewById(R.id.txtV_book_price);
         btn_edit_book = view.findViewById(R.id.btn_edit_book);
         btn_view_uBooks = view.findViewById(R.id.btn_view_uBooks);
+        btn_delete_book = view.findViewById(R.id.btn_delete_book);
 
         txtV_book_title.setText(userProfileBook.getTitle());
         txtV_book_condition_edit.setText(userProfileBook.getConditon());
@@ -163,6 +171,27 @@ public class UserBookDetailsFragment extends Fragment {
                 if (!hasBook) {
                     Toast.makeText(getContext(), "Books could not be loaded", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        btn_delete_book.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                firestore.document("/books/" + userProfileBook.getParentBookId() + "/users/" + userProfileBook.getBookId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("bookDelete", "Successful");
+                            Toast.makeText(getContext(), "Book Deleted", Toast.LENGTH_SHORT).show();
+
+                            ((MainActivity) getActivity()).getUser().setBooksFirebase();
+                            ((MainActivity) getActivity()).onBackPressed();
+                        } else {
+                            Log.d("bookDelete", "Failed");
+                            Toast.makeText(getContext(), "Could not delete book", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
     }
