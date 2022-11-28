@@ -200,7 +200,7 @@ public class BookOfferDetailsFragment extends Fragment {
         if (userWishlsit != null) {
             for (int i = 0; i < userWishlsit.size(); i++) {
                 if (userBook.getBookId().equals(userWishlsit.get(String.valueOf(i)).getBookId())) {
-                    btn_wishlist.setBackground(getResources().getDrawable(R.drawable.ic_heart_filled));
+                    btn_wishlist.setText("Remove From Wishlist");
                     inWishlist[0] = true;
                     break;
                 }
@@ -220,7 +220,7 @@ public class BookOfferDetailsFragment extends Fragment {
                             if (task.isSuccessful()) {
                                 Log.d("removeFromWishlist", "Successful");
                                 inWishlist[0] = false;
-                                btn_wishlist.setBackground(getResources().getDrawable(R.drawable.ic_heart_empty));
+                                btn_wishlist.setText("Add To Wishlist");
                             } else {
                                 Log.d("removeFromWishlist", "Failed");
                             }
@@ -235,7 +235,7 @@ public class BookOfferDetailsFragment extends Fragment {
                             if (task.isSuccessful()) {
                                 Log.d("addToWishlist", "Successful");
                                 inWishlist[0] = true;
-                                btn_wishlist.setBackground(getResources().getDrawable(R.drawable.ic_heart_filled));
+                                btn_wishlist.setText("Remove From Wishlist");
                             } else {
                                 Log.d("addToWishlist", "Failed");
                             }

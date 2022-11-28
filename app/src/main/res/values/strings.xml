@@ -96,4 +96,5 @@
     <string name="cheapest_offer">Cheapest Offer:</string>
     <string name="condition_bracket">[CONDITION]</string>
     <string name="add_photos">Add Photos</string>
+    <string name="add_to_wishlist">Add To Wishlist</string>
 </resources>
