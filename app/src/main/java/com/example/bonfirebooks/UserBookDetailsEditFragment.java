@@ -14,6 +14,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
@@ -99,9 +100,8 @@ public class UserBookDetailsEditFragment extends Fragment {
 
     Button btn_change_photos;
     Button btn_save_changes;
-    Button btn_back;
 
-    Switch switch_isPublic;
+    SwitchCompat switch_isPublic;
 
     LinearLayout linlayout_image_scroll;
 
@@ -127,7 +127,6 @@ public class UserBookDetailsEditFragment extends Fragment {
         btn_change_photos = view.findViewById(R.id.btn_change_photos);
         btn_save_changes = view.findViewById(R.id.btn_save_changes);
         switch_isPublic = view.findViewById(R.id.switch_isPublic);
-        btn_back = view.findViewById(R.id.btn_back);
 
         progressDialog = new ProgressDialog(getContext());
 
@@ -138,17 +137,11 @@ public class UserBookDetailsEditFragment extends Fragment {
 
         // set formatting and filter for price
         txtE_price.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(3, 2)});
+        txtE_price.setText(String.valueOf(userProfileBook.getPrice()));
 
         if(userProfileBook.getIsPublic()) {
             switch_isPublic.setChecked(true);
         }
-
-        btn_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity)getActivity()).onBackPressed();
-            }
-        });
 
         btn_change_photos.setOnClickListener(new View.OnClickListener() {
             @Override
