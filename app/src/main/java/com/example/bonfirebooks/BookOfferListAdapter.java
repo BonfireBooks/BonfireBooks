@@ -52,11 +52,14 @@ public class BookOfferListAdapter extends ArrayAdapter<UserBook> {
         ImageView imgV_book_cover = bookListItem.findViewById(R.id.imgV_book_cover);
         TextView txtV_book_condition = bookListItem.findViewById(R.id.txtV_book_condition);
         TextView txtV_book_price = bookListItem.findViewById(R.id.txtV_book_price);
+        TextView txtV_book_seller = bookListItem.findViewById(R.id.txtV_book_seller);
+        TextView txtV_book_seller_header = bookListItem.findViewById(R.id.txtV_book_seller_header);
         Button btn_message_seller = bookListItem.findViewById(R.id.btn_message_seller);
         Button btn_edit_book = bookListItem.findViewById(R.id.btn_edit_book);
 
         // set text views
         txtV_book_condition.setText(userBook[position].getCondition());
+        txtV_book_seller.setText(userBook[position].getUserName());
 
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
         txtV_book_price.setText("$ " + decimalFormat.format(userBook[position].getPrice()));
@@ -82,6 +85,8 @@ public class BookOfferListAdapter extends ArrayAdapter<UserBook> {
 
         if(userBook[position].getOwner().equals(user.getUid())) {
             btn_message_seller.setVisibility(View.GONE);
+            txtV_book_seller.setVisibility(View.GONE);
+            txtV_book_seller_header.setVisibility(View.GONE);
             btn_edit_book.setVisibility(View.VISIBLE);
             btn_edit_book.setOnClickListener(new View.OnClickListener() {
                 @Override

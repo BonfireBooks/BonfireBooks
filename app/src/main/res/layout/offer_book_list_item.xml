@@ -32,18 +32,46 @@
         </androidx.cardview.widget.CardView>
 
         <TextView
+            android:id="@+id/txtV_book_seller_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:ellipsize="end"
+            android:maxWidth="100dp"
+            android:maxLines="1"
+            android:text="@string/seller"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@id/card_profile"
+            app:layout_constraintTop_toTopOf="@id/card_profile"/>
+
+        <TextView
+            android:id="@+id/txtV_book_seller"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:ellipsize="end"
+            android:maxWidth="100dp"
+            android:maxLines="1"
+            android:text="@string/lorem_ipsum"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@id/txtV_book_seller_header"
+            app:layout_constraintTop_toTopOf="@id/card_profile"/>
+
+        <TextView
             android:id="@+id/txtV_book_condition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="18dp"
             android:ellipsize="end"
-            android:maxWidth="150dp"
-            android:maxLines="2"
+            android:maxWidth="120dp"
+            android:maxLines="1"
             android:text="@string/lorem_ipsum"
             android:textSize="17sp"
             android:textStyle="bold"
             app:layout_constraintLeft_toRightOf="@id/card_profile"
-            app:layout_constraintTop_toTopOf="@id/card_profile" />
+            app:layout_constraintTop_toBottomOf="@id/txtV_book_seller" />
 
         <TextView
             android:id="@+id/txtV_book_price"
@@ -67,6 +95,7 @@
             android:textColor="@color/btntxt_blue"
             app:layout_constraintBottom_toBottomOf="@id/card_profile"
             app:layout_constraintRight_toRightOf="parent" />
+
 
         <Button
             android:id="@+id/btn_edit_book"
