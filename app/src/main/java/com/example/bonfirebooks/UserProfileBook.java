@@ -11,6 +11,7 @@ public class UserProfileBook implements Serializable {
     private String conditon;
     private String parentBookId;
     private Double price;
+    private Double maxPrice;
     private Boolean isPublic;
     HashMap<String, String> images;
 
@@ -18,16 +19,17 @@ public class UserProfileBook implements Serializable {
 
     }
 
-    public UserProfileBook(String bookId, String title, String coverImgUrl, String conditon, String parentBookId, Double price, Boolean isPublic, HashMap<String, String> images) {
+    public UserProfileBook(String bookId, String title, String coverImgUrl, String conditon, String parentBookId, Double price, Double maxPrice, Boolean isPublic, HashMap<String, String> images) {
         this.bookId = bookId;
         this.title = title;
         this.coverImgUrl = coverImgUrl;
         this.parentBookId = parentBookId;
         this.price = price;
+        this.maxPrice = maxPrice;
         this.isPublic = isPublic;
         this.images = images;
 
-        switch(conditon.toLowerCase()) {
+        switch (conditon.toLowerCase()) {
             case "like-new":
                 this.conditon = "Like-New";
                 break;
@@ -41,6 +43,14 @@ public class UserProfileBook implements Serializable {
                 this.conditon = "Poor";
                 break;
         }
+    }
+
+    public Double getMaxPrice() {
+        return maxPrice;
+    }
+
+    public void setMaxPrice(Double maxPrice) {
+        this.maxPrice = maxPrice;
     }
 
     public String getParentBookId() {

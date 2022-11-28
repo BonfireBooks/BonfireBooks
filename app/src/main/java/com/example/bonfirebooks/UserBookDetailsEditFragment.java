@@ -123,7 +123,7 @@ public class UserBookDetailsEditFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        user = ((MainActivity)getActivity()).getUser();
+        user = ((MainActivity) getActivity()).getUser();
 
         firestore = FirebaseFirestore.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
@@ -138,6 +138,8 @@ public class UserBookDetailsEditFragment extends Fragment {
         imgV_coverImage = view.findViewById(R.id.imgV_coverImage);
 
         progressDialog = new ProgressDialog(getContext());
+
+        txtE_price.setHint("Enter a Price (" + userProfileBook.getMaxPrice() + ") or less");
 
         // set options for the spinner
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.book_conditions, android.R.layout.simple_spinner_item);
@@ -172,7 +174,7 @@ public class UserBookDetailsEditFragment extends Fragment {
             }
         }
 
-        if(userProfileBook.getIsPublic()) {
+        if (userProfileBook.getIsPublic()) {
             switch_isPublic.setChecked(true);
         }
 
@@ -194,7 +196,7 @@ public class UserBookDetailsEditFragment extends Fragment {
                     progressDialog.setMessage("Updating...");
                     progressDialog.show();
 
-                    if(imageUris.size() > 0) {
+                    if (imageUris.size() > 0) {
                         deleteCurrentImages();
                     } else {
                         updateUserBook();
@@ -209,12 +211,12 @@ public class UserBookDetailsEditFragment extends Fragment {
         updatedData.put("condition", spinner_condition.getSelectedItem().toString().toLowerCase());
         updatedData.put("isPublic", switch_isPublic.isChecked());
 
-        if(!TextUtils.isEmpty(txtE_price.getText())) {
+        if (!TextUtils.isEmpty(txtE_price.getText())) {
             updatedData.put("price", Double.valueOf(txtE_price.getText().toString()));
         }
 
-        if(imgPaths != null) {
-            if(!imgPaths.isEmpty()) {
+        if (imgPaths != null) {
+            if (!imgPaths.isEmpty()) {
                 updatedData.put("images", imgPaths);
             }
         }
@@ -222,20 +224,22 @@ public class UserBookDetailsEditFragment extends Fragment {
         firestore.collection("books").document(userProfileBook.getParentBookId()).collection("users").document(userProfileBook.getBookId()).set(updatedData, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
+                if (task.isSuccessful()) {
                     Log.d("updateBook", "Successful");
 
                     firestore.collection("users").document(user.getUid()).collection("books").document(userProfileBook.getBookId()).set(updatedData, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()) {
+                            if (task.isSuccessful()) {
                                 progressDialog.dismiss();
-//                                Toast.makeText(getContext(), "Book Updated Successfully", Toast.LENGTH_SHORT).show();
                             } else {
 
                             }
 
-                            ((MainActivity)getActivity()).onBackPressed();
+                            getParentFragmentManager().popBackStack();
+                            getParentFragmentManager().popBackStack();
+                            getParentFragmentManager().popBackStack();
+                            getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UserBooksFragment()).addToBackStack(null).commit();
                         }
                     });
                 } else {
@@ -253,7 +257,7 @@ public class UserBookDetailsEditFragment extends Fragment {
         folderRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
+                if (task.isSuccessful()) {
                     Log.d("removeImages", "Successful");
                 } else {
                     Log.d("removeImages", "Failed");
@@ -354,7 +358,15 @@ public class UserBookDetailsEditFragment extends Fragment {
     });
 
     private boolean isValidInput() {
-        return true;
+
+        boolean isValid = true;
+
+        if(!(Double.valueOf(txtE_price.getText().toString()) <= userProfileBook.getMaxPrice())) {
+            txtE_price.setError("Price must be less than or equal to " + userProfileBook.getMaxPrice());
+            isValid = false;
+        }
+
+        return isValid;
     }
 
     private void addImageToScroll(String imgLink, int i) {

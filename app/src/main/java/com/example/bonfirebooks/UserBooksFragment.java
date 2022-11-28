@@ -23,6 +23,11 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.w3c.dom.Text;
 
@@ -90,22 +95,48 @@ public class UserBooksFragment extends Fragment {
     }
 
     private void populateListView() {
-        HashMap<String, UserProfileBook> books = user.getBooks();
-        if (books.size() != 0) {
-            // change the visibilty of the views
-            listV_books.setVisibility(View.VISIBLE);
+        HashMap<String, UserProfileBook> books = new HashMap<>();
 
-            UserProfileBook[] userProfileBooks = new UserProfileBook[books.size()];
+        FirebaseFirestore.getInstance().collection("users").document(user.getUid()).collection("books").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    Log.d("getUserBooks", "Success");
 
-            for (int i = 0; i < books.size(); i++) {
-                userProfileBooks[i] = books.get(String.valueOf(i));
+                    int i = 0;
+                    for (DocumentSnapshot doc : task.getResult().getDocuments()) {
+                        // create a new book book with the document data
+                        UserProfileBook book = new UserProfileBook(doc.getId(), doc.getString("title"), doc.getString("coverImgUrl"), doc.getString("condition"), doc.getString("parentBookId"), doc.getDouble("price"), doc.getDouble("maxPrice"), doc.getBoolean("isPublic"), (HashMap<String, String>) doc.get("images"));
+
+                        // add the book to the users wishlist
+                        books.put(String.valueOf(i), book);
+
+                        i++;
+
+                    }
+
+                    if (books.size() != 0) {
+                        // change the visibilty of the views
+                        listV_books.setVisibility(View.VISIBLE);
+
+                        UserProfileBook[] userProfileBooks = new UserProfileBook[books.size()];
+
+                        for (int j = 0; j < books.size(); j++) {
+                            userProfileBooks[j] = books.get(String.valueOf(j));
+                        }
+
+                        // create and set the adapter for the list
+                        UserBooksListAdapter userBooksListAdapter = new UserBooksListAdapter(getActivity(), userProfileBooks);
+                        listV_books.setAdapter(userBooksListAdapter);
+                    } else {
+                        listV_books.setVisibility(View.GONE);
+                    }
+
+                    // set the users wishlists
+                    user.setBooks(books);
+                }
             }
+        });
 
-            // create and set the adapter for the list
-            UserBooksListAdapter userBooksListAdapter = new UserBooksListAdapter(getActivity(), userProfileBooks);
-            listV_books.setAdapter(userBooksListAdapter);
-        } else {
-            listV_books.setVisibility(View.GONE);
-        }
     }
 }
