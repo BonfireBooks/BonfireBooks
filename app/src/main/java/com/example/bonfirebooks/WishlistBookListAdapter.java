@@ -1,6 +1,7 @@
 package com.example.bonfirebooks;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,20 +39,20 @@ public class WishlistBookListAdapter extends ArrayAdapter<WishlistBook> {
         TextView txtV_book_condition = bookListItem.findViewById(R.id.txtV_book_condition);
         TextView txtV_book_price = bookListItem.findViewById(R.id.txtV_book_price);
 
-        FirebaseStorage.getInstance().getReference().child("User Images").child(wishlistBooks[position].getBookId()).list(1).addOnCompleteListener(new OnCompleteListener<ListResult>() {
-            @Override
-            public void onComplete(@NonNull Task<ListResult> task) {
-                if(task.isSuccessful()) {
-                    if(task.getResult().getItems().size() > 0) {
-                        Glide.with(getContext()).load(task.getResult().getItems().get(0).getDownloadUrl()).into(imgV_book_cover);
+        if(wishlistBooks[position].getImages().size() > 0) {
+            FirebaseStorage.getInstance().getReference().child(wishlistBooks[position].getImages().get(String.valueOf(0))).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Glide.with(getContext()).load(task.getResult()).into(imgV_book_cover);
                     } else {
                         Glide.with(getContext()).load(wishlistBooks[position].getCoverImgUrl()).into(imgV_book_cover);
                     }
-                } else {
-                    Glide.with(getContext()).load(wishlistBooks[position].getCoverImgUrl()).into(imgV_book_cover);
                 }
-            }
-        });
+            });
+        } else {
+            Glide.with(getContext()).load(wishlistBooks[position].getCoverImgUrl()).into(imgV_book_cover);
+        }
 
         txtV_book_title.setText(wishlistBooks[position].getTitle());
         txtV_book_condition.setText(wishlistBooks[position].getCondition());
