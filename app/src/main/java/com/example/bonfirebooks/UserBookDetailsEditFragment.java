@@ -251,21 +251,33 @@ public class UserBookDetailsEditFragment extends Fragment {
     }
 
     private void deleteCurrentImages() {
-        // get a storage reference
-        StorageReference folderRef = FirebaseStorage.getInstance().getReference().child("User Images").child(userProfileBook.getBookId());
 
-        folderRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Log.d("removeImages", "Successful");
-                } else {
-                    Log.d("removeImages", "Failed");
-                }
+        HashMap<String, String> bookImages = userProfileBook.getImages();
 
-                addUserImagesFirebase();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        if(bookImages.size() > 0) {
+            for (int i = 0; i < bookImages.size(); i++) {
+                final int finalI = i;
+                Log.d("bookImages", bookImages.get(String.valueOf(i)));
+                storage.getReference().child(bookImages.get(String.valueOf(i))).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("removeImages", "Successful");
+                        } else {
+                            Log.d("removeImages", "Failed");
+                        }
+
+                        if (finalI == bookImages.size() - 1) {
+                            addUserImagesFirebase();
+                        }
+                    }
+                });
             }
-        });
+        } else {
+            addUserImagesFirebase();
+        }
     }
 
 
@@ -361,7 +373,7 @@ public class UserBookDetailsEditFragment extends Fragment {
 
         boolean isValid = true;
 
-        if(!(Double.valueOf(txtE_price.getText().toString()) <= userProfileBook.getMaxPrice())) {
+        if(!(Double.valueOf(txtE_price.getText().toString()) <= userProfileBook.getMaxPrice()) && userProfileBook.getMaxPrice() != 0) {
             txtE_price.setError("Price must be less than or equal to " + userProfileBook.getMaxPrice());
             isValid = false;
         }
