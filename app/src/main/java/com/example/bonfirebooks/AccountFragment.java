@@ -99,10 +99,6 @@ public class AccountFragment extends Fragment {
     ImageView img_profile;
 
     View drawer_account;
-    View drawer_account_edit;
-
-    Button btn_save;
-    Button btn_profile_picture;
 
     TextView logout;
     TextView txtV_upload_book;
@@ -111,11 +107,7 @@ public class AccountFragment extends Fragment {
     TextView txtV_order_history;
     TextView txtV_notification;
     TextView txtV_user_name;
-    TextView txtE_user_name;
-    TextView txtE_phone_number;
-    TextView txtE_password;
 
-    Uri userProfileImage;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -129,28 +121,17 @@ public class AccountFragment extends Fragment {
 
         img_profile = view.findViewById(R.id.img_profile);
         drawer_account = view.findViewById(R.id.drawer_account);
-        drawer_account_edit = view.findViewById(R.id.drawer_account_edit);
         logout = view.findViewById(R.id.txtV_logout);
-        btn_save = view.findViewById(R.id.btn_save);
-        btn_profile_picture = view.findViewById(R.id.btn_profile_picture);
         txtV_user_name = view.findViewById(R.id.txtV_user_name);
         txtV_edit_profile = view.findViewById(R.id.txtV_edit_profile);
         txtV_view_books = view.findViewById(R.id.txtV_view_books);
         txtV_upload_book = view.findViewById(R.id.txtV_upload_book);
         txtV_order_history = view.findViewById(R.id.txtV_order_history);
         txtV_notification = view.findViewById(R.id.txtV_notification);
-        txtE_user_name = view.findViewById(R.id.txtE_user_name);
-        txtE_phone_number = view.findViewById(R.id.txtE_phone_number);
-        txtE_password = view.findViewById(R.id.txtE_password);
-
 
         if (user.getProfileUri() != null) {
             Glide.with(getContext()).load(Uri.parse(user.getProfileUri())).error(R.drawable.stock_user).into(img_profile);
         }
-
-        // set edit text hints
-        txtE_user_name.setHint(user.getName());
-        // txtE_phone_number.setHint(user.getPhoneNumber());
 
         txtV_user_name.setText(user.getName());
 
@@ -172,8 +153,7 @@ public class AccountFragment extends Fragment {
         txtV_edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                drawer_account.setVisibility(View.GONE);
-                drawer_account_edit.setVisibility(View.VISIBLE);
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new AccountEditFragment()).addToBackStack(null).commit();
             }
         });
 
@@ -204,134 +184,6 @@ public class AccountFragment extends Fragment {
                 // move fragments here
             }
         });
-
-        // drawer account edit views
-
-        btn_profile_picture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openImageChooser();
-            }
-        });
-
-        btn_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (userProfileImage != null) {
-                    Log.d("userProfileImage", userProfileImage.toString());
-
-                    StorageReference storageReference = storage.getReference().child("User Images").child(user.getUid());
-                    storageReference.putFile(userProfileImage).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                Log.d("uploadUserProfile", "Successful");
-
-                                user.setProfileUri(userProfileImage.toString());
-                                Glide.with(getContext()).load(userProfileImage).error(R.drawable.ic_image_failed).into(img_profile);
-
-                                firebaseUser.reload();
-                            } else {
-                                Log.d("uploadUserProfile", "Failed");
-                            }
-                        }
-                    });
-                }
-
-                if (!TextUtils.isEmpty(txtE_user_name.getText())) {
-                    HashMap<String, Object> changes = new HashMap<>();
-                    changes.put("name", txtE_user_name.getText().toString());
-
-                    // update username
-                    firestore.collection("users").document(user.getUid()).update(changes).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d("updateName", "Successful");
-                                user.setName(txtE_user_name.getText().toString());
-                                txtV_user_name.setText(user.getName());
-                                txtE_user_name.setText(null);
-                            } else {
-                                Log.d("updateName", "Failed");
-                            }
-                            firebaseUser.reload();
-                        }
-                    });
-                }
-
-                // documentation for setting phone number is poor
-//                String phoneNumber = txtE_phone_number.getText().toString();
-//                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri()
-//
-//                firebaseUser.updatePhoneNumber(newPhoneNum).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        if (task.isSuccessful()) {
-//                            Log.d("updatePhoneNumber", "Successful");
-//                txtE_phone_number.setText(null);
-//                        } else {
-//                            Log.d("updatePhoneNumber", "Successful");
-//                        }
-//                    }
-//                });
-
-                if (!TextUtils.isEmpty(txtE_password.getText())) {
-                    String password = txtE_password.getText().toString();
-                    firebaseUser.updatePassword(password).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d("updatePassword", "Successful");
-                                txtE_password.setText(null);
-                            } else {
-                                Log.d("updatePassword", "Successful");
-                            }
-                            firebaseUser.reload();
-                        }
-                    });
-                }
-
-                drawer_account.setVisibility(View.VISIBLE);
-                drawer_account_edit.setVisibility(View.GONE);
-
-            }
-        });
-
     }
 
-    private void openImageChooser() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-        // todo -- fix camera intent not returning uri
-//        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-
-        // set intent type to select images
-        galleryIntent.setType("image/");
-
-        // allow multiple image to be selected
-        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
-
-        // create the chooser
-        Intent chooser = new Intent(Intent.ACTION_CHOOSER);
-        chooser.putExtra(Intent.EXTRA_INTENT, galleryIntent);
-        chooser.putExtra(Intent.EXTRA_TITLE, "Select From:");
-
-//        Intent[] intentArray = {cameraIntent};
-//        chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
-
-        // start the intent
-        startForResult.launch(chooser);
-    }
-
-    ActivityResultLauncher<Intent> startForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            if (result != null && result.getResultCode() == Activity.RESULT_OK) {
-                userProfileImage = result.getData().getData();
-
-                Glide.with(getContext()).load(userProfileImage).error(R.drawable.stock_user).into(img_profile);
-            }
-        }
-    });
 }
