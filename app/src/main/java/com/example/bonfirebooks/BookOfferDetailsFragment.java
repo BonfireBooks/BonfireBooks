@@ -154,19 +154,35 @@ public class BookOfferDetailsFragment extends Fragment {
         } else {
             HashMap<String, String> paths = userBook.getPathsToImages();
 
-            for (int i = 0; i < paths.size(); i++) {
-                int finalI = linlayout_image_scroll.getChildCount();
-                firebaseStorage.getReference().child(paths.get(String.valueOf(i))).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            if (paths.size() == 1) {
+                imgV_coverImage.setVisibility(View.VISIBLE);
+                horizScrollV_images.setVisibility(View.GONE);
+                firebaseStorage.getReference().child(paths.get(String.valueOf(0))).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
                         if (task.isSuccessful()) {
                             Log.d("getImage", "Successful");
-                            addImageToScroll(task.getResult(), finalI);
+                            Glide.with(getContext()).load(task.getResult()).error("").into(imgV_coverImage);
                         } else {
                             Log.d("getImage", "Failed");
                         }
                     }
                 });
+            } else {
+                for (int i = 0; i < paths.size(); i++) {
+                    int finalI = linlayout_image_scroll.getChildCount();
+                    firebaseStorage.getReference().child(paths.get(String.valueOf(i))).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                Log.d("getImage", "Successful");
+                                addImageToScroll(task.getResult(), finalI);
+                            } else {
+                                Log.d("getImage", "Failed");
+                            }
+                        }
+                    });
+                }
             }
         }
 
