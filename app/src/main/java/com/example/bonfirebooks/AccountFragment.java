@@ -101,11 +101,10 @@ public class AccountFragment extends Fragment {
     View drawer_account;
     View drawer_account_edit;
 
-    Button logout;
     Button btn_save;
-    Button btn_back;
     Button btn_profile_picture;
 
+    TextView logout;
     TextView txtV_upload_book;
     TextView txtV_view_books;
     TextView txtV_edit_profile;
@@ -131,9 +130,8 @@ public class AccountFragment extends Fragment {
         img_profile = view.findViewById(R.id.img_profile);
         drawer_account = view.findViewById(R.id.drawer_account);
         drawer_account_edit = view.findViewById(R.id.drawer_account_edit);
-        logout = view.findViewById(R.id.btn_logout);
+        logout = view.findViewById(R.id.txtV_logout);
         btn_save = view.findViewById(R.id.btn_save);
-        btn_back = view.findViewById(R.id.btn_back);
         btn_profile_picture = view.findViewById(R.id.btn_profile_picture);
         txtV_user_name = view.findViewById(R.id.txtV_user_name);
         txtV_edit_profile = view.findViewById(R.id.txtV_edit_profile);
@@ -160,20 +158,6 @@ public class AccountFragment extends Fragment {
     }
 
     private void setViewListeners() {
-
-        // drawer account views
-        btn_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (drawer_account_edit.getVisibility() == View.VISIBLE) {
-                    drawer_account.setVisibility(View.VISIBLE);
-                    drawer_account_edit.setVisibility(View.GONE);
-                } else {
-                    ((MainActivity) getActivity()).onBackPressed();
-                }
-            }
-        });
-
 
         // user sign out
         logout.setOnClickListener(new View.OnClickListener() {

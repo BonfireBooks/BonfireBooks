@@ -134,4 +134,30 @@
         app:layout_constraintBottom_toBottomOf="@id/icon_notification"
         />
 
+
+    <View
+        android:id="@+id/icon_logout"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/ic_logout"
+        android:backgroundTint="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/txtV_notification"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/txtV_logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log out"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintLeft_toRightOf="@id/icon_logout"
+        app:layout_constraintTop_toTopOf="@id/icon_logout"
+        app:layout_constraintBottom_toBottomOf="@id/icon_logout"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

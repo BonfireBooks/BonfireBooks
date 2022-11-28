@@ -11,56 +11,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/btn_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/ic_arrow_back"
-            android:backgroundTint="@color/white"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/txtV_profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            app:layout_constraintLeft_toRightOf="@id/btn_back"
-            app:layout_constraintTop_toTopOf="@id/btn_back"
-            app:layout_constraintBottom_toBottomOf="@id/btn_back"
-            android:text="@string/profile"
-            android:textColor="@color/white"
-            android:textSize="22sp"
-            />
-
-        <Button
-            android:id="@+id/btn_logout"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/ic_logout"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="10dp"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/btn_back"
-            app:layout_constraintBottom_toBottomOf="@id/btn_back"
-            />
-
         <androidx.cardview.widget.CardView
             android:id="@+id/card_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:cardCornerRadius="40dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="40dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txtV_profile">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/img_profile"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
                 android:scaleType="centerCrop"
                 android:background="@drawable/circle_solid_transparent"
                 android:src="@drawable/stock_user"
@@ -73,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sample_txt_user"
-            android:textSize="20sp"
+            android:textSize="25sp"
             android:textColor="@color/white"
             android:layout_marginTop="5dp"
             app:layout_constraintLeft_toLeftOf="parent"
