@@ -1,22 +1,27 @@
 package com.example.bonfirebooks;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 public class WishlistBook implements Serializable {
     private String bookId;
     private String title;
     private String condition;
     private String coverImgUrl;
+    private String parentBookId;
     private Double price;
+    private HashMap<String, String> images;
 
     public WishlistBook() {
     }
 
-    public WishlistBook(String bookId, String title, String condition, String coverImgUrl, Double price) {
+    public WishlistBook(String bookId, String title, String condition, String coverImgUrl, String parentBookId, Double price, HashMap<String, String> images) {
         this.bookId = bookId;
         this.title = title;
         this.coverImgUrl = coverImgUrl;
+        this.parentBookId = parentBookId;
         this.price = price;
+        this.images = images;
 
         switch(condition.toLowerCase()) {
             case "like-new":
@@ -32,6 +37,22 @@ public class WishlistBook implements Serializable {
                 this.condition = "Poor";
                 break;
         }
+    }
+
+    public String getParentBookId() {
+        return parentBookId;
+    }
+
+    public void setParentBookId(String parentBookId) {
+        this.parentBookId = parentBookId;
+    }
+
+    public HashMap<String, String> getImages() {
+        return images;
+    }
+
+    public void setImages(HashMap<String, String> images) {
+        this.images = images;
     }
 
     public String getBookId() {
@@ -94,6 +115,7 @@ public class WishlistBook implements Serializable {
         str.append("price: " + price + "\n");
         str.append("condition: " + condition + "\n");
         str.append("coverImgUrl: " + coverImgUrl + "\n");
+        str.append("parentBookId: " + parentBookId + "\n");
         return str.toString();
     }
 }

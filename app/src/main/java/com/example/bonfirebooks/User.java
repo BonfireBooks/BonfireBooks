@@ -187,7 +187,7 @@ public class User implements Parcelable {
                                             for (DocumentSnapshot doc : task.getResult().getDocuments()) {
                                                 // create a new wishlist book with the document data
                                                 WishlistBook wBook = new WishlistBook(doc.getId(), doc.getString("title"),
-                                                        doc.getString("condition"), doc.getString("coverImgUrl"), doc.getDouble("price"));
+                                                        doc.getString("condition"), doc.getString("coverImgUrl"), doc.getString("parentBookId"), doc.getDouble("price"), (HashMap<String, String>) doc.get("images"));
 
                                                 // add the book to the users wishlist
                                                 wishlist.put(String.valueOf(i), wBook);

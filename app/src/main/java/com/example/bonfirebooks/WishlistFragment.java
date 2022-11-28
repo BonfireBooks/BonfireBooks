@@ -135,7 +135,6 @@ public class WishlistFragment extends Fragment {
                 WishlistBook currBook = user.getWishlist().get(String.valueOf(i));
 
                 HashMap<Integer, Book> books = ((MainActivity) getActivity()).getBooksByTime();
-
                 Book book = null;
 
                 // find other details on book
@@ -145,30 +144,26 @@ public class WishlistFragment extends Fragment {
                     }
                 }
 
-                if (book == null) {
-                    Toast.makeText(getContext(), "Could Not Load Book", Toast.LENGTH_SHORT).show();
-                } else {
-                    Book finalBook = book;
-                    // get other book details
-                    firestore.document("/books/" + book.getBookId() + "/users/" + currBook.getBookId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                Log.d("BookLocated", "Successful");
+                // get other book details
+                Book finalBook = book;
+                firestore.document("/books/" + currBook.getParentBookId() + "/users/" + currBook.getBookId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("BookLocated", "Successful");
 
-                                DocumentSnapshot taskDoc = task.getResult();
+                            DocumentSnapshot taskDoc = task.getResult();
 
-                                UserBook userBook = new UserBook(currBook.getPrice(), currBook.getBookId(), taskDoc.getString("email"), taskDoc.getString("name"), currBook.getCondition(),
-                                        taskDoc.getString("owner"), taskDoc.getBoolean("isPublic"), taskDoc.getTimestamp("time"), (HashMap<String, String>) taskDoc.get("images"));
+                            UserBook userBook = new UserBook(currBook.getPrice(), currBook.getBookId(), taskDoc.getString("email"), taskDoc.getString("name"), currBook.getCondition(),
+                                    taskDoc.getString("owner"), taskDoc.getBoolean("isPublic"), taskDoc.getTimestamp("time"), (HashMap<String, String>) taskDoc.get("images"));
 
-                                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookOfferDetailsFragment(finalBook, userBook)).addToBackStack(null).commit();
+                            getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookOfferDetailsFragment(finalBook, userBook)).addToBackStack(null).commit();
 
-                            } else {
-                                Log.d("BookLocated", "Failed");
-                            }
+                        } else {
+                            Log.d("BookLocated", "Failed");
                         }
-                    });
-                }
+                    }
+                });
             }
         });
 
@@ -191,7 +186,7 @@ public class WishlistFragment extends Fragment {
                     for (DocumentSnapshot doc : task.getResult().getDocuments()) {
                         // create a new wishlist book with the document data
                         WishlistBook wBook = new WishlistBook(doc.getId(), doc.getString("title"),
-                                doc.getString("condition"), doc.getString("coverImgUrl"), doc.getDouble("price"));
+                                doc.getString("condition"), doc.getString("coverImgUrl"), doc.getString("parentBookId"), doc.getDouble("price"), (HashMap<String, String>) doc.get("images"));
 
                         // add the book to the users wishlist
                         wishlist.put(String.valueOf(i), wBook);

@@ -29,6 +29,8 @@ import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
@@ -157,15 +159,15 @@ public class BookOfferDetailsFragment extends Fragment {
             if (paths.size() == 1) {
                 imgV_coverImage.setVisibility(View.VISIBLE);
                 horizScrollV_images.setVisibility(View.GONE);
-                firebaseStorage.getReference().child(paths.get(String.valueOf(0))).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                firebaseStorage.getReference().child(paths.get(String.valueOf(0))).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("getImage", "Successful");
-                            Glide.with(getContext()).load(task.getResult()).error("").into(imgV_coverImage);
-                        } else {
-                            Log.d("getImage", "Failed");
-                        }
+                    public void onSuccess(Uri uri) {
+                        Glide.with(getContext()).load(uri).error("").into(imgV_coverImage);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Glide.with(getContext()).load(book.getCoverImgUrl()).error("").into(imgV_coverImage);
                     }
                 });
             } else {
@@ -228,7 +230,7 @@ public class BookOfferDetailsFragment extends Fragment {
                     });
                 } else {
                     // add to wishlist
-                    WishlistBook wishBook = new WishlistBook(userBook.getBookId(), book.getTitle(), userBook.getCondition().toLowerCase(), book.getCoverImgUrl(), userBook.getPrice());
+                    WishlistBook wishBook = new WishlistBook(userBook.getBookId(), book.getTitle(), userBook.getCondition().toLowerCase(), book.getCoverImgUrl(), book.getBookId(), userBook.getPrice(), userBook.getPathsToImages());
                     firestore.collection("users").document(user.getUid()).collection("wishlist").document(userBook.getBookId()).set(wishBook).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
