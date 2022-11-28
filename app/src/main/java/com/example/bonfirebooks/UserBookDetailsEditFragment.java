@@ -29,12 +29,14 @@ import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -93,6 +95,7 @@ public class UserBookDetailsEditFragment extends Fragment {
     User user;
 
     FirebaseFirestore firestore;
+    FirebaseStorage firebaseStorage;
 
     Spinner spinner_condition;
 
@@ -103,7 +106,10 @@ public class UserBookDetailsEditFragment extends Fragment {
 
     SwitchCompat switch_isPublic;
 
+    HorizontalScrollView horizScrollV_images;
     LinearLayout linlayout_image_scroll;
+
+    ImageView imgV_coverImage;
 
     HashMap<String, String> imgPaths = new HashMap<>();
 
@@ -120,13 +126,16 @@ public class UserBookDetailsEditFragment extends Fragment {
         user = ((MainActivity)getActivity()).getUser();
 
         firestore = FirebaseFirestore.getInstance();
+        firebaseStorage = FirebaseStorage.getInstance();
 
+        horizScrollV_images = view.findViewById(R.id.horizScrollV_images);
         linlayout_image_scroll = view.findViewById(R.id.linlayout_image_scroll);
         spinner_condition = view.findViewById(R.id.spinner_condition);
         txtE_price = view.findViewById(R.id.txtE_price);
         btn_change_photos = view.findViewById(R.id.btn_change_photos);
         btn_save_changes = view.findViewById(R.id.btn_save_changes);
         switch_isPublic = view.findViewById(R.id.switch_isPublic);
+        imgV_coverImage = view.findViewById(R.id.imgV_coverImage);
 
         progressDialog = new ProgressDialog(getContext());
 
@@ -138,6 +147,30 @@ public class UserBookDetailsEditFragment extends Fragment {
         // set formatting and filter for price
         txtE_price.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(3, 2)});
         txtE_price.setText(String.valueOf(userProfileBook.getPrice()));
+
+        if (userProfileBook.getImages().isEmpty()) {
+            imgV_coverImage.setVisibility(View.VISIBLE);
+            horizScrollV_images.setVisibility(View.GONE);
+        } else {
+            imgV_coverImage.setVisibility(View.GONE);
+            horizScrollV_images.setVisibility(View.VISIBLE);
+            HashMap<String, String> paths = userProfileBook.getImages();
+
+            for (int i = 0; i < paths.size(); i++) {
+                int finalI = linlayout_image_scroll.getChildCount();
+                firebaseStorage.getReference().child(paths.get(String.valueOf(i))).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("getImage", "Successful");
+                            addImageToScroll(task.getResult(), finalI);
+                        } else {
+                            Log.d("getImage", "Failed");
+                        }
+                    }
+                });
+            }
+        }
 
         if(userProfileBook.getIsPublic()) {
             switch_isPublic.setChecked(true);
@@ -185,8 +218,6 @@ public class UserBookDetailsEditFragment extends Fragment {
                 updatedData.put("images", imgPaths);
             }
         }
-
-
 
         firestore.collection("books").document(userProfileBook.getParentBookId()).collection("users").document(userProfileBook.getBookId()).set(updatedData, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -298,29 +329,23 @@ public class UserBookDetailsEditFragment extends Fragment {
 
                 Log.d("clipLength", String.valueOf(result.getData().getClipData().getItemCount()));
 
+                imgV_coverImage.setVisibility(View.GONE);
+                horizScrollV_images.setVisibility(View.VISIBLE);
+
                 // clip data holds uris
                 ClipData clipData = result.getData().getClipData();
 
                 // reset the list and the linear layout
                 for (int i = 0; i < imageUris.size(); i++) {
                     imageUris.remove(i);
-                    linlayout_image_scroll.removeAllViews();
                 }
+                linlayout_image_scroll.removeAllViews();
 
                 // get uri data
                 for (int i = 0; i < clipData.getItemCount(); i++) {
                     imageUris.add(clipData.getItemAt(i).getUri());
 
-                    ImageView imageView = new ImageView(getContext());
-                    imageView.setImageURI(clipData.getItemAt(i).getUri());
-
-                    // create the linear layout to hold an image
-                    LinearLayout linWrapper = new LinearLayout(getContext());
-                    linWrapper.addView(imageView);
-                    linWrapper.setPadding(0, 0, 20, 0);
-
-                    // add it to the parent layout
-                    linlayout_image_scroll.addView(linWrapper, i);
+                    addImageToScroll(clipData.getItemAt(i).getUri(), linlayout_image_scroll.getChildCount());
 
                     Log.d("uri", imageUris.get(i).toString());
                 }
@@ -330,5 +355,25 @@ public class UserBookDetailsEditFragment extends Fragment {
 
     private boolean isValidInput() {
         return true;
+    }
+
+    private void addImageToScroll(String imgLink, int i) {
+        View image = getLayoutInflater().inflate(R.layout.book_image_view, null);
+        ImageView book_image = image.findViewById(R.id.imgV_image);
+
+        Glide.with(image.getContext()).load(imgLink).error("").into(book_image);
+
+        linlayout_image_scroll.addView(image, i);
+
+    }
+
+    private void addImageToScroll(Uri imgUri, int i) {
+        View image = getLayoutInflater().inflate(R.layout.book_image_view, null);
+        ImageView book_image = image.findViewById(R.id.imgV_image);
+
+        Glide.with(image.getContext()).load(imgUri).error("").into(book_image);
+
+        linlayout_image_scroll.addView(image, i);
+
     }
 }
