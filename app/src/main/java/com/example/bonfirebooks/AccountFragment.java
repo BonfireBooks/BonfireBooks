@@ -104,8 +104,8 @@ public class AccountFragment extends Fragment {
     TextView txtV_upload_book;
     TextView txtV_view_books;
     TextView txtV_edit_profile;
-    TextView txtV_order_history;
-    TextView txtV_notification;
+//    TextView txtV_order_history;
+//    TextView txtV_notification;
     TextView txtV_user_name;
 
 
@@ -126,8 +126,8 @@ public class AccountFragment extends Fragment {
         txtV_edit_profile = view.findViewById(R.id.txtV_edit_profile);
         txtV_view_books = view.findViewById(R.id.txtV_view_books);
         txtV_upload_book = view.findViewById(R.id.txtV_upload_book);
-        txtV_order_history = view.findViewById(R.id.txtV_order_history);
-        txtV_notification = view.findViewById(R.id.txtV_notification);
+//        txtV_order_history = view.findViewById(R.id.txtV_order_history);
+//        txtV_notification = view.findViewById(R.id.txtV_notification);
 
         if (user.getProfileUri() != null) {
             Glide.with(getContext()).load(Uri.parse(user.getProfileUri())).error(R.drawable.stock_user).into(img_profile);
@@ -171,19 +171,19 @@ public class AccountFragment extends Fragment {
             }
         });
 
-        txtV_order_history.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // move fragments here
-            }
-        });
-
-        txtV_notification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // move fragments here
-            }
-        });
+//        txtV_order_history.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                // move fragments here
+//            }
+//        });
+//
+//        txtV_notification.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                // move fragments here
+//            }
+//        });
     }
 
 }

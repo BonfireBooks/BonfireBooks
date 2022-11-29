@@ -84,55 +84,55 @@
         app:layout_constraintBottom_toBottomOf="@id/icon_upload_books"
         />
 
-    <View
-        android:id="@+id/icon_order_history"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/ic_order_history"
-        android:backgroundTint="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/txtV_upload_book"
-        app:layout_constraintLeft_toLeftOf="parent"
-        />
+<!--    <View-->
+<!--        android:id="@+id/icon_order_history"-->
+<!--        android:layout_width="30dp"-->
+<!--        android:layout_height="30dp"-->
+<!--        android:layout_marginStart="20dp"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:background="@drawable/ic_order_history"-->
+<!--        android:backgroundTint="@color/black"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/txtV_upload_book"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        />-->
 
-    <TextView
-        android:id="@+id/txtV_order_history"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/order_history"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:layout_marginStart="20dp"
-        app:layout_constraintLeft_toRightOf="@id/icon_order_history"
-        app:layout_constraintTop_toTopOf="@id/icon_order_history"
-        app:layout_constraintBottom_toBottomOf="@id/icon_order_history"
-        />
+<!--    <TextView-->
+<!--        android:id="@+id/txtV_order_history"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="@string/order_history"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="18sp"-->
+<!--        android:layout_marginStart="20dp"-->
+<!--        app:layout_constraintLeft_toRightOf="@id/icon_order_history"-->
+<!--        app:layout_constraintTop_toTopOf="@id/icon_order_history"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/icon_order_history"-->
+<!--        />-->
 
-    <View
-        android:id="@+id/icon_notification"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/ic_notification"
-        android:backgroundTint="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/icon_order_history"
-        app:layout_constraintLeft_toLeftOf="parent"
-        />
+<!--    <View-->
+<!--        android:id="@+id/icon_notification"-->
+<!--        android:layout_width="30dp"-->
+<!--        android:layout_height="30dp"-->
+<!--        android:layout_marginStart="20dp"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:background="@drawable/ic_notification"-->
+<!--        android:backgroundTint="@color/black"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/icon_order_history"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        />-->
 
-    <TextView
-        android:id="@+id/txtV_notification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/notification"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:layout_marginStart="20dp"
-        app:layout_constraintLeft_toRightOf="@id/icon_notification"
-        app:layout_constraintTop_toTopOf="@id/icon_notification"
-        app:layout_constraintBottom_toBottomOf="@id/icon_notification"
-        />
+<!--    <TextView-->
+<!--        android:id="@+id/txtV_notification"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="@string/notification"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="18sp"-->
+<!--        android:layout_marginStart="20dp"-->
+<!--        app:layout_constraintLeft_toRightOf="@id/icon_notification"-->
+<!--        app:layout_constraintTop_toTopOf="@id/icon_notification"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/icon_notification"-->
+<!--        />-->
 
 
     <View
@@ -143,7 +143,7 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/ic_logout"
         android:backgroundTint="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/txtV_notification"
+        app:layout_constraintTop_toBottomOf="@id/txtV_upload_book"
         app:layout_constraintLeft_toLeftOf="parent"
         />
 
