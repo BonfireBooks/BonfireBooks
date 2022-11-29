@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -77,7 +78,7 @@ public class AllChatsFragment extends Fragment {
     // layout items
     ConstraintLayout layout_chats_empty;
     ListView listV_chats;
-    TextView txtV_no_chats;
+    ImageView imgV_no_chats;
 
     // Firebase
     FirebaseFirestore firestore;
@@ -92,8 +93,8 @@ public class AllChatsFragment extends Fragment {
         user = ((MainActivity) getActivity()).getUser();
 
         layout_chats_empty = view.findViewById(R.id.layout_chats_empty);
-        txtV_no_chats = view.findViewById(R.id.txtV_no_chats);
         listV_chats = view.findViewById(R.id.listV_chats);
+        imgV_no_chats = view.findViewById(R.id.imgV_no_chats);
 
         // firestore
         firestore = FirebaseFirestore.getInstance();
@@ -102,11 +103,10 @@ public class AllChatsFragment extends Fragment {
         listV_chats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                UserProfileChat userProfileChat = ((MainActivity)getActivity()).getUser().getChats().get(String.valueOf(i));
+                UserProfileChat userProfileChat = ((MainActivity) getActivity()).getUser().getChats().get(String.valueOf(i));
                 getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new ChatFragment(userProfileChat)).addToBackStack(null).commit();
             }
         });
-
 
         getChats();
 
@@ -130,16 +130,17 @@ public class AllChatsFragment extends Fragment {
         listenerRegistration = firestore.collection("users").document(user.getUid()).collection("chats").orderBy("time", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if(error == null) {
+                if (error == null) {
 //                     add log d
+
                     int i = 0;
                     for (DocumentSnapshot doc : value.getDocuments()) {
                         // create a new chat book with the document data
 
                         String otherUserId = "";
 
-                        for(String key : doc.getData().keySet()) {
-                            if(!key.equals("content") && !key.equals("time")) {
+                        for (String key : doc.getData().keySet()) {
+                            if (!key.equals("content") && !key.equals("time")) {
                                 otherUserId = key;
                             }
                         }
@@ -167,7 +168,7 @@ public class AllChatsFragment extends Fragment {
 
         if (chats != null && chats.size() != 0) {
 
-            txtV_no_chats.setVisibility(View.GONE);
+            imgV_no_chats.setVisibility(View.GONE);
             listV_chats.setVisibility(View.VISIBLE);
 
             String[] names = new String[chats.size()];
@@ -185,7 +186,7 @@ public class AllChatsFragment extends Fragment {
             listV_chats.setAdapter(chatAdapter);
 
         } else {
-            txtV_no_chats.setVisibility(View.VISIBLE);
+            imgV_no_chats.setVisibility(View.VISIBLE);
             listV_chats.setVisibility(View.GONE);
         }
     }
