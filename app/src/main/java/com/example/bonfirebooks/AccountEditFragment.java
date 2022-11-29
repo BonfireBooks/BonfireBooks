@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -81,11 +82,11 @@ public class AccountEditFragment extends Fragment {
 
     Button btn_profile_picture;
     Button btn_save;
+    Button btn_password;
 
     TextView txtV_user_name;
     TextView txtE_user_name;
     TextView txtE_phone_number;
-    TextView txtE_password;
 
     ImageView img_profile;
 
@@ -106,10 +107,10 @@ public class AccountEditFragment extends Fragment {
         img_profile = view.findViewById(R.id.img_profile);
         btn_save = view.findViewById(R.id.btn_save);
         btn_profile_picture = view.findViewById(R.id.btn_profile_picture);
+        btn_password = view.findViewById(R.id.btn_password);
         txtV_user_name = view.findViewById(R.id.txtV_user_name);
         txtE_user_name = view.findViewById(R.id.txtE_user_name);
         txtE_phone_number = view.findViewById(R.id.txtE_phone_number);
-        txtE_password = view.findViewById(R.id.txtE_password);
 
         if (user.getProfileUri() != null) {
             Glide.with(getContext()).load(Uri.parse(user.getProfileUri())).error(R.drawable.stock_user).into(img_profile);
@@ -121,11 +122,28 @@ public class AccountEditFragment extends Fragment {
         txtE_user_name.setHint(user.getName());
         // txtE_phone_number.setHint(user.getPhoneNumber());
 
-
         btn_profile_picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openImageChooser();
+            }
+        });
+
+        btn_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().sendPasswordResetEmail(user.getEmail()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()) {
+                            Log.d("sendResetEmail", "Successful");
+                            Toast.makeText(getContext(), "Reset Password Email Sent", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.d("sendResetEmail", "Successful");
+                            Toast.makeText(getContext(), "Could Not Send Reset Password Email", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
 
@@ -185,21 +203,6 @@ public class AccountEditFragment extends Fragment {
 //                        }
 //                    }
 //                });
-
-                if (!TextUtils.isEmpty(txtE_password.getText())) {
-                    String password = txtE_password.getText().toString();
-                    firebaseUser.updatePassword(password).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d("updatePassword", "Successful");
-                            } else {
-                                Log.d("updatePassword", "Successful");
-                            }
-                            firebaseUser.reload();
-                        }
-                    });
-                }
 
                 getParentFragmentManager().popBackStack();
                 getParentFragmentManager().popBackStack();
