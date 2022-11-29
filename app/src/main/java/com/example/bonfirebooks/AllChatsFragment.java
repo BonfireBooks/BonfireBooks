@@ -172,17 +172,19 @@ public class AllChatsFragment extends Fragment {
             listV_chats.setVisibility(View.VISIBLE);
 
             String[] names = new String[chats.size()];
+            String[] ids = new String[chats.size()];
             String[] contents = new String[chats.size()];
             Date[] times = new Date[chats.size()];
 
             for (int i = 0; i < chats.size(); i++) {
                 UserProfileChat chat = chats.get(String.valueOf(i));
                 names[i] = chat.getOtherUserName();
+                ids[i] = chat.getOtherUserId();
                 contents[i] = chat.getContent();
                 times[i] = chat.getTime();
             }
 
-            ChatListAdapter chatAdapter = new ChatListAdapter(getActivity(), names, contents, times);
+            ChatListAdapter chatAdapter = new ChatListAdapter(getActivity(), ids, names, contents, times);
             listV_chats.setAdapter(chatAdapter);
 
         } else {
