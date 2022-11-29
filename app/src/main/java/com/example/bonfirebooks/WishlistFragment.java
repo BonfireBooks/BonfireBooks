@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridLayout;
@@ -86,6 +87,7 @@ public class WishlistFragment extends Fragment {
     ListView listV_books;
     Button btn_explore;
     BottomNavigationView bottomNavigationView;
+    ConstraintLayout layout_wrapper;
 
     // Firebase
     FirebaseFirestore firestore;
@@ -101,6 +103,7 @@ public class WishlistFragment extends Fragment {
         listV_books = view.findViewById(R.id.listV_books);
         btn_explore = view.findViewById(R.id.btn_explore);
         bottomNavigationView = getActivity().findViewById(R.id.bottomNavView);
+        layout_wrapper = view.findViewById(R.id.layout_wrapper);
 
         // firestore
         firestore = FirebaseFirestore.getInstance();
@@ -125,6 +128,23 @@ public class WishlistFragment extends Fragment {
             public void onRefresh() {
                 getWishlistFromFirebase();
                 pullToRefresh.setRefreshing(false);
+            }
+        });
+
+        listV_books.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView listView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if(listV_books.getTop() == 0 && firstVisibleItem == 0) {
+                    pullToRefresh.setEnabled(true);
+                } else {
+                    pullToRefresh.setEnabled(false);
+                }
+
             }
         });
 
@@ -210,7 +230,7 @@ public class WishlistFragment extends Fragment {
         if (wishlist.size() != 0) {
             // change the visibilty of the views
             layout_wishlist_empty.setVisibility(View.GONE);
-            listV_books.setVisibility(View.VISIBLE);
+            layout_wrapper.setVisibility(View.VISIBLE);
 
             WishlistBook[] wishlistBooks = new WishlistBook[wishlist.size()];
 
@@ -223,7 +243,7 @@ public class WishlistFragment extends Fragment {
             listV_books.setAdapter(bookOfferAdapter);
         } else {
             layout_wishlist_empty.setVisibility(View.VISIBLE);
-            listV_books.setVisibility(View.GONE);
+            layout_wrapper.setVisibility(View.GONE);
         }
     }
 }
