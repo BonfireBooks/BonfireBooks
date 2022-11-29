@@ -252,11 +252,16 @@ public class BookOfferDetailsFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
+                DecimalFormat decimalFormat = new DecimalFormat("0.00");
+
                 // create the intent
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("message/rfc822");
                 intent.putExtra(Intent.EXTRA_EMAIL, new String[]{userBook.getEmail()});
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Regarding Your " + book.getTitle() + " Posting On Bonfire");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Bonfire: Query on Your Listed Book");
+                intent.putExtra(Intent.EXTRA_TEXT, "Hello " + userBook.getUserName() + ", \n\nI would like to know more about" +
+                        " the book " + book.getTitle() + " that is in " + userBook.getCondition() + " condition being sold for $" + decimalFormat.format(userBook.getPrice()) + "\n\nFrom,\n" + user.getName());
+//                intent.putExtra(Intent.EXTRA_HTML_TEXT)
 
                 // set up a chooser for the available e-mail apps
                 Intent.createChooser(intent, "Choose an e-mail app");
