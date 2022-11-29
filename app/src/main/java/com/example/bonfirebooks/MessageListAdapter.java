@@ -10,21 +10,17 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
-public class MessageListAdapter extends ArrayAdapter<String> {
+public class MessageListAdapter extends ArrayAdapter<UserMessage> {
 
     Activity context;
     User user;
-    String[] content;
-    String[] time;
-    String[] authors;
+    UserMessage[] messages;
 
-    public MessageListAdapter(Activity context, User user, String[] content, String[] time, String[] authors) {
-        super(context, R.layout.message_list, content);
+    public MessageListAdapter(Activity context, User user, UserMessage[] messages) {
+        super(context, R.layout.message_list, messages);
         this.context = context;
         this.user = user;
-        this.content = content;
-        this.time = time;
-        this.authors = authors;
+        this.messages = messages;
     }
 
     public View getView(int position, View view, ViewGroup viewGroup) {
@@ -35,7 +31,7 @@ public class MessageListAdapter extends ArrayAdapter<String> {
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) layout_message_wrapper.getLayoutParams();
 
         // set layout params and background based on sender
-        if (authors[position].equals(user.getUid())) { // outgoing
+        if (messages[position].getSenderId().equals(user.getUid())) { // outgoing
             layout_message_wrapper.setBackgroundResource(R.drawable.message_bubble_outgoing);
             layoutParams.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
         } else { // incoming
@@ -48,7 +44,7 @@ public class MessageListAdapter extends ArrayAdapter<String> {
 
         // set message text
         TextView txtV_message_content = messageView.findViewById(R.id.txtV_message_content);
-        txtV_message_content.setText(content[position]);
+        txtV_message_content.setText(messages[position].getContent());
 
         return messageView;
     }

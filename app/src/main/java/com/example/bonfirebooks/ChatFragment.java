@@ -40,6 +40,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 
@@ -116,6 +117,8 @@ public class ChatFragment extends Fragment {
 
     ProgressDialog progressDialog;
 
+    ListenerRegistration listener;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -169,7 +172,7 @@ public class ChatFragment extends Fragment {
         progressDialog.setMessage("Loading Chats...");
         progressDialog.show();
 
-        firestore.collection("chats").document(userProfileChat.getChatId()).collection("messages").orderBy("time").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        listener = firestore.collection("chats").document(userProfileChat.getChatId()).collection("messages").orderBy("time").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error == null) {
@@ -236,21 +239,16 @@ public class ChatFragment extends Fragment {
 
             listV_chats.setVisibility(View.VISIBLE);
 
-            String[] content = new String[messages.size()];
-            String[] time = new String[messages.size()];
-            String[] sender = new String[messages.size()];
+            UserMessage[] userMessages = new UserMessage[messages.size()];
 
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy\nhh:mm aa");
             sdf.setTimeZone(TimeZone.getDefault());
 
             for (int i = messages.size() - 1; i >= 0; i--) {
-                UserMessage userMessage = messages.get(String.valueOf(i));
-                content[i] = userMessage.getContent();
-                sender[i] = userMessage.getSenderId();
-                time[i] = sdf.format(userMessage.getTime());
+                userMessages[i] = messages.get(String.valueOf(i));
             }
 
-            MessageListAdapter messageListAdapter = new MessageListAdapter(getActivity(), user, content, time, sender);
+            MessageListAdapter messageListAdapter = new MessageListAdapter(getActivity(), user, userMessages);
             listV_chats.setAdapter(messageListAdapter);
             progressDialog.dismiss();
         }
@@ -261,6 +259,7 @@ public class ChatFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         BottomNavigationView navBar = getActivity().findViewById(R.id.bottomNavView);
+        listener.remove();
         navBar.setVisibility(View.VISIBLE);
     }
 }
