@@ -195,7 +195,6 @@
                 app:layout_constraintLeft_toLeftOf="@id/txtV_book_description"
                 app:layout_constraintTop_toBottomOf="@id/txtV_book_description" />
 
-
             <Button
                 android:id="@+id/btn_view_uBooks"
                 android:layout_width="wrap_content"
@@ -206,8 +205,28 @@
                 android:padding="10dp"
                 android:text="@string/view_user_books"
                 android:textAllCaps="false"
+                android:visibility="gone"
                 android:textColor="@color/logo_brown"
                 android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txtV_book_description_edit" />
+
+            <Button
+                android:id="@+id/btn_view_uBooks_disabled"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/buttons_orange"
+                android:backgroundTint="@color/btn_outline_gray"
+                android:padding="10dp"
+                android:text="@string/view_user_books"
+                android:textAllCaps="false"
+                android:clickable="false"
+                android:textColor="@color/logo_brown"
+                android:textSize="12sp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtV_book_description_edit" />

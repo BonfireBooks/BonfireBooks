@@ -19,6 +19,11 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.w3c.dom.Text;
 
@@ -86,6 +91,7 @@ public class BookDetailsFragment extends Fragment {
     TextView txtV_book_description_edit;
 
     Button btn_view_uBooks;
+    Button btn_view_uBooks_disabled;
 
     ConstraintLayout layout_wrapper;
 
@@ -105,7 +111,27 @@ public class BookDetailsFragment extends Fragment {
         txtV_isbn13_edit = view.findViewById(R.id.txtV_isbn13_edit);
         txtV_book_description_edit = view.findViewById(R.id.txtV_book_description_edit);
         btn_view_uBooks = view.findViewById(R.id.btn_view_uBooks);
+        btn_view_uBooks_disabled = view.findViewById(R.id.btn_view_uBooks_disabled);
         layout_wrapper = view.findViewById(R.id.layout_wrapper);
+
+        FirebaseFirestore.getInstance().document("/books/" + book.getBookId()).collection("/users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    Log.d("getDocument", "Successful");
+                    if(task.getResult().size() == 0) {
+                        btn_view_uBooks_disabled.setVisibility(View.VISIBLE);
+                        btn_view_uBooks.setVisibility(View.GONE);
+                    } else {
+                        btn_view_uBooks_disabled.setVisibility(View.GONE);
+                        btn_view_uBooks.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    Log.d("getDocument", "Failed");
+                }
+            }
+        });
+
 
         // iterate through the authors map and set the textview with its data
         HashMap<String, String> authors = book.getAuthors();
