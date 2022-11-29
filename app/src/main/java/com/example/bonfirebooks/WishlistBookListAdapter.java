@@ -39,17 +39,21 @@ public class WishlistBookListAdapter extends ArrayAdapter<WishlistBook> {
         TextView txtV_book_condition = bookListItem.findViewById(R.id.txtV_book_condition);
         TextView txtV_book_price = bookListItem.findViewById(R.id.txtV_book_price);
 
-        if(wishlistBooks[position].getImages().size() > 0) {
-            FirebaseStorage.getInstance().getReference().child(wishlistBooks[position].getImages().get(String.valueOf(0))).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        Glide.with(getContext()).load(task.getResult()).into(imgV_book_cover);
-                    } else {
-                        Glide.with(getContext()).load(wishlistBooks[position].getCoverImgUrl()).into(imgV_book_cover);
+        if(wishlistBooks[position].getImages() != null) {
+            if (wishlistBooks[position].getImages().size() > 0) {
+                FirebaseStorage.getInstance().getReference().child(wishlistBooks[position].getImages().get(String.valueOf(0))).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Glide.with(getContext()).load(task.getResult()).into(imgV_book_cover);
+                        } else {
+                            Glide.with(getContext()).load(wishlistBooks[position].getCoverImgUrl()).into(imgV_book_cover);
+                        }
                     }
-                }
-            });
+                });
+            }else {
+                Glide.with(getContext()).load(wishlistBooks[position].getCoverImgUrl()).into(imgV_book_cover);
+            }
         } else {
             Glide.with(getContext()).load(wishlistBooks[position].getCoverImgUrl()).into(imgV_book_cover);
         }
