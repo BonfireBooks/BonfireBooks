@@ -10,18 +10,18 @@ public class WishlistBook implements Serializable {
     private String coverImgUrl;
     private String parentBookId;
     private Double price;
-    private HashMap<String, String> images;
+    private HashMap<String, String> imagePaths;
 
     public WishlistBook() {
     }
 
-    public WishlistBook(String bookId, String title, String condition, String coverImgUrl, String parentBookId, Double price, HashMap<String, String> images) {
+    public WishlistBook(String bookId, String title, String condition, String coverImgUrl, String parentBookId, Double price, HashMap<String, String> imagePaths) {
         this.bookId = bookId;
         this.title = title;
         this.coverImgUrl = coverImgUrl;
         this.parentBookId = parentBookId;
         this.price = price;
-        this.images = images;
+        this.imagePaths = imagePaths;
 
         switch(condition.toLowerCase()) {
             case "like-new":
@@ -48,11 +48,11 @@ public class WishlistBook implements Serializable {
     }
 
     public HashMap<String, String> getImages() {
-        return images;
+        return imagePaths;
     }
 
     public void setImages(HashMap<String, String> images) {
-        this.images = images;
+        this.imagePaths = images;
     }
 
     public String getBookId() {
