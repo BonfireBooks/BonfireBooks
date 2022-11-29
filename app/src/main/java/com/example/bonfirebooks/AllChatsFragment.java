@@ -27,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -82,6 +83,8 @@ public class AllChatsFragment extends Fragment {
     FirebaseFirestore firestore;
     FirebaseUser currUser;
 
+    ListenerRegistration listenerRegistration;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -124,7 +127,7 @@ public class AllChatsFragment extends Fragment {
 
         HashMap<String, UserProfileChat> chats = new HashMap<>();
 
-        firestore.collection("users").document(user.getUid()).collection("chats").orderBy("time", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        listenerRegistration = firestore.collection("users").document(user.getUid()).collection("chats").orderBy("time", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if(error == null) {
@@ -185,5 +188,11 @@ public class AllChatsFragment extends Fragment {
             txtV_no_chats.setVisibility(View.VISIBLE);
             listV_chats.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        listenerRegistration.remove();
     }
 }
