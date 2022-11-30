@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -29,7 +28,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -102,6 +100,8 @@ public class UserBookDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        user = ((MainActivity)getActivity()).getUser();
+
         firestore = FirebaseFirestore.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
 
@@ -131,7 +131,7 @@ public class UserBookDetailsFragment extends Fragment {
             imgV_coverImage.setVisibility(View.GONE);
             horizScrollV_images.setVisibility(View.VISIBLE);
 
-            for (int i = 0; i < images.size(); i++) {
+            for (int i = 0; i < images.size() && images.get(String.valueOf(i)) != null; i++) {
                 int finalI = i;
                 firebaseStorage.getReference().child(images.get(String.valueOf(i))).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                     @Override
@@ -184,6 +184,13 @@ public class UserBookDetailsFragment extends Fragment {
                             Log.d("bookDelete", "Successful");
                             Toast.makeText(getContext(), "Book Deleted", Toast.LENGTH_SHORT).show();
 
+                            HashMap<String, UserProfileBook> books = user.getBooks();
+                            for (int i = 0; i < books.size() && books.get(String.valueOf(i)) != null; i++) {
+                                if (books.get(String.valueOf(i)) == userProfileBook) {
+                                    user.deleteBook(String.valueOf(i));
+                                }
+                            }
+
                             ((MainActivity) getActivity()).getUser().setBooksFirebase();
                             ((MainActivity) getActivity()).onBackPressed();
                         } else {
@@ -197,7 +204,7 @@ public class UserBookDetailsFragment extends Fragment {
     }
 
     private void addImageToScroll(Uri imgUri, int i) {
-        View image = getLayoutInflater().inflate(R.layout.book_image_view, null);
+        View image = getLayoutInflater().inflate(R.layout.offer_book_image_view, null);
         ImageView book_image = image.findViewById(R.id.imgV_image);
 
         Glide.with(getContext()).load(imgUri).listener(new RequestListener<Drawable>() {

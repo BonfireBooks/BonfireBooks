@@ -40,6 +40,7 @@ import android.widget.ViewSwitcher;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -270,33 +271,46 @@ public class UploadBookFragment extends Fragment {
         public void onActivityResult(ActivityResult result) {
             if (result != null && result.getResultCode() == Activity.RESULT_OK) {
 
-                Log.d("clipLength", String.valueOf(result.getData().getClipData().getItemCount()));
+                if(result.getData().getClipData().getItemCount() > 5) {
+                    Toast.makeText(getContext(), "Please choose a maximum of 5 images.", Toast.LENGTH_SHORT).show();
+                } else {
+                    // clip data holds uris
+                    ClipData clipData = result.getData().getClipData();
 
-                // clip data holds uris
-                ClipData clipData = result.getData().getClipData();
+                    // reset the list and the linear layout
+                    for (int i = 0; i < imageUris.size(); i++) {
+                        imageUris.remove(i);
+                        linlayout_image_scroll.removeAllViews();
+                    }
 
-                // reset the list and the linear layout
-                for (int i = 0; i < imageUris.size(); i++) {
-                    imageUris.remove(i);
-                    linlayout_image_scroll.removeAllViews();
-                }
+                    // get uri data
+                    for (int i = 0; i < clipData.getItemCount(); i++) {
+                        imageUris.add(clipData.getItemAt(i).getUri());
 
-                // get uri data
-                for (int i = 0; i < clipData.getItemCount(); i++) {
-                    imageUris.add(clipData.getItemAt(i).getUri());
+                        View image = getLayoutInflater().inflate(R.layout.user_book_image_view, null);
+                        ImageView imgV_image = image.findViewById(R.id.imgV_image);
+                        Button btn_delete_image = image.findViewById(R.id.btn_delete_image);
 
-                    ImageView imageView = new ImageView(getContext());
-                    imageView.setImageURI(clipData.getItemAt(i).getUri());
+                        Glide.with(getContext()).load(clipData.getItemAt(i).getUri()).into(imgV_image);
 
-                    // create the linear layout to hold an image
-                    LinearLayout linWrapper = new LinearLayout(getContext());
-                    linWrapper.addView(imageView);
-                    linWrapper.setPadding(0, 0, 20, 0);
+                        // create the linear layout to hold an image
+                        LinearLayout linWrapper = new LinearLayout(getContext());
+                        linWrapper.addView(image);
+                        linWrapper.setPadding(0, 0, 20, 0);
 
-                    // add it to the parent layout
-                    linlayout_image_scroll.addView(linWrapper, i);
+                        // remove the image
+                        int finalI = i;
+                        btn_delete_image.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                imageUris.remove(finalI);
+                                linlayout_image_scroll.removeViewAt(finalI);
+                            }
+                        });
 
-                    Log.d("uri", imageUris.get(i).toString());
+                        // add it to the parent layout
+                        linlayout_image_scroll.addView(linWrapper, i);
+                    }
                 }
             }
         }

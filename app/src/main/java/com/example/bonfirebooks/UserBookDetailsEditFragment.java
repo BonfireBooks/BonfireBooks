@@ -22,7 +22,6 @@ import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
@@ -33,7 +32,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -112,6 +110,7 @@ public class UserBookDetailsEditFragment extends Fragment {
     ImageView imgV_coverImage;
 
     HashMap<String, String> imgPaths = new HashMap<>();
+    HashMap<String, String> removeImagePaths = new HashMap<>();
 
     ProgressDialog progressDialog;
 
@@ -140,6 +139,8 @@ public class UserBookDetailsEditFragment extends Fragment {
         progressDialog = new ProgressDialog(getContext());
 
         txtE_price.setHint("Enter a Price (" + userProfileBook.getMaxPrice() + ") or less");
+
+        imgPaths = userProfileBook.getImages();
 
         // set options for the spinner
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.book_conditions, android.R.layout.simple_spinner_item);
@@ -189,12 +190,23 @@ public class UserBookDetailsEditFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
+                HashMap<String, Object> update = new HashMap<>();
+                update.put("images", imgPaths);
+
+                firestore.collection("books").document(userProfileBook.getParentBookId()).collection("users").document(userProfileBook.getBookId()).set(update, SetOptions.merge());
+
+
+                if(removeImagePaths.size() > 0) {
+                    removeImages();
+                }
+
                 // check user price is < the book price'
                 if (isValidInput()) {
 
                     // start the dialog here and end when book has finished uploading
                     progressDialog.setMessage("Updating...");
                     progressDialog.show();
+
 
                     if (imageUris.size() > 0) {
                         deleteCurrentImages();
@@ -206,10 +218,29 @@ public class UserBookDetailsEditFragment extends Fragment {
         });
     }
 
+    private void removeImages() {
+
+        Log.d("removeImagePaths", removeImagePaths.toString());
+
+        for(int i = 0; i < removeImagePaths.size(); i++) {
+            FirebaseStorage.getInstance().getReference().child(removeImagePaths.get(String.valueOf(i))).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Log.d("removeImages", "Successful");
+                    } else {
+                        Log.d("removeImages", "Failed");
+                    }
+                }
+            });
+        }
+    }
+
     private void updateUserBook() {
         HashMap<String, Object> updatedData = new HashMap<>();
         updatedData.put("condition", spinner_condition.getSelectedItem().toString().toLowerCase());
         updatedData.put("isPublic", switch_isPublic.isChecked());
+        updatedData.put("images", imgPaths);
 
         if (!TextUtils.isEmpty(txtE_price.getText())) {
             updatedData.put("price", Double.valueOf(txtE_price.getText().toString()));
@@ -233,16 +264,16 @@ public class UserBookDetailsEditFragment extends Fragment {
                             if (task.isSuccessful()) {
                                 // set the value of the new book
                                 HashMap<String, UserProfileBook> books = user.getBooks();
-                                for(int i = 0; i < books.size(); i++) {
-                                    if(books.get(String.valueOf(i)) == userProfileBook) {
+                                for (int i = 0; i < books.size(); i++) {
+                                    if (books.get(String.valueOf(i)) == userProfileBook) {
                                         UserProfileBook temp = books.get(String.valueOf(i));
                                         user.setBook(String.valueOf(i), temp);
                                     }
                                 }
 
-                                Toast.makeText(getContext(), "Book Update Successful", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getContext(), "Book Update Successful", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(getContext(), "Book Update Successful", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getContext(), "Book Update Successful", Toast.LENGTH_SHORT).show();
                             }
 
                             progressDialog.dismiss();
@@ -250,10 +281,10 @@ public class UserBookDetailsEditFragment extends Fragment {
 
                             // get rid of frags until we reach the account fragment
                             // create a new instance of the UserBooksFragment -- needs to show updated book
-                            getParentFragmentManager().popBackStack();
-                            getParentFragmentManager().popBackStack();
-                            getParentFragmentManager().popBackStack();
-                            getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UserBooksFragment()).addToBackStack(null).commit();
+//                            getParentFragmentManager().popBackStack();
+//                            getParentFragmentManager().popBackStack();
+//                            getParentFragmentManager().popBackStack();
+                            getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new AccountFragment()).addToBackStack(null).commit();
                         }
                     });
                 } else {
@@ -270,7 +301,7 @@ public class UserBookDetailsEditFragment extends Fragment {
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
-        if(bookImages.size() > 0) {
+        if (bookImages.size() > 0) {
             for (int i = 0; i < bookImages.size(); i++) {
                 final int finalI = i;
                 Log.d("bookImages", bookImages.get(String.valueOf(i)));
@@ -356,28 +387,27 @@ public class UserBookDetailsEditFragment extends Fragment {
         @Override
         public void onActivityResult(ActivityResult result) {
             if (result != null && result.getResultCode() == Activity.RESULT_OK) {
+                if (result.getData().getClipData().getItemCount() > 5) {
+                    Toast.makeText(getContext(), "Please choose a maximum of 5 images.", Toast.LENGTH_SHORT).show();
+                } else {
+                    imgV_coverImage.setVisibility(View.GONE);
+                    horizScrollV_images.setVisibility(View.VISIBLE);
 
-                Log.d("clipLength", String.valueOf(result.getData().getClipData().getItemCount()));
+                    // clip data holds uris
+                    ClipData clipData = result.getData().getClipData();
 
-                imgV_coverImage.setVisibility(View.GONE);
-                horizScrollV_images.setVisibility(View.VISIBLE);
+                    // reset the list and the linear layout
+                    for (int i = 0; i < imageUris.size(); i++) {
+                        imageUris.remove(i);
+                    }
+                    linlayout_image_scroll.removeAllViews();
 
-                // clip data holds uris
-                ClipData clipData = result.getData().getClipData();
+                    // get uri data
+                    for (int i = 0; i < clipData.getItemCount(); i++) {
+                        imageUris.add(clipData.getItemAt(i).getUri());
 
-                // reset the list and the linear layout
-                for (int i = 0; i < imageUris.size(); i++) {
-                    imageUris.remove(i);
-                }
-                linlayout_image_scroll.removeAllViews();
-
-                // get uri data
-                for (int i = 0; i < clipData.getItemCount(); i++) {
-                    imageUris.add(clipData.getItemAt(i).getUri());
-
-                    addImageToScroll(clipData.getItemAt(i).getUri(), linlayout_image_scroll.getChildCount());
-
-                    Log.d("uri", imageUris.get(i).toString());
+                        addImageToScroll(clipData.getItemAt(i).getUri(), linlayout_image_scroll.getChildCount());
+                    }
                 }
             }
         }
@@ -387,7 +417,7 @@ public class UserBookDetailsEditFragment extends Fragment {
 
         boolean isValid = true;
 
-        if(!(Double.valueOf(txtE_price.getText().toString()) <= userProfileBook.getMaxPrice()) && userProfileBook.getMaxPrice() != 0) {
+        if (!(Double.valueOf(txtE_price.getText().toString()) <= userProfileBook.getMaxPrice()) && userProfileBook.getMaxPrice() != 0) {
             txtE_price.setError("Price must be less than or equal to " + userProfileBook.getMaxPrice());
             isValid = false;
         }
@@ -396,7 +426,7 @@ public class UserBookDetailsEditFragment extends Fragment {
     }
 
     private void addImageToScroll(String imgLink, int i) {
-        View image = getLayoutInflater().inflate(R.layout.book_image_view, null);
+        View image = getLayoutInflater().inflate(R.layout.user_book_image_view, null);
         ImageView book_image = image.findViewById(R.id.imgV_image);
 
         Glide.with(image.getContext()).load(imgLink).error("").into(book_image);
@@ -406,10 +436,30 @@ public class UserBookDetailsEditFragment extends Fragment {
     }
 
     private void addImageToScroll(Uri imgUri, int i) {
-        View image = getLayoutInflater().inflate(R.layout.book_image_view, null);
+        View image = getLayoutInflater().inflate(R.layout.user_book_image_view, null);
         ImageView book_image = image.findViewById(R.id.imgV_image);
+        Button btn_delete_image = image.findViewById(R.id.btn_delete_image);
 
         Glide.with(image.getContext()).load(imgUri).error("").into(book_image);
+
+        btn_delete_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("removeImagePaths", removeImagePaths.toString());
+                removeImagePaths.put(String.valueOf(removeImagePaths.size()), imgPaths.get(String.valueOf(i)));
+
+                imgPaths.remove(String.valueOf(i));
+
+                for(int j = i; j < imgPaths.size(); j++) {
+                    imgPaths.put(String.valueOf(j), imgPaths.get(String.valueOf(j+1)));
+                }
+
+                imgPaths.remove(String.valueOf(imgPaths.size()));
+
+                Log.d("imgPaths", imgPaths.toString());
+                linlayout_image_scroll.removeViewAt(i);
+            }
+        });
 
         linlayout_image_scroll.addView(image, i);
 
