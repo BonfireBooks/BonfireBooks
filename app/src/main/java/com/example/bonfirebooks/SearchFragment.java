@@ -11,8 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -74,7 +76,7 @@ public class SearchFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_search, container, false);
     }
 
-    GridLayout gridL_books;
+    ListView listV_books;
 
     SearchView search_bar;
 
@@ -86,7 +88,7 @@ public class SearchFragment extends Fragment {
 
         books = ((MainActivity) getActivity()).getBooksByTitle();
 
-        gridL_books = view.findViewById(R.id.gridL_books);
+        listV_books = view.findViewById(R.id.listV_books);
         search_bar = view.findViewById(R.id.search_bar);
 
         search_bar.setQuery(query, false);
@@ -103,81 +105,17 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        books = getBooksMatchingQuery(books, query);
+        Book[] booksArr = getBooksMatchingQuery(books, query).values().toArray(new Book[0]);
+        BookListAdapter bookListAdapter = new BookListAdapter(getActivity(), getParentFragmentManager(), booksArr);
+        listV_books.setAdapter(bookListAdapter);
 
-        Log.d("matchingBooks", books.toString());
-
-        populateGridView(books, gridL_books);
-    }
-
-    private void populateGridView(HashMap<Integer, Book> books, GridLayout gridL_books) {
-
-        for (int i = 0; i < books.size(); i++) {
-            Book currBook = books.get(i);
-
-            View bookView = getLayoutInflater().inflate(R.layout.home_book_item, null);
-
-            // add some spacing between the grid items
-            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-            params.setMargins(10, 10, 10, 10);
-
-            bookView.setLayoutParams(params);
-
-            // new book view details
-            ImageView book_image = bookView.findViewById(R.id.imgV_coverImage);
-            TextView book_title = bookView.findViewById(R.id.txtV_book_title);
-            TextView book_price = bookView.findViewById(R.id.txtV_book_price);
-
-            // set book views image
-            Glide.with(getContext()).load(currBook.getCoverImgUrl()).listener(new RequestListener<Drawable>() {
-                @Override
-                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                    return false;
-                }
-
-                @Override
-                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                    // get rid of the background resource when image loads
-                    book_image.setBackground(null);
-                    return false;
-                }
-            }).into(book_image);
-
-            // set other book view details
-            book_title.setText(currBook.getTitle());
-
-            DecimalFormat decimalFormat = new DecimalFormat("0.00");
-
-            if (currBook.getCheapestPrice() != null) {
-                book_price.setText("$ " + decimalFormat.format(currBook.getCheapestPrice()));
-            } else {
-                book_price.setText("$ " + decimalFormat.format(currBook.getPrice()));
+        // navigate when the user clicks on book
+        listV_books.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookDetailsFragment(booksArr[i])).addToBackStack(null).commit();
             }
-
-            bookView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d("book", currBook.toString());
-                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookDetailsFragment(currBook)).addToBackStack(null).commit();
-                }
-            });
-
-            // add the book to the layout
-            gridL_books.addView(bookView);
-
-            search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String s) {
-                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new SearchFragment(s)).addToBackStack(null).commit();
-                    return false;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String s) {
-                    return false;
-                }
-            });
-        }
+        });
     }
 
     private HashMap<Integer, Book> getBooksMatchingQuery(HashMap<Integer, Book> books, String query) {
