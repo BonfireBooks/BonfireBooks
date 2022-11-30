@@ -126,6 +126,10 @@ public class User implements Parcelable {
         this.books.put(index, book);
     }
 
+    public void deleteBook(String index) {
+        books.remove(index);
+    }
+
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
