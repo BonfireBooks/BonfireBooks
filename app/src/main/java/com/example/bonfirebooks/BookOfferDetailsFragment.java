@@ -331,7 +331,7 @@ public class BookOfferDetailsFragment extends Fragment {
     }
 
     private void addImageToScroll(String imgLink, int i) {
-        View image = getLayoutInflater().inflate(R.layout.book_image_view, null);
+        View image = getLayoutInflater().inflate(R.layout.offer_book_image_view, null);
         ImageView book_image = image.findViewById(R.id.imgV_image);
 
         Glide.with(image.getContext()).load(imgLink).error("").into(book_image);
@@ -341,7 +341,7 @@ public class BookOfferDetailsFragment extends Fragment {
     }
 
     private void addImageToScroll(Uri imgUri, int i) {
-        View image = getLayoutInflater().inflate(R.layout.book_image_view, null);
+        View image = getLayoutInflater().inflate(R.layout.offer_book_image_view, null);
         ImageView book_image = image.findViewById(R.id.imgV_image);
 
         Glide.with(image.getContext()).load(imgUri).error("").into(book_image);
