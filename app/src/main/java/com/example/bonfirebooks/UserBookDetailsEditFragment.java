@@ -417,8 +417,11 @@ public class UserBookDetailsEditFragment extends Fragment {
 
         boolean isValid = true;
 
-        if (!(Double.valueOf(txtE_price.getText().toString()) <= userProfileBook.getMaxPrice()) && userProfileBook.getMaxPrice() != 0) {
+        if ((!(Double.valueOf(txtE_price.getText().toString()) <= userProfileBook.getMaxPrice()) && userProfileBook.getMaxPrice() != 0)) {
             txtE_price.setError("Price must be less than or equal to " + userProfileBook.getMaxPrice());
+            isValid = false;
+        } else if(Double.valueOf(txtE_price.getText().toString()) <= 0) {
+            txtE_price.setError("Price must be greater than 0");
             isValid = false;
         }
 
