@@ -40,7 +40,20 @@ public class BookListAdapter extends ArrayAdapter<Book> {
         txtV_book_title.setText(books[position].getTitle());
 
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
-        txtV_book_price.setText("$ " + decimalFormat.format(books[position].getPrice()));
+
+        if(books[position].getCheapestPrice() != null) {
+            if (books[position].getCheapestPrice() > 0) {
+                txtV_book_price.setText("$ " + decimalFormat.format(books[position].getCheapestPrice()));
+            } else if (books[position].getPrice() > 0){
+                txtV_book_price.setText("$ " + decimalFormat.format(books[position].getPrice()));
+            } else {
+                txtV_book_price.setText("No Price On File");
+            }
+        } else if (books[position].getPrice() > 0){
+            txtV_book_price.setText("$ " + decimalFormat.format(books[position].getPrice()));
+        } else {
+            txtV_book_price.setText("No Price On File");
+        }
 
         return bookListItem;
     }
