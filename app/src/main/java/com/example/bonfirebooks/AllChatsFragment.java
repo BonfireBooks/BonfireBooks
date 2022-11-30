@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -117,6 +118,24 @@ public class AllChatsFragment extends Fragment {
             public void onRefresh() {
                 getChats();
                 pullToRefresh.setRefreshing(false);
+            }
+        });
+
+        // set to refresh when at the top of the list
+        listV_chats.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView listView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if(listV_chats.getTop() == 0 && firstVisibleItem == 0) {
+                    pullToRefresh.setEnabled(true);
+                } else {
+                    pullToRefresh.setEnabled(false);
+                }
+
             }
         });
 
