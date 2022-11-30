@@ -173,7 +173,7 @@ public class UploadBookFragment extends Fragment {
         txtE_price.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(3, 2)});
 
         // set the price hint based on the books price
-        if(book.getPrice() == 0) {
+        if (book.getPrice() == 0) {
             txtE_price.setHint("Enter a Price");
         } else {
             txtE_price.setHint("Enter a Price (" + book.getPrice() + ") or less");
@@ -191,7 +191,7 @@ public class UploadBookFragment extends Fragment {
                     progressDialog.setMessage("Uploading");
                     progressDialog.show();
 
-                    if(imageUris.size() > 0) {
+                    if (imageUris.size() > 0) {
                         addUserImagesFirebase();
                     } else {
                         callAddUserBook();
@@ -210,40 +210,40 @@ public class UploadBookFragment extends Fragment {
 
     private void addUserImagesFirebase() {
 
-            // get a storage reference
-            StorageReference folderRef = FirebaseStorage.getInstance().getReference().child("User Images").child(userBookID);
+        // get a storage reference
+        StorageReference folderRef = FirebaseStorage.getInstance().getReference().child("User Images").child(userBookID);
 
-            // store all images
-            for (int i = 0; i < imageUris.size(); i++) {
-                Uri imageUri = imageUris.get(i);
+        // store all images
+        for (int i = 0; i < imageUris.size(); i++) {
+            Uri imageUri = imageUris.get(i);
 
-                // need string value of i to store the image paths in the hashmap
-                String strI = String.valueOf(i);
+            // need string value of i to store the image paths in the hashmap
+            String strI = String.valueOf(i);
 
-                // create a reference of the image file
-                StorageReference imgRef = folderRef.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
+            // create a reference of the image file
+            StorageReference imgRef = folderRef.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
 
-                // store the image file
-                imgRef.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("imageUpload", "Succeess");
-                            imgPaths.put(strI, imgRef.getPath());
-                        } else {
-                            Log.d("imageUpload", "Failed");
-                        }
-
-                        // if the number of images stored matches the number of uris that
-                        // need to be stored we can put the user in firebase
-                        if (imgPaths.size() == imageUris.size()) {
-                            callAddUserBook();
-                        } else {
-                            // todo -- create an else case
-                        }
+            // store the image file
+            imgRef.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        Log.d("imageUpload", "Succeess");
+                        imgPaths.put(strI, imgRef.getPath());
+                    } else {
+                        Log.d("imageUpload", "Failed");
                     }
-                });
-            }
+
+                    // if the number of images stored matches the number of uris that
+                    // need to be stored we can put the user in firebase
+                    if (imgPaths.size() == imageUris.size()) {
+                        callAddUserBook();
+                    } else {
+                        // todo -- create an else case
+                    }
+                }
+            });
+        }
     }
 
     private String getFileExtension(Uri imageUri) {
@@ -341,6 +341,10 @@ public class UploadBookFragment extends Fragment {
                                 Log.d("addBookUsingApi", "Success " + taskResult.get("message"));
                                 Toast.makeText(getContext(), "Book Uploaded Successfully", Toast.LENGTH_SHORT).show();
 
+                                UserProfileBook uBook = new UserProfileBook(book.getBookId(), book.getTitle(), book.getCoverImgUrl(), spinner_condition.getSelectedItem().toString().toLowerCase(),
+                                        book.getBookId(), Double.valueOf(txtE_price.getText().toString()), book.getPrice(), true, imgPaths);
+                                user.addBook(uBook);
+
                                 // switch fragments
                                 getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new AccountFragment()).commit();
                             }
@@ -354,7 +358,7 @@ public class UploadBookFragment extends Fragment {
 
                                 Log.e("code ", code.toString());
 
-                                if(details != null) {
+                                if (details != null) {
                                     Log.e("error ", details.toString());
                                 }
                             }
