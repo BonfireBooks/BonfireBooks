@@ -122,6 +122,10 @@ public class User implements Parcelable {
         this.books = books;
     }
 
+    public void setBook(String index, UserProfileBook book) {
+        this.books.put(index, book);
+    }
+
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();

@@ -231,11 +231,25 @@ public class UserBookDetailsEditFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                progressDialog.dismiss();
-                            } else {
+                                // set the value of the new book
+                                HashMap<String, UserProfileBook> books = user.getBooks();
+                                for(int i = 0; i < books.size(); i++) {
+                                    if(books.get(String.valueOf(i)) == userProfileBook) {
+                                        UserProfileBook temp = books.get(String.valueOf(i));
+                                        user.setBook(String.valueOf(i), temp);
+                                    }
+                                }
 
+                                Toast.makeText(getContext(), "Book Update Successful", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), "Book Update Successful", Toast.LENGTH_SHORT).show();
                             }
 
+                            progressDialog.dismiss();
+
+
+                            // get rid of frags until we reach the account fragment
+                            // create a new instance of the UserBooksFragment -- needs to show updated book
                             getParentFragmentManager().popBackStack();
                             getParentFragmentManager().popBackStack();
                             getParentFragmentManager().popBackStack();
