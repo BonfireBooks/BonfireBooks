@@ -1,12 +1,15 @@
 package com.example.bonfirebooks;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
@@ -27,6 +30,7 @@ public class MessageListAdapter extends ArrayAdapter<UserMessage> {
         LayoutInflater inflater = context.getLayoutInflater();
         View messageView = inflater.inflate(R.layout.message_list, null, true);
 
+        TextView txtV_message_content = messageView.findViewById(R.id.txtV_message_content);
         ConstraintLayout layout_message_wrapper = messageView.findViewById(R.id.layout_message_wrapper);
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) layout_message_wrapper.getLayoutParams();
 
@@ -35,6 +39,7 @@ public class MessageListAdapter extends ArrayAdapter<UserMessage> {
             layout_message_wrapper.setBackgroundResource(R.drawable.message_bubble_outgoing);
             layoutParams.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
         } else { // incoming
+            txtV_message_content.setTextColor(Color.parseColor("#FFFFFF"));
             layout_message_wrapper.setBackgroundResource(R.drawable.message_bubble_incoming);
             layoutParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
         }
@@ -43,7 +48,6 @@ public class MessageListAdapter extends ArrayAdapter<UserMessage> {
         layout_message_wrapper.setLayoutParams(layoutParams);
 
         // set message text
-        TextView txtV_message_content = messageView.findViewById(R.id.txtV_message_content);
         txtV_message_content.setText(messages[position].getContent());
 
         return messageView;
