@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -76,6 +77,10 @@ public class UserBooksFragment extends Fragment {
 
     ListView listV_books;
 
+    ImageView imgV_no_books;
+
+    SwipeRefreshLayout swipe_refresh_user_books;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -83,18 +88,53 @@ public class UserBooksFragment extends Fragment {
         user = ((MainActivity) getActivity()).getUser();
 
         listV_books = view.findViewById(R.id.listV_books);
+        imgV_no_books = view.findViewById(R.id.imgV_no_books);
+        swipe_refresh_user_books = view.findViewById(R.id.swipe_refresh_user_books);
 
         populateListView();
 
+        // listen for listview clicks
         listV_books.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                // move to that books details fragments
                 getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new UserBookDetailsFragment(user.getBooks().get(String.valueOf(i)))).addToBackStack(null).commit();
+            }
+        });
+
+        // get the users books from firebase when they refresh
+        swipe_refresh_user_books.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                populateListViewFirebase();
+                swipe_refresh_user_books.setRefreshing(false);
             }
         });
     }
 
     private void populateListView() {
+        HashMap<String, UserProfileBook> books = user.getBooks();
+
+        if(!books.isEmpty()) {
+            listV_books.setVisibility(View.VISIBLE);
+            imgV_no_books.setVisibility(View.GONE);
+
+            UserProfileBook[] userProfileBooks = new UserProfileBook[books.size()];
+
+            for (int j = 0; j < books.size(); j++) {
+                userProfileBooks[j] = books.get(String.valueOf(j));
+            }
+
+            // create and set the adapter for the list
+            UserBooksListAdapter userBooksListAdapter = new UserBooksListAdapter(getActivity(), userProfileBooks);
+            listV_books.setAdapter(userBooksListAdapter);
+        } else {
+            listV_books.setVisibility(View.GONE);
+            imgV_no_books.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void populateListViewFirebase() {
         HashMap<String, UserProfileBook> books = new HashMap<>();
 
         FirebaseFirestore.getInstance().collection("users").document(user.getUid()).collection("books").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -112,12 +152,12 @@ public class UserBooksFragment extends Fragment {
                         books.put(String.valueOf(i), book);
 
                         i++;
-
                     }
 
                     if (books.size() != 0) {
                         // change the visibilty of the views
                         listV_books.setVisibility(View.VISIBLE);
+                        imgV_no_books.setVisibility(View.GONE);
 
                         UserProfileBook[] userProfileBooks = new UserProfileBook[books.size()];
 
@@ -130,6 +170,7 @@ public class UserBooksFragment extends Fragment {
                         listV_books.setAdapter(userBooksListAdapter);
                     } else {
                         listV_books.setVisibility(View.GONE);
+                        imgV_no_books.setVisibility(View.VISIBLE);
                     }
 
                     // set the users wishlists
