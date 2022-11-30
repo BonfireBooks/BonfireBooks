@@ -90,6 +90,10 @@ public class User implements Parcelable {
         return books;
     }
 
+    public void addBook(UserProfileBook book) {
+        this.books.put(String.valueOf(books.size()), book);
+    }
+
     public void setName(String name) {
         this.name = name;
     }
