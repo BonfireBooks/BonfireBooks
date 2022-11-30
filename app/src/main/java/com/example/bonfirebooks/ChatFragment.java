@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -102,7 +103,7 @@ public class ChatFragment extends Fragment {
     FirebaseStorage firebaseStorage;
 
     ConstraintLayout layout_header;
-    ConstraintLayout layout_send_bar;
+    LinearLayout layout_send_bar;
     ConstraintLayout layout_chats_empty;
 
     TextView txtV_user_name;

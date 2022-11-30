@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,8 +14,8 @@
             android:id="@+id/card_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="10dp"
             android:layout_marginStart="10dp"
+            app:cardCornerRadius="10dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -23,10 +23,9 @@
                 android:id="@+id/img_profile"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:scaleType="centerCrop"
                 android:background="@drawable/circle_solid_transparent"
-                android:src="@drawable/stock_user"
-                />
+                android:scaleType="centerCrop"
+                android:src="@drawable/stock_user" />
 
         </androidx.cardview.widget.CardView>
 
@@ -34,40 +33,38 @@
             android:id="@+id/txtV_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:text="@string/username_bracket"
             android:textColor="@color/logo_brown"
-            android:textSize="20sp"
-            android:layout_marginStart="10dp"
+            android:textSize="25sp"
             app:layout_constraintLeft_toRightOf="@id/card_profile"
-            app:layout_constraintTop_toTopOf="@id/card_profile"
-            />
+            app:layout_constraintTop_toTopOf="@id/card_profile" />
 
         <TextView
             android:id="@+id/txtV_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="280dp"
             android:ellipsize="end"
+            android:maxWidth="280dp"
+            android:maxLines="1"
             android:text="@string/message_content"
             android:textColor="@color/black"
-            android:textSize="18sp"
-            android:maxLines="1"
+            android:textSize="20sp"
             app:layout_constraintLeft_toLeftOf="@id/txtV_name"
-            app:layout_constraintTop_toBottomOf="@id/txtV_name"
-            />
+            app:layout_constraintTop_toBottomOf="@id/txtV_name" />
 
         <TextView
             android:id="@+id/txtV_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sample_time"
-            android:textColor="@color/black"
-            android:textSize="15sp"
             android:layout_marginStart="10dp"
+            android:text="@string/sample_time"
             android:textAlignment="viewEnd"
-            app:layout_constraintTop_toTopOf="@id/txtV_name"
+            android:textColor="@color/black"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@id/txtV_name"
-            app:layout_constraintRight_toRightOf="parent"/>
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/txtV_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/rectangle"
     android:layout_gravity="bottom"
+    android:background="@drawable/rectangle"
     android:paddingTop="10dp"
     android:paddingBottom="20dp">
 
@@ -16,22 +16,20 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/ic_user"
         android:backgroundTint="@color/black"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/txtV_edit_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:text="@string/edit_profile"
         android:textColor="@color/black"
-        android:textSize="18sp"
-        android:layout_marginStart="20dp"
-        app:layout_constraintLeft_toRightOf="@id/icon_profile"
-        app:layout_constraintTop_toTopOf="@id/icon_profile"
+        android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="@id/icon_profile"
-        />
+        app:layout_constraintLeft_toRightOf="@id/icon_profile"
+        app:layout_constraintTop_toTopOf="@id/icon_profile" />
 
     <View
         android:id="@+id/icon_view_books"
@@ -41,23 +39,21 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/ic_books"
         android:backgroundTint="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/icon_profile"
         app:layout_constraintLeft_toLeftOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@id/icon_profile" />
 
 
     <TextView
         android:id="@+id/txtV_view_books"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:text="@string/view_books"
         android:textColor="@color/black"
-        android:textSize="18sp"
-        android:layout_marginStart="20dp"
-        app:layout_constraintLeft_toRightOf="@id/icon_view_books"
-        app:layout_constraintTop_toTopOf="@id/icon_view_books"
+        android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="@id/icon_view_books"
-        />
+        app:layout_constraintLeft_toRightOf="@id/icon_view_books"
+        app:layout_constraintTop_toTopOf="@id/icon_view_books" />
 
     <View
         android:id="@+id/icon_upload_books"
@@ -67,72 +63,70 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/ic_upload_book"
         android:backgroundTint="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/icon_view_books"
         app:layout_constraintLeft_toLeftOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@id/icon_view_books" />
 
     <TextView
         android:id="@+id/txtV_upload_book"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:text="@string/upload_book"
         android:textColor="@color/black"
-        android:textSize="18sp"
-        android:layout_marginStart="20dp"
-        app:layout_constraintLeft_toRightOf="@id/icon_upload_books"
-        app:layout_constraintTop_toTopOf="@id/icon_upload_books"
+        android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="@id/icon_upload_books"
-        />
+        app:layout_constraintLeft_toRightOf="@id/icon_upload_books"
+        app:layout_constraintTop_toTopOf="@id/icon_upload_books" />
 
-<!--    <View-->
-<!--        android:id="@+id/icon_order_history"-->
-<!--        android:layout_width="30dp"-->
-<!--        android:layout_height="30dp"-->
-<!--        android:layout_marginStart="20dp"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:background="@drawable/ic_order_history"-->
-<!--        android:backgroundTint="@color/black"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/txtV_upload_book"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        />-->
+    <!--    <View-->
+    <!--        android:id="@+id/icon_order_history"-->
+    <!--        android:layout_width="30dp"-->
+    <!--        android:layout_height="30dp"-->
+    <!--        android:layout_marginStart="20dp"-->
+    <!--        android:layout_marginTop="20dp"-->
+    <!--        android:background="@drawable/ic_order_history"-->
+    <!--        android:backgroundTint="@color/black"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/txtV_upload_book"-->
+    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--        />-->
 
-<!--    <TextView-->
-<!--        android:id="@+id/txtV_order_history"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/order_history"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:textSize="18sp"-->
-<!--        android:layout_marginStart="20dp"-->
-<!--        app:layout_constraintLeft_toRightOf="@id/icon_order_history"-->
-<!--        app:layout_constraintTop_toTopOf="@id/icon_order_history"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/icon_order_history"-->
-<!--        />-->
+    <!--    <TextView-->
+    <!--        android:id="@+id/txtV_order_history"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="@string/order_history"-->
+    <!--        android:textColor="@color/black"-->
+    <!--        android:textSize="18sp"-->
+    <!--        android:layout_marginStart="20dp"-->
+    <!--        app:layout_constraintLeft_toRightOf="@id/icon_order_history"-->
+    <!--        app:layout_constraintTop_toTopOf="@id/icon_order_history"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@id/icon_order_history"-->
+    <!--        />-->
 
-<!--    <View-->
-<!--        android:id="@+id/icon_notification"-->
-<!--        android:layout_width="30dp"-->
-<!--        android:layout_height="30dp"-->
-<!--        android:layout_marginStart="20dp"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:background="@drawable/ic_notification"-->
-<!--        android:backgroundTint="@color/black"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/icon_order_history"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        />-->
+    <!--    <View-->
+    <!--        android:id="@+id/icon_notification"-->
+    <!--        android:layout_width="30dp"-->
+    <!--        android:layout_height="30dp"-->
+    <!--        android:layout_marginStart="20dp"-->
+    <!--        android:layout_marginTop="20dp"-->
+    <!--        android:background="@drawable/ic_notification"-->
+    <!--        android:backgroundTint="@color/black"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/icon_order_history"-->
+    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--        />-->
 
-<!--    <TextView-->
-<!--        android:id="@+id/txtV_notification"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/notification"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:textSize="18sp"-->
-<!--        android:layout_marginStart="20dp"-->
-<!--        app:layout_constraintLeft_toRightOf="@id/icon_notification"-->
-<!--        app:layout_constraintTop_toTopOf="@id/icon_notification"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/icon_notification"-->
-<!--        />-->
+    <!--    <TextView-->
+    <!--        android:id="@+id/txtV_notification"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="@string/notification"-->
+    <!--        android:textColor="@color/black"-->
+    <!--        android:textSize="18sp"-->
+    <!--        android:layout_marginStart="20dp"-->
+    <!--        app:layout_constraintLeft_toRightOf="@id/icon_notification"-->
+    <!--        app:layout_constraintTop_toTopOf="@id/icon_notification"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@id/icon_notification"-->
+    <!--        />-->
 
 
     <View
@@ -143,21 +137,19 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/ic_logout"
         android:backgroundTint="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/txtV_upload_book"
         app:layout_constraintLeft_toLeftOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@id/txtV_upload_book" />
 
     <TextView
         android:id="@+id/txtV_logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:text="Log out"
         android:textColor="@color/black"
-        android:textSize="18sp"
-        android:layout_marginStart="20dp"
-        app:layout_constraintLeft_toRightOf="@id/icon_logout"
-        app:layout_constraintTop_toTopOf="@id/icon_logout"
+        android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="@id/icon_logout"
-        />
+        app:layout_constraintLeft_toRightOf="@id/icon_logout"
+        app:layout_constraintTop_toTopOf="@id/icon_logout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

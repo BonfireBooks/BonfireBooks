@@ -10,9 +10,9 @@
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:scrollbars="none"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:scrollbars="none">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="fill_parent"
@@ -26,6 +26,7 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/display_name"
                 android:textColor="@color/txt_white50"
+                android:textSize="17sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,6 +49,7 @@
                 android:layout_marginTop="15dp"
                 android:text="@string/hofstra_id"
                 android:textColor="@color/txt_white50"
+                android:textSize="17sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtE_displayName" />
 
@@ -70,6 +72,7 @@
                 android:layout_marginTop="15dp"
                 android:text="@string/phone_number"
                 android:textColor="@color/txt_white50"
+                android:textSize="17sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtE_HofID" />
 
@@ -78,9 +81,9 @@
                 android:layout_width="350dp"
                 android:layout_height="55dp"
                 android:layout_marginTop="10dp"
-                android:inputType="phone"
                 android:background="@drawable/edit_text_inputs_starting_screens"
                 android:hint="@string/example_phone"
+                android:inputType="phone"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtV_phone_number" />
@@ -93,6 +96,7 @@
                 android:layout_marginTop="15dp"
                 android:text="@string/email"
                 android:textColor="@color/txt_white50"
+                android:textSize="17sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtE_phone_number" />
 
@@ -115,6 +119,7 @@
                 android:layout_marginTop="15dp"
                 android:text="@string/password"
                 android:textColor="@color/txt_white50"
+                android:textSize="17sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtE_email" />
 
@@ -138,6 +143,7 @@
                 android:layout_marginTop="15dp"
                 android:text="@string/confirm_password"
                 android:textColor="@color/txt_white50"
+                android:textSize="17sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtE_password" />
 
@@ -161,6 +167,7 @@
                 android:background="@drawable/buttons_orange"
                 android:text="@string/create_account"
                 android:textColor="@color/btntxt_brown"
+                android:textSize="17sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtE_confirm_password" />

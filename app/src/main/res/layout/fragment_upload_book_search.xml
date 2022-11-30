@@ -17,9 +17,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:background="@drawable/card_rounded"
             android:padding="20dp"
-            android:layout_gravity="center_horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -45,7 +45,7 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/enter_isbn"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 app:layout_constraintLeft_toLeftOf="@id/txtE_isbn"
                 app:layout_constraintTop_toBottomOf="@id/imgV_coverImage" />
 
@@ -70,7 +70,7 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/book_title"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 app:layout_constraintLeft_toLeftOf="@id/txtE_isbn"
                 app:layout_constraintTop_toBottomOf="@id/txtE_isbn" />
 
@@ -83,7 +83,8 @@
                 android:maxWidth="300dp"
                 android:maxLines="2"
                 android:text="@string/book_title_plain"
-                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
                 app:layout_constraintLeft_toLeftOf="@id/txtV_book_title_header"
                 app:layout_constraintTop_toBottomOf="@id/txtV_book_title_header" />
 
@@ -94,7 +95,7 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/author_s"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 app:layout_constraintLeft_toLeftOf="@id/txtV_book_title"
                 app:layout_constraintTop_toBottomOf="@id/txtV_book_title" />
 
@@ -107,7 +108,8 @@
                 android:maxWidth="300dp"
                 android:maxLines="3"
                 android:text="@string/book_authors"
-                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
                 app:layout_constraintLeft_toLeftOf="@id/txtV_book_authors_header"
                 app:layout_constraintTop_toBottomOf="@id/txtV_book_authors_header" />
 
@@ -118,7 +120,7 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/description"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 app:layout_constraintLeft_toLeftOf="@id/txtV_book_authors"
                 app:layout_constraintTop_toBottomOf="@id/txtV_book_authors" />
 
@@ -131,7 +133,8 @@
                 android:maxWidth="300dp"
                 android:maxLines="5"
                 android:text="@string/book_description"
-                android:textSize="11sp"
+                android:textColor="@color/black"
+                android:textSize="15sp"
                 app:layout_constraintLeft_toLeftOf="@id/txtV_book_description_header"
                 app:layout_constraintTop_toBottomOf="@id/txtV_book_description_header" />
 
@@ -145,7 +148,7 @@
                 android:text="@string/search_ISBN"
                 android:textAllCaps="false"
                 android:textColor="@color/logo_brown"
-                android:textSize="16sp"
+                android:textSize="17sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtV_book_description" />
@@ -160,7 +163,7 @@
                 android:text="@string/finish_upload"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="16sp"
+                android:textSize="17sp"
                 android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PasswordResetActivity"
-    android:background="@color/logo_orange">
+    android:background="@color/logo_orange"
+    tools:context=".PasswordResetActivity">
 
     <Button
         android:id="@+id/btn_back"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginTop="30dp"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/ic_arrow_back" />
 
     <View
@@ -28,31 +28,29 @@
         android:id="@+id/txtV_welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/reset_password"
         android:layout_below="@id/btn_back"
-        android:layout_marginTop="20dp"
         android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/reset_password"
         android:textColor="@color/white"
-        android:textSize="25sp"
-        />
+        android:textSize="30sp" />
 
     <TextView
         android:id="@+id/txtV_info"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:text="@string/reset_pass_info"
-        android:lineSpacingExtra="8dp"
         android:layout_below="@id/txtV_welcome"
-        android:layout_marginTop="15dp"
         android:layout_marginStart="30dp"
+        android:layout_marginTop="15dp"
+        android:lineSpacingExtra="8dp"
+        android:text="@string/reset_pass_info"
         android:textColor="@color/white"
-        android:textSize="14sp"
-        />
+        android:textSize="20sp" />
 
-    <include layout="@layout/drawer_reset_pass"
-        android:layout_alignParentBottom="true"
+    <include
+        layout="@layout/drawer_reset_pass"
         android:layout_width="match_parent"
         android:layout_height="500dp"
-        />
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

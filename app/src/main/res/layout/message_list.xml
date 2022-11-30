@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/message_list"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_message_wrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="7dp"
         android:paddingHorizontal="7dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:paddingBottom="7dp"
+        app:layout_constraintLeft_toRightOf="@null"
         app:layout_constraintRight_toLeftOf="@null"
-        app:layout_constraintLeft_toRightOf="@null">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/txtV_message_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:maxWidth="250dp"
+            android:padding="3dp"
             android:text="@string/content"
             android:textColor="@color/black"
-            android:textSize="15sp"
-            android:layout_marginTop="5dp"
-            android:padding="3dp"
+            android:textSize="17sp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AccountFragment"
-    android:background="@color/logo_orange">
+    android:background="@color/logo_orange"
+    tools:context=".AccountFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -15,8 +15,8 @@
             android:id="@+id/card_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="40dp"
             android:layout_marginTop="40dp"
+            app:cardCornerRadius="40dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -25,10 +25,9 @@
                 android:id="@+id/img_profile"
                 android:layout_width="180dp"
                 android:layout_height="180dp"
-                android:scaleType="centerCrop"
                 android:background="@drawable/circle_solid_transparent"
-                android:src="@drawable/stock_user"
-                />
+                android:scaleType="centerCrop"
+                android:src="@drawable/stock_user" />
 
         </androidx.cardview.widget.CardView>
 
@@ -36,14 +35,16 @@
             android:id="@+id/txtV_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sample_txt_user"
-            android:textSize="25sp"
-            android:textColor="@color/white"
             android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:maxWidth="300dp"
+            android:maxLines="1"
+            android:text="@string/sample_txt_user"
+            android:textColor="@color/white"
+            android:textSize="35sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/card_profile"
-            />
+            app:layout_constraintTop_toBottomOf="@id/card_profile" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -52,6 +53,6 @@
         layout="@layout/drawer_account"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="parent" />
 
 </FrameLayout>

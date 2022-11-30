@@ -44,7 +44,7 @@
                 android:maxLines="2"
                 android:text="@string/sample_text"
                 android:textColor="@color/black"
-                android:textSize="20sp"
+                android:textSize="25sp"
                 app:layout_constraintLeft_toLeftOf="@id/imgV_book_images"
                 app:layout_constraintTop_toBottomOf="@id/imgV_book_images" />
 
@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/retail_price"
                 android:textColor="@color/black"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 app:layout_constraintLeft_toLeftOf="@id/txtV_book_title"
                 app:layout_constraintTop_toBottomOf="@id/txtV_book_title" />
 
@@ -65,7 +65,7 @@
                 android:layout_marginStart="10dp"
                 android:text="@string/price_here"
                 android:textColor="#FA6400"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toRightOf="@id/txtV_retail_price"
                 app:layout_constraintTop_toBottomOf="@id/txtV_book_title" />
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/cheapest_offer"
                 android:textColor="@color/black"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 app:layout_constraintLeft_toLeftOf="@id/txtV_retail_price"
                 app:layout_constraintTop_toBottomOf="@id/txtV_retail_price" />
 
@@ -87,7 +87,7 @@
                 android:layout_marginStart="10dp"
                 android:text="@string/price_here"
                 android:textColor="@color/price_orange"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toRightOf="@id/txtV_cheapest_price"
                 app:layout_constraintTop_toBottomOf="@id/txtV_retail_price_edit" />
@@ -98,7 +98,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:text="@string/condition_bracket"
-                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
                 app:layout_constraintLeft_toRightOf="@id/txtV_cheapest_price_edit"
                 app:layout_constraintTop_toBottomOf="@id/txtV_retail_price" />
 
@@ -109,7 +110,7 @@
                 android:layout_marginTop="15dp"
                 android:text="@string/author_s"
                 android:textColor="@color/black"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="@id/txtV_cheapest_price"
                 app:layout_constraintTop_toBottomOf="@id/txtV_cheapest_price" />
@@ -124,7 +125,8 @@
                 android:maxWidth="200dp"
                 android:maxLines="3"
                 android:text="@string/sample_text"
-                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
                 app:layout_constraintLeft_toRightOf="@id/txtV_author"
                 app:layout_constraintTop_toBottomOf="@id/txtV_cheapest_price" />
 
@@ -135,6 +137,7 @@
                 android:layout_marginTop="3dp"
                 android:text="@string/isbn_10"
                 android:textColor="@color/black"
+                android:textSize="18sp"
                 app:layout_constraintLeft_toLeftOf="@id/txtV_author"
                 app:layout_constraintTop_toBottomOf="@id/txtV_author_edit" />
 
@@ -144,7 +147,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:text="@string/sample_text"
-                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="@id/txtV_isbn10"
                 app:layout_constraintLeft_toRightOf="@id/txtV_isbn10"
                 app:layout_constraintTop_toTopOf="@id/txtV_isbn10" />
@@ -156,7 +160,7 @@
                 android:layout_marginTop="3dp"
                 android:text="@string/isbn_13"
                 android:textColor="@color/black"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 app:layout_constraintLeft_toLeftOf="@id/txtV_isbn10"
                 app:layout_constraintTop_toBottomOf="@id/txtV_isbn10" />
 
@@ -166,7 +170,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:text="@string/sample_text"
-                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="@id/txtV_isbn13"
                 app:layout_constraintLeft_toRightOf="@id/txtV_isbn13"
                 app:layout_constraintTop_toTopOf="@id/txtV_isbn13" />
@@ -178,7 +183,7 @@
                 android:layout_marginTop="15dp"
                 android:text="@string/description"
                 android:textColor="@color/black"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 app:layout_constraintLeft_toLeftOf="@id/txtV_isbn13"
                 app:layout_constraintTop_toBottomOf="@id/txtV_isbn13" />
 
@@ -191,7 +196,8 @@
                 android:maxWidth="290dp"
                 android:maxLines="5"
                 android:text="@string/sample_text"
-                android:textSize="11sp"
+                android:textColor="@color/black"
+                android:textSize="15sp"
                 app:layout_constraintLeft_toLeftOf="@id/txtV_book_description"
                 app:layout_constraintTop_toBottomOf="@id/txtV_book_description" />
 
@@ -205,9 +211,9 @@
                 android:padding="10dp"
                 android:text="@string/view_user_books"
                 android:textAllCaps="false"
-                android:visibility="gone"
                 android:textColor="@color/logo_brown"
-                android:textSize="12sp"
+                android:textSize="15sp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtV_book_description_edit" />
@@ -220,12 +226,12 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/buttons_orange"
                 android:backgroundTint="@color/btn_outline_gray"
+                android:clickable="false"
                 android:padding="10dp"
                 android:text="@string/view_user_books"
                 android:textAllCaps="false"
-                android:clickable="false"
                 android:textColor="@color/logo_brown"
-                android:textSize="12sp"
+                android:textSize="15sp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

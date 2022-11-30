@@ -99,4 +99,8 @@
     <string name="add_photos">Add Photos</string>
     <string name="add_to_wishlist">Add To Wishlist</string>
     <string name="delete">Delete</string>
+    <string name="change_profile_picture">Change Profile Picture</string>
+    <string name="seller_header">Seller</string>
+    <string name="my_books">My Books</string>
+    <string name="my_wishlist">My Wishlist</string>
 </resources>
