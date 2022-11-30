@@ -256,16 +256,23 @@ public class HomeFragment extends Fragment {
 
             DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
-            if (currBook.getCheapestPrice() != null) {
-                book_price.setText("$ " + decimalFormat.format(currBook.getCheapestPrice()));
-            } else {
+            if(currBook.getCheapestPrice() != null) {
+                if (currBook.getCheapestPrice() > 0) {
+                    book_price.setText("$ " + decimalFormat.format(currBook.getCheapestPrice()));
+                } else if (currBook.getPrice() > 0){
+                    book_price.setText("$ " + decimalFormat.format(currBook.getPrice()));
+                } else {
+                    book_price.setText("No Price On File");
+                }
+            } else if (currBook.getPrice() > 0){
                 book_price.setText("$ " + decimalFormat.format(currBook.getPrice()));
+            } else {
+                book_price.setText("No Price On File");
             }
 
             bookView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("book", currBook.toString());
                     getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new BookDetailsFragment(currBook)).addToBackStack(null).commit();
                 }
             });
