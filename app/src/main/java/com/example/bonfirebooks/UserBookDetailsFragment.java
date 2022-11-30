@@ -192,7 +192,8 @@ public class UserBookDetailsFragment extends Fragment {
                             }
 
                             ((MainActivity) getActivity()).getUser().setBooksFirebase();
-                            ((MainActivity) getActivity()).onBackPressed();
+                            getParentFragmentManager().popBackStack();
+                            getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new AccountFragment()).commit();
                         } else {
                             Log.d("bookDelete", "Failed");
                             Toast.makeText(getContext(), "Could not delete book", Toast.LENGTH_SHORT).show();
