@@ -252,6 +252,32 @@ public class UserBookDetailsEditFragment extends Fragment {
             }
         }
 
+        HashMap<String, UserProfileBook> books = user.getBooks();
+        UserProfileBook temp = books.get(String.valueOf(0));
+        int index = 0;
+
+        for (int i = 0; i < books.size(); i++) {
+            if (books.get(String.valueOf(i)) == userProfileBook) {
+                temp = books.get(String.valueOf(i));
+                
+                temp.setConditon(spinner_condition.getSelectedItem().toString().toLowerCase());
+
+                if (!TextUtils.isEmpty(txtE_price.getText())) {
+                    temp.setPrice(Double.valueOf(txtE_price.getText().toString()));
+                }
+
+                if (imgPaths != null) {
+                    if (!imgPaths.isEmpty()) {
+                        temp.setImages(imgPaths);
+                    }
+                }
+
+                index = i;
+            }
+        }
+
+        int finalI1 = index;
+        UserProfileBook finalTemp = temp;
         firestore.collection("books").document(userProfileBook.getParentBookId()).collection("users").document(userProfileBook.getBookId()).set(updatedData, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -263,13 +289,7 @@ public class UserBookDetailsEditFragment extends Fragment {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 // set the value of the new book
-                                HashMap<String, UserProfileBook> books = user.getBooks();
-                                for (int i = 0; i < books.size(); i++) {
-                                    if (books.get(String.valueOf(i)) == userProfileBook) {
-                                        UserProfileBook temp = books.get(String.valueOf(i));
-                                        user.setBook(String.valueOf(i), temp);
-                                    }
-                                }
+                                user.setBook(String.valueOf(finalI1), finalTemp);
 
 //                                Toast.makeText(getContext(), "Book Update Successful", Toast.LENGTH_SHORT).show();
                             } else {
