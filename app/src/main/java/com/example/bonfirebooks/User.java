@@ -32,6 +32,7 @@ public class User implements Parcelable {
     private String uid;
     private String email;
     private String hofstraId;
+    private String phoneNumber;
 
     // collections
     private HashMap<String, WishlistBook> wishlist = null;
@@ -43,15 +44,24 @@ public class User implements Parcelable {
     public User() {
     }
 
-    public User(String name, String uid, String email, String hofstraId, HashMap<String, WishlistBook> wishlist, HashMap<String, UserProfileChat> chats, HashMap<String, UserProfileBook> books, String profileUri) {
+    public User(String name, String uid, String email, String hofstraId, String phoneNumber, HashMap<String, WishlistBook> wishlist, HashMap<String, UserProfileChat> chats, HashMap<String, UserProfileBook> books, String profileUri) {
         this.name = name;
         this.uid = uid;
         this.email = email;
         this.hofstraId = hofstraId;
+        this.phoneNumber = phoneNumber;
         this.wishlist = wishlist;
         this.chats = chats;
         this.books = books;
         this.profileUri = profileUri;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getProfileUri() {
@@ -190,6 +200,7 @@ public class User implements Parcelable {
                     user.setName(taskResult.getString("name"));
                     user.setEmail(taskResult.getString("email"));
                     user.setHofstraId(taskResult.getString("hofID"));
+                    user.setPhoneNumber(taskResult.getString("phoneNumber"));
 
                     // books as hashmap
                     HashMap<String, UserProfileBook> books = new HashMap<>();
@@ -317,6 +328,7 @@ public class User implements Parcelable {
         parcel.writeString(this.uid);
         parcel.writeString(this.email);
         parcel.writeString(this.hofstraId);
+        parcel.writeString(this.phoneNumber);
         parcel.writeString(this.profileUri);
         parcel.writeSerializable(this.wishlist);
         parcel.writeSerializable(this.chats);
@@ -338,6 +350,7 @@ public class User implements Parcelable {
         uid = in.readString();
         email = in.readString();
         hofstraId = in.readString();
+        phoneNumber = in.readString();
         profileUri = in.readString();
         wishlist = (HashMap<String, WishlistBook>) in.readSerializable();
         chats = (HashMap<String, UserProfileChat>) in.readSerializable();
