@@ -355,8 +355,8 @@ public class UploadBookFragment extends Fragment {
                                 Log.d("addBookUsingApi", "Success " + taskResult.get("message"));
                                 Toast.makeText(getContext(), "Book Uploaded Successfully", Toast.LENGTH_SHORT).show();
 
-                                UserProfileBook uBook = new UserProfileBook(book.getBookId(), book.getTitle(), book.getCoverImgUrl(), spinner_condition.getSelectedItem().toString().toLowerCase(),
-                                        book.getBookId(), Double.valueOf(txtE_price.getText().toString()), book.getPrice(), true, imgPaths);
+                                UserProfileBook uBook = new UserProfileBook(user.getName(), book.getBookId(), book.getTitle(), book.getCoverImgUrl(), spinner_condition.getSelectedItem().toString().toLowerCase(),
+                                        user.getUid(), book.getBookId(), Double.valueOf(txtE_price.getText().toString()), book.getPrice(), true, imgPaths);
                                 user.addBook(uBook);
 
                                 // switch fragments

@@ -26,19 +26,21 @@ public class UserBook {
         this.time = time;
         this.images = images;
 
-        switch(condition.toLowerCase()) {
-            case "like-new":
-                this.condition = "Like-New";
-                break;
-            case "good":
-                this.condition = "Good";
-                break;
-            case "fair":
-                this.condition = "Fair";
-                break;
-            case "poor":
-                this.condition = "Poor";
-                break;
+        if(condition != null) {
+            switch (condition.toLowerCase()) {
+                case "like-new":
+                    this.condition = "Like-New";
+                    break;
+                case "good":
+                    this.condition = "Good";
+                    break;
+                case "fair":
+                    this.condition = "Fair";
+                    break;
+                case "poor":
+                    this.condition = "Poor";
+                    break;
+            }
         }
     }
 

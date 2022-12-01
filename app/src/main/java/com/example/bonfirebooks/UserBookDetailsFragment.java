@@ -116,7 +116,7 @@ public class UserBookDetailsFragment extends Fragment {
         btn_delete_book = view.findViewById(R.id.btn_delete_book);
 
         txtV_book_title.setText(userProfileBook.getTitle());
-        txtV_book_condition_edit.setText(userProfileBook.getConditon());
+        txtV_book_condition_edit.setText(userProfileBook.getCondition());
 
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
         txtV_book_price.setText("$ " + decimalFormat.format(userProfileBook.getPrice()));

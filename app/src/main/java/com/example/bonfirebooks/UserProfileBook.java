@@ -5,11 +5,13 @@ import java.util.HashMap;
 
 public class UserProfileBook implements Serializable {
 
+    private String name;
     private String bookId;
     private String title;
     private String coverImgUrl;
-    private String conditon;
+    private String condition;
     private String parentBookId;
+    private String owner;
     private Double price;
     private Double maxPrice;
     private Boolean isPublic;
@@ -19,30 +21,50 @@ public class UserProfileBook implements Serializable {
 
     }
 
-    public UserProfileBook(String bookId, String title, String coverImgUrl, String conditon, String parentBookId, Double price, Double maxPrice, Boolean isPublic, HashMap<String, String> images) {
+    public UserProfileBook(String name, String bookId, String title, String coverImgUrl, String condition, String owner, String parentBookId, Double price, Double maxPrice, Boolean isPublic, HashMap<String, String> images) {
+        this.name = name;
         this.bookId = bookId;
         this.title = title;
         this.coverImgUrl = coverImgUrl;
         this.parentBookId = parentBookId;
+        this.owner = owner;
         this.price = price;
         this.maxPrice = maxPrice;
         this.isPublic = isPublic;
         this.images = images;
 
-        switch (conditon.toLowerCase()) {
-            case "like-new":
-                this.conditon = "Like-New";
-                break;
-            case "good":
-                this.conditon = "Good";
-                break;
-            case "fair":
-                this.conditon = "Fair";
-                break;
-            case "poor":
-                this.conditon = "Poor";
-                break;
+        if(condition != null) {
+            switch (condition.toLowerCase()) {
+                case "like-new":
+                    this.condition = "Like-New";
+                    break;
+                case "good":
+                    this.condition = "Good";
+                    break;
+                case "fair":
+                    this.condition = "Fair";
+                    break;
+                case "poor":
+                    this.condition = "Poor";
+                    break;
+            }
         }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public Double getMaxPrice() {
@@ -93,12 +115,12 @@ public class UserProfileBook implements Serializable {
         this.price = price;
     }
 
-    public String getConditon() {
-        return conditon;
+    public String getCondition() {
+        return condition;
     }
 
-    public void setConditon(String conditon) {
-        this.conditon = conditon;
+    public void setCondition(String condition) {
+        this.condition = condition;
     }
 
     public String getBookId() {
@@ -131,7 +153,7 @@ public class UserProfileBook implements Serializable {
         str.append("UserProfile: \n");
         str.append("bookId: " + bookId + "\n");
         str.append("title: " + title + "\n");
-        str.append("condition: " + conditon + "\n");
+        str.append("condition: " + condition + "\n");
         str.append("price: " + price + "\n");
         str.append("coverImgUrl: " + coverImgUrl + "\n");
         return str.toString();

@@ -58,7 +58,7 @@ public class UserBooksListAdapter extends ArrayAdapter<UserProfileBook> {
         }
 
         txtV_book_title.setText(userBooks[position].getTitle());
-        txtV_book_condition.setText(userBooks[position].getConditon());
+        txtV_book_condition.setText(userBooks[position].getCondition());
 
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
         txtV_book_price.setText("$ " + decimalFormat.format(userBooks[position].getPrice()));

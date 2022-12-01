@@ -44,6 +44,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -193,7 +194,7 @@ public class UserBookDetailsEditFragment extends Fragment {
                 HashMap<String, Object> update = new HashMap<>();
                 update.put("images", imgPaths);
 
-                firestore.collection("books").document(userProfileBook.getParentBookId()).collection("users").document(userProfileBook.getBookId()).set(update, SetOptions.merge());
+                firestore.collection("books").document(userProfileBook.getParentBookId()).collection("users").document(userProfileBook.getBookId()).set(update);
 
 
                 if(removeImagePaths.size() > 0) {
@@ -259,8 +260,7 @@ public class UserBookDetailsEditFragment extends Fragment {
         for (int i = 0; i < books.size(); i++) {
             if (books.get(String.valueOf(i)) == userProfileBook) {
                 temp = books.get(String.valueOf(i));
-                
-                temp.setConditon(spinner_condition.getSelectedItem().toString().toLowerCase());
+
 
                 if (!TextUtils.isEmpty(txtE_price.getText())) {
                     temp.setPrice(Double.valueOf(txtE_price.getText().toString()));
@@ -276,15 +276,18 @@ public class UserBookDetailsEditFragment extends Fragment {
             }
         }
 
+        temp.setCondition(spinner_condition.getSelectedItem().toString().toLowerCase());
+
         int finalI1 = index;
         UserProfileBook finalTemp = temp;
-        firestore.collection("books").document(userProfileBook.getParentBookId()).collection("users").document(userProfileBook.getBookId()).set(updatedData, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
+        Log.d("parent", userProfileBook.getParentBookId());
+        firestore.collection("books").document(userProfileBook.getParentBookId()).collection("users").document(userProfileBook.getBookId()).set(userProfileBook).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     Log.d("updateBook", "Successful");
 
-                    firestore.collection("users").document(user.getUid()).collection("books").document(userProfileBook.getBookId()).set(updatedData, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    firestore.collection("users").document(user.getUid()).collection("books").document(userProfileBook.getBookId()).set(userProfileBook).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
@@ -478,8 +481,11 @@ public class UserBookDetailsEditFragment extends Fragment {
                 }
 
                 imgPaths.remove(String.valueOf(imgPaths.size()));
+                imgPaths.values().removeAll(Collections.singleton(null));
 
                 Log.d("imgPaths", imgPaths.toString());
+                Log.d("imgPaths", String.valueOf(imgPaths.size()));
+
                 linlayout_image_scroll.removeViewAt(i);
             }
         });
