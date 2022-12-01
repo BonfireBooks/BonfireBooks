@@ -230,7 +230,7 @@ public class BookOfferDetailsFragment extends Fragment {
                     });
                 } else {
                     // add to wishlist
-                    WishlistBook wishBook = new WishlistBook(userBook.getBookId(), book.getTitle(), userBook.getCondition().toLowerCase(), book.getCoverImgUrl(), book.getBookId(), userBook.getPrice(), userBook.getPathsToImages());
+                    WishlistBook wishBook = new WishlistBook(userBook.getBookId(), book.getTitle(), userBook.getCondition().toLowerCase(), book.getCoverImgUrl(), book.getBookId(), userBook.getPrice(), (HashMap<String, String>) userBook.getPathsToImages());
                     firestore.collection("users").document(user.getUid()).collection("wishlist").document(userBook.getBookId()).set(wishBook).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {

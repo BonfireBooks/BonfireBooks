@@ -47,7 +47,7 @@ public class WishlistBook implements Serializable {
         this.parentBookId = parentBookId;
     }
 
-    public HashMap<String, String> getImages() {
+    public HashMap<String, String> getImagePaths() {
         return imagePaths;
     }
 
