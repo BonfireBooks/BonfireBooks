@@ -7,37 +7,44 @@
     android:background="#F9F9F9"
     tools:context=".BookOffersFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/txtV_current_offers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/current_offers"
+            android:textColor="@color/logo_brown"
+            android:textSize="50sp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            />
 
         <ListView
             android:id="@+id/listV_books"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:clickable="true"
             android:clipToPadding="false"
             android:divider="@android:color/transparent"
             android:dividerHeight="10dp"
             android:focusable="true"
             android:paddingVertical="10dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="parent" />
+            android:visibility="visible"
+            android:layout_below="@id/txtV_current_offers"
+            android:layout_alignParentBottom="true"
+            />
 
         <View
             android:id="@+id/img_no_books_found"
             android:layout_width="250dp"
             android:layout_height="340dp"
             android:background="@drawable/book_not_found"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            android:layout_centerInParent="true"
             />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 
 </FrameLayout>

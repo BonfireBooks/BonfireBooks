@@ -103,4 +103,5 @@
     <string name="seller_header">Seller</string>
     <string name="my_books">My Books</string>
     <string name="my_wishlist">My Wishlist</string>
+    <string name="current_offers">Current Offers</string>
 </resources>
