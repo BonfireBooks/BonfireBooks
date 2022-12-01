@@ -21,6 +21,7 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -87,7 +88,7 @@ public class WishlistFragment extends Fragment {
     ListView listV_books;
     Button btn_explore;
     BottomNavigationView bottomNavigationView;
-    ConstraintLayout layout_wrapper;
+    RelativeLayout layout_wrapper;
 
     // Firebase
     FirebaseFirestore firestore;

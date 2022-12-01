@@ -72,13 +72,12 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <RelativeLayout
                 android:id="@+id/layout_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                >
 
                 <TextView
                     android:id="@+id/txtV_my_wishlist"
@@ -89,9 +88,7 @@
                     android:textColor="@color/logo_brown"
                     android:textSize="50sp"
                     android:textStyle="bold"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_centerHorizontal="true"
                     app:layout_constraintVertical_weight="0" />
 
                 <ListView
@@ -104,12 +101,11 @@
                     android:dividerHeight="10dp"
                     android:focusable="true"
                     android:paddingVertical="10dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtV_my_wishlist"
+                    android:layout_below="@id/txtV_my_wishlist"
+                    android:layout_alignParentBottom="true"
                     app:layout_constraintVertical_weight="1" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </RelativeLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
