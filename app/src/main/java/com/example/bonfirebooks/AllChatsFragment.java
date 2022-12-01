@@ -18,6 +18,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -77,9 +78,9 @@ public class AllChatsFragment extends Fragment {
     User user;
 
     // layout items
-    ConstraintLayout layout_chats_empty;
     ListView listV_chats;
     ImageView imgV_no_chats;
+    TextView txtV_chats;
 
     // Firebase
     FirebaseFirestore firestore;
@@ -93,9 +94,9 @@ public class AllChatsFragment extends Fragment {
 
         user = ((MainActivity) getActivity()).getUser();
 
-        layout_chats_empty = view.findViewById(R.id.layout_chats_empty);
         listV_chats = view.findViewById(R.id.listV_chats);
         imgV_no_chats = view.findViewById(R.id.imgV_no_chats);
+        txtV_chats = view.findViewById(R.id.txtV_chats);
 
         // firestore
         firestore = FirebaseFirestore.getInstance();
@@ -186,9 +187,9 @@ public class AllChatsFragment extends Fragment {
         HashMap<String, UserProfileChat> chats = user.getChats();
 
         if (chats != null && chats.size() != 0) {
-
-            imgV_no_chats.setVisibility(View.GONE);
+            txtV_chats.setVisibility(View.VISIBLE);
             listV_chats.setVisibility(View.VISIBLE);
+            imgV_no_chats.setVisibility(View.GONE);
 
             String[] names = new String[chats.size()];
             String[] ids = new String[chats.size()];
@@ -209,6 +210,7 @@ public class AllChatsFragment extends Fragment {
         } else {
             imgV_no_chats.setVisibility(View.VISIBLE);
             listV_chats.setVisibility(View.GONE);
+            txtV_chats.setVisibility(View.GONE);
         }
     }
 

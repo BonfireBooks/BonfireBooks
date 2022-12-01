@@ -104,7 +104,6 @@ public class ChatFragment extends Fragment {
 
     ConstraintLayout layout_header;
     LinearLayout layout_send_bar;
-    ConstraintLayout layout_chats_empty;
 
     TextView txtV_user_name;
     TextView txtV_no_chats;
@@ -135,7 +134,6 @@ public class ChatFragment extends Fragment {
 
         layout_header = view.findViewById(R.id.layout_header);
         layout_send_bar = view.findViewById(R.id.layout_send_bar);
-        layout_chats_empty = view.findViewById(R.id.layout_chats_empty);
         listV_chats = view.findViewById(R.id.listV_chats);
         txtV_user_name = view.findViewById(R.id.txtV_user_name);
         txtV_no_chats = view.findViewById(R.id.txtV_no_chats);
