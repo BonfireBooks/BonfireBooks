@@ -75,7 +75,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/logo_brown"
+        android:background="@color/logo_orange"
         android:padding="10dp">
 
         <EditText
@@ -97,10 +97,10 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
-            android:background="@drawable/buttons_orange"
+            android:background="@drawable/buttons_brown"
             android:shadowColor="@android:color/transparent"
             android:text="@string/send"
-            android:textColor="@color/logo_brown"
+            android:textColor="@color/white"
             android:textSize="17sp" />
 
     </LinearLayout>
