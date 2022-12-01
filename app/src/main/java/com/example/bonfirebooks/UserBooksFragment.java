@@ -77,6 +77,7 @@ public class UserBooksFragment extends Fragment {
 
     ListView listV_books;
 
+    TextView txtV_my_books;
     ImageView imgV_no_books;
 
     SwipeRefreshLayout swipe_refresh_user_books;
@@ -88,6 +89,7 @@ public class UserBooksFragment extends Fragment {
         user = ((MainActivity) getActivity()).getUser();
 
         listV_books = view.findViewById(R.id.listV_books);
+        txtV_my_books = view.findViewById(R.id.txtV_my_books);
         imgV_no_books = view.findViewById(R.id.imgV_no_books);
         swipe_refresh_user_books = view.findViewById(R.id.swipe_refresh_user_books);
 
@@ -116,6 +118,7 @@ public class UserBooksFragment extends Fragment {
         HashMap<String, UserProfileBook> books = user.getBooks();
 
         if(!books.isEmpty()) {
+            txtV_my_books.setVisibility(View.VISIBLE);
             listV_books.setVisibility(View.VISIBLE);
             imgV_no_books.setVisibility(View.GONE);
 
@@ -129,8 +132,9 @@ public class UserBooksFragment extends Fragment {
             UserBooksListAdapter userBooksListAdapter = new UserBooksListAdapter(getActivity(), userProfileBooks);
             listV_books.setAdapter(userBooksListAdapter);
         } else {
-            listV_books.setVisibility(View.GONE);
             imgV_no_books.setVisibility(View.VISIBLE);
+            txtV_my_books.setVisibility(View.GONE);
+            listV_books.setVisibility(View.GONE);
         }
     }
 
@@ -156,6 +160,7 @@ public class UserBooksFragment extends Fragment {
 
                     if (books.size() != 0) {
                         // change the visibilty of the views
+                        txtV_my_books.setVisibility(View.VISIBLE);
                         listV_books.setVisibility(View.VISIBLE);
                         imgV_no_books.setVisibility(View.GONE);
 
@@ -169,8 +174,9 @@ public class UserBooksFragment extends Fragment {
                         UserBooksListAdapter userBooksListAdapter = new UserBooksListAdapter(getActivity(), userProfileBooks);
                         listV_books.setAdapter(userBooksListAdapter);
                     } else {
-                        listV_books.setVisibility(View.GONE);
                         imgV_no_books.setVisibility(View.VISIBLE);
+                        txtV_my_books.setVisibility(View.GONE);
+                        listV_books.setVisibility(View.GONE);
                     }
 
                     // set the users wishlists
