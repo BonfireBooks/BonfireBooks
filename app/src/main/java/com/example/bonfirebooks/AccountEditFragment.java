@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +37,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,6 +94,7 @@ public class AccountEditFragment extends Fragment {
     ImageView img_profile;
 
     Uri userProfileImage;
+    String phoneNumber;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -115,6 +119,12 @@ public class AccountEditFragment extends Fragment {
         if (user.getProfileUri() != null) {
             Glide.with(getContext()).load(Uri.parse(user.getProfileUri())).error(R.drawable.stock_user).into(img_profile);
         }
+
+        if(user.getPhoneNumber() != null) {
+            txtE_phone_number.setHint(PhoneNumberUtils.formatNumber(user.getPhoneNumber(), Locale.getDefault().getCountry()));
+        }
+
+        txtE_phone_number.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
         txtV_user_name.setText(user.getName());
 
@@ -151,62 +161,67 @@ public class AccountEditFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if (userProfileImage != null) {
-                    user.setProfileUri(userProfileImage.toString());
-                    Log.d("userProfileImage", userProfileImage.toString());
+                String phoneNumClean = txtE_phone_number.getText().toString();
+                phoneNumClean = phoneNumClean.replace("(", "");
+                phoneNumClean = phoneNumClean.replace(")", "");
+                phoneNumClean = phoneNumClean.replace("-", "");
+                phoneNumClean = phoneNumClean.replace(" ", "");
+                phoneNumber = phoneNumClean;
 
-                    StorageReference storageReference = storage.getReference().child("User Images").child(user.getUid());
-                    storageReference.putFile(userProfileImage).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                Log.d("uploadUserProfile", "Successful");
+                if (!TextUtils.isEmpty(phoneNumber) && phoneNumber.length() != 10) {
+                    txtE_phone_number.setError("Please enter a valid 10 digit phone number");
+                } else {
+
+                    if (userProfileImage != null) {
+                        user.setProfileUri(userProfileImage.toString());
+                        Log.d("userProfileImage", userProfileImage.toString());
+
+                        StorageReference storageReference = storage.getReference().child("User Images").child(user.getUid());
+                        storageReference.putFile(userProfileImage).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d("uploadUserProfile", "Successful");
+                                    firebaseUser.reload();
+                                } else {
+                                    Log.d("uploadUserProfile", "Failed");
+                                }
+                            }
+                        });
+                    }
+
+                    if (!TextUtils.isEmpty(txtE_user_name.getText()) || !TextUtils.isEmpty(txtE_phone_number.getText())) {
+
+                        HashMap<String, Object> changes = new HashMap<>();
+
+                        if (!TextUtils.isEmpty(txtE_user_name.getText())) {
+                            user.setName(txtE_user_name.getText().toString());
+                            changes.put("name", txtE_user_name.getText().toString());
+                        }
+
+                        if (!phoneNumber.isEmpty()) {
+                            user.setPhoneNumber(phoneNumber);
+                            changes.put("phoneNumber", phoneNumber);
+                        }
+
+                        // update username
+                        firestore.collection("users").document(user.getUid()).update(changes).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d("updateName", "Successful");
+                                } else {
+                                    Log.d("updateName", "Failed");
+                                }
                                 firebaseUser.reload();
-                            } else {
-                                Log.d("uploadUserProfile", "Failed");
                             }
-                        }
-                    });
+                        });
+                    }
+
+                    getParentFragmentManager().popBackStack();
+                    getParentFragmentManager().popBackStack();
+                    getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new AccountFragment()).addToBackStack(null).commit();
                 }
-
-                if (!TextUtils.isEmpty(txtE_user_name.getText())) {
-                    user.setName(txtE_user_name.getText().toString());
-                    HashMap<String, Object> changes = new HashMap<>();
-                    changes.put("name", txtE_user_name.getText().toString());
-
-                    // update username
-                    firestore.collection("users").document(user.getUid()).update(changes).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d("updateName", "Successful");
-                            } else {
-                                Log.d("updateName", "Failed");
-                            }
-                            firebaseUser.reload();
-                        }
-                    });
-                }
-
-                // documentation for setting phone number is poor
-//                String phoneNumber = txtE_phone_number.getText().toString();
-//                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri()
-//
-//                firebaseUser.updatePhoneNumber(newPhoneNum).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        if (task.isSuccessful()) {
-//                            Log.d("updatePhoneNumber", "Successful");
-//                txtE_phone_number.setText(null);
-//                        } else {
-//                            Log.d("updatePhoneNumber", "Successful");
-//                        }
-//                    }
-//                });
-
-                getParentFragmentManager().popBackStack();
-                getParentFragmentManager().popBackStack();
-                getParentFragmentManager().beginTransaction().replace(R.id.frame_container, new AccountFragment()).addToBackStack(null).commit();
             }
         });
     }

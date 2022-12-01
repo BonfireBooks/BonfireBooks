@@ -214,7 +214,6 @@ public class SignupActivity extends AppCompatActivity {
 
         // phone number check
         String phoneNumber = txtE_phone_number.getText().toString();
-        Log.d("phoneNumber", phoneNumber);
         phoneNumber = phoneNumber.replace("(", "");
         phoneNumber = phoneNumber.replace(")", "");
         phoneNumber = phoneNumber.replace("-", "");
