@@ -1,7 +1,5 @@
 package com.example.bonfirebooks;
 
-import android.util.Log;
-
 import com.google.firebase.Timestamp;
 
 import java.util.HashMap;

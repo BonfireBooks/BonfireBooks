@@ -10,19 +10,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
-import java.util.TimeZone;
 
 public class ChatListAdapter extends ArrayAdapter<String> {
 

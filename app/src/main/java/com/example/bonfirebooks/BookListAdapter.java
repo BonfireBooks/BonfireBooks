@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentManager;
 import com.bumptech.glide.Glide;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
 
 public class BookListAdapter extends ArrayAdapter<Book> {
 
