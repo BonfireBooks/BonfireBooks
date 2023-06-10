@@ -47,12 +47,15 @@
                 android:layout_alignParentBottom="true"
                 app:layout_constraintVertical_weight="1" />
 
-            <ImageView
-                android:id="@+id/imgV_no_books"
+            <TextView
+                android:id="@+id/txtV_no_books"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/user_books_empty"
-                android:visibility="gone"
+                android:text="@string/you_have_no_books_go_add_some"
+                android:visibility="visible"
+                android:textAlignment="center"
+                android:textSize="45sp"
+                android:textColor="@color/logo_brown"
                 android:layout_centerInParent="true"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

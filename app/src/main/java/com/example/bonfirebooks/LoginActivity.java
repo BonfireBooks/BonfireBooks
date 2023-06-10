@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextView forgotPass;
 
-    private EditText txtE_HofID;
+    private EditText txtE_email;
     private EditText txtE_password;
 
     private Button btn_login;
@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
         forgotPass = findViewById(R.id.txtV_forgot_password);
-        txtE_HofID = findViewById(R.id.txtE_HofID);
+        txtE_email = findViewById(R.id.txtE_email);
         txtE_password = findViewById(R.id.txtE_password);
         btn_login = findViewById(R.id.btn_login);
         btn_signUp = findViewById(R.id.btn_signup);
@@ -79,31 +79,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isValidInput()) {
-                    // get the user email -- login gets called from this function
-
                     txtE_password.setError(null);
-                    txtE_HofID.setError(null);
-
-                    getUserEmail(txtE_HofID.getText().toString());
-                }
-            }
-        });
-    }
-
-    private void getUserEmail(String hofID) {
-        // grab the user email from the realtime database
-        DatabaseReference realtime = FirebaseDatabase.getInstance().getReference();
-        realtime.child("users").child(hofID).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if(task.isSuccessful()) {
-                    Log.d("getRealtimeUser", "success");
-                    String email = String.valueOf(task.getResult().getValue());
-                    // call the login here -- to make sure email has been retreived
-                    loginUser(email, txtE_password.getText().toString());
-                } else {
-                    Log.w("getRealtimeUser", "failure\n" + task.getException());
-                    Toast.makeText(LoginActivity.this, "Could not log in at the moment", Toast.LENGTH_SHORT).show();
+                    loginUser(txtE_email.getText().toString(), txtE_password.getText().toString());
                 }
             }
         });
@@ -157,26 +134,6 @@ public class LoginActivity extends AppCompatActivity {
         final boolean[] isValid = {true};
 
         // check that ID field is empty
-        if(TextUtils.isEmpty(txtE_HofID.getText().toString())) {
-            txtE_HofID.setError("Please enter your Hofstra ID");
-            isValid[0] = false;
-        } else {
-            // check if ID exists
-            FirebaseDatabase.getInstance().getReference().child("users").child(txtE_HofID.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(!snapshot.exists()) {
-                        isValid[0] = false;
-                        txtE_HofID.setError("Account does not exist");
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
 
         // check that password field is empty
         if(TextUtils.isEmpty(txtE_password.getText().toString())) {

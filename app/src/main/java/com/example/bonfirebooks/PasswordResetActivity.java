@@ -72,13 +72,13 @@ public class PasswordResetActivity extends AppCompatActivity {
     private boolean isValidInput() {
         boolean isValid = true;
 
-        // email check -- must use hofstra domain
+        // email check
         String email = txtE_email.getText().toString().toLowerCase();
         if (TextUtils.isEmpty(email)) {
-            txtE_email.setError("Please enter your Hofstra email");
+            txtE_email.setError("Please enter your email");
             isValid = false;
-        } else if (!email.contains("pride.hofstra.edu") || !isValidEmail(email)) {
-            txtE_email.setError("Please enter a valid Hofstra email");
+        } else if (!isValidEmail(email)) {
+            txtE_email.setError("Please enter a valid email");
             isValid = false;
         }
 

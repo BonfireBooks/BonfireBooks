@@ -9,27 +9,27 @@
     android:paddingBottom="20dp">
 
     <TextView
-        android:id="@+id/txtV_HofID"
+        android:id="@+id/txtV_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="10dp"
-        android:text="@string/hofstra_id"
+        android:text="@string/email"
         android:textColor="@color/txt_white50"
         android:textSize="17sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/txtE_HofID"
+        android:id="@+id/txtE_email"
         android:layout_width="350dp"
         android:layout_height="55dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/edit_text_inputs_starting_screens"
-        android:hint="@string/hint_hofstra_ID"
+        android:hint="@string/example_email"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtV_HofID" />
+        app:layout_constraintTop_toBottomOf="@id/txtV_email" />
 
     <TextView
         android:id="@+id/txtV_password"
@@ -41,7 +41,7 @@
         android:textColor="@color/txt_white50"
         android:textSize="17sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtE_HofID" />
+        app:layout_constraintTop_toBottomOf="@id/txtE_email" />
 
     <EditText
         android:id="@+id/txtE_password"

@@ -78,7 +78,7 @@ public class UserBooksFragment extends Fragment {
     ListView listV_books;
 
     TextView txtV_my_books;
-    ImageView imgV_no_books;
+    TextView txtV_no_books;
 
     SwipeRefreshLayout swipe_refresh_user_books;
 
@@ -90,7 +90,7 @@ public class UserBooksFragment extends Fragment {
 
         listV_books = view.findViewById(R.id.listV_books);
         txtV_my_books = view.findViewById(R.id.txtV_my_books);
-        imgV_no_books = view.findViewById(R.id.imgV_no_books);
+        txtV_no_books = view.findViewById(R.id.txtV_no_books);
         swipe_refresh_user_books = view.findViewById(R.id.swipe_refresh_user_books);
 
         populateListView();
@@ -120,7 +120,7 @@ public class UserBooksFragment extends Fragment {
         if(!books.isEmpty()) {
             txtV_my_books.setVisibility(View.VISIBLE);
             listV_books.setVisibility(View.VISIBLE);
-            imgV_no_books.setVisibility(View.GONE);
+            txtV_no_books.setVisibility(View.GONE);
 
             UserProfileBook[] userProfileBooks = new UserProfileBook[books.size()];
 
@@ -132,7 +132,7 @@ public class UserBooksFragment extends Fragment {
             UserBooksListAdapter userBooksListAdapter = new UserBooksListAdapter(getActivity(), userProfileBooks);
             listV_books.setAdapter(userBooksListAdapter);
         } else {
-            imgV_no_books.setVisibility(View.VISIBLE);
+            txtV_no_books.setVisibility(View.VISIBLE);
             txtV_my_books.setVisibility(View.GONE);
             listV_books.setVisibility(View.GONE);
         }
@@ -162,7 +162,7 @@ public class UserBooksFragment extends Fragment {
                         // change the visibilty of the views
                         txtV_my_books.setVisibility(View.VISIBLE);
                         listV_books.setVisibility(View.VISIBLE);
-                        imgV_no_books.setVisibility(View.GONE);
+                        txtV_no_books.setVisibility(View.GONE);
 
                         UserProfileBook[] userProfileBooks = new UserProfileBook[books.size()];
 
@@ -174,7 +174,7 @@ public class UserBooksFragment extends Fragment {
                         UserBooksListAdapter userBooksListAdapter = new UserBooksListAdapter(getActivity(), userProfileBooks);
                         listV_books.setAdapter(userBooksListAdapter);
                     } else {
-                        imgV_no_books.setVisibility(View.VISIBLE);
+                        txtV_no_books.setVisibility(View.VISIBLE);
                         txtV_my_books.setVisibility(View.GONE);
                         listV_books.setVisibility(View.GONE);
                     }

@@ -33,14 +33,12 @@ public class SignupActivity extends AppCompatActivity {
     private Button btn_Signup;
 
     private EditText txtE_displayName;
-    private EditText txtE_HofID;
     private EditText txtE_phone_number;
     private EditText txtE_email;
     private EditText txtE_password;
     private EditText txtE_confirm_password;
 
     String displayName;
-    String hofstraID;
     String email;
     String password;
     String phoneNumber;
@@ -53,7 +51,6 @@ public class SignupActivity extends AppCompatActivity {
         btn_Back = findViewById(R.id.btn_back);
         btn_Signup = findViewById(R.id.btn_signup);
         txtE_displayName = findViewById(R.id.txtE_displayName);
-        txtE_HofID = findViewById(R.id.txtE_HofID);
         txtE_phone_number = findViewById(R.id.txtE_phone_number);
         txtE_email = findViewById(R.id.txtE_email);
         txtE_password = findViewById(R.id.txtE_password);
@@ -70,31 +67,14 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String id = txtE_HofID.getText().toString().toLowerCase();
+                displayName = txtE_displayName.getText().toString();
+                email = txtE_email.getText().toString();
+                password = txtE_password.getText().toString();
+                phoneNumber = txtE_phone_number.getText().toString();
 
-                FirebaseDatabase.getInstance().getReference().child("users").child(id).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if (task.getResult().getValue() == null) {
-
-                                displayName = txtE_displayName.getText().toString();
-                                hofstraID = txtE_HofID.getText().toString();
-                                email = txtE_email.getText().toString();
-                                password = txtE_password.getText().toString();
-                                phoneNumber = txtE_phone_number.getText().toString();
-
-                                if (isValidInput()) {
-                                    createUser();
-                                }
-                            } else {
-                                txtE_HofID.setError("Account with this id already exists.");
-                            }
-                        } else {
-                            Toast.makeText(SignupActivity.this, "Could not sign up at this time", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                if (isValidInput()) {
+                    createUser();
+                }
             }
         });
 
@@ -115,9 +95,8 @@ public class SignupActivity extends AppCompatActivity {
                     // send email verification
                     sendEmailVerification();
 
-                    // create user data in realtime and firestore databases
-                    createUserInRealtime(hofstraID, email);
-                    createUserInFirestore(uID, displayName, email, hofstraID, phoneNumber);
+                    // create user data in firestore database
+                    createUserInFirestore(uID, displayName, email, phoneNumber);
                 } else {
                     Log.w("createUser:failure", task.getException().toString());
                     Toast.makeText(SignupActivity.this, "Could not create an account at this time.", Toast.LENGTH_SHORT).show();
@@ -143,12 +122,11 @@ public class SignupActivity extends AppCompatActivity {
         auth.signOut();
     }
 
-    private void createUserInFirestore(String uID, String displayName, String email, String hofID, String phoneNumber) {
+    private void createUserInFirestore(String uID, String displayName, String email, String phoneNumber) {
         // create Map with users info
         HashMap<String, String> userInfo = new HashMap();
         userInfo.put("name", displayName);
         userInfo.put("email", email);
-        userInfo.put("hofID", hofID);
 
         if (phoneNumber != null) {
             if (!phoneNumber.isEmpty()) {
@@ -168,22 +146,6 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    private void createUserInRealtime(String hofId, String email) {
-        // store the hofId:email in realtime
-        DatabaseReference realtime = FirebaseDatabase.getInstance().getReference();
-        realtime.child("users").child(hofId).setValue(email).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Log.d("createUserRealtime", "success");
-                } else {
-                    Log.w("createUserRealtime", "failure\n" + task.getException().toString());
-                    Toast.makeText(SignupActivity.this, "Could not create an account at this time", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
     private boolean isValidInput() {
         boolean isValid = true;
 
@@ -191,25 +153,6 @@ public class SignupActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(txtE_displayName.getText().toString())) {
             txtE_displayName.setError("Please enter a display name");
             isValid = false;
-        }
-
-        // Hofstra ID check
-        String id = txtE_HofID.getText().toString().toLowerCase();
-
-        if (TextUtils.isEmpty(id)) {
-            txtE_HofID.setError("Please enter your Hofstra ID");
-            isValid = false;
-        } else if (id.charAt(0) != 'h' || id.length() != 10) {
-            txtE_HofID.setError("Please enter a valid Hofstra ID");
-            isValid = false;
-        } else {
-            // check all chars after 'h' are numbers
-            try {
-                Integer.parseInt(id.substring(1));
-            } catch (NumberFormatException e) {
-                txtE_HofID.setError("Please enter a valid Hofstra ID");
-                isValid = false;
-            }
         }
 
         // phone number check
@@ -228,13 +171,13 @@ public class SignupActivity extends AppCompatActivity {
             isValid = false;
         }
 
-        // email check -- must use hofstra domain
+        // email check
         String email = txtE_email.getText().toString().toLowerCase();
         if (TextUtils.isEmpty(email)) {
-            txtE_email.setError("Please enter your Hofstra email");
+            txtE_email.setError("Please enter your email");
             isValid = false;
-        }else if(!email.contains("pride.hofstra.edu") || !isValidEmail(email)) {
-            txtE_email.setError("Please enter a valid Hofstra email");
+        } else if (!isValidEmail(email)) {
+            txtE_email.setError("Please enter a valid email");
             isValid = false;
         }
 

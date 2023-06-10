@@ -31,7 +31,6 @@ public class User implements Parcelable {
     private String name;
     private String uid;
     private String email;
-    private String hofstraId;
     private String phoneNumber;
 
     // collections
@@ -44,11 +43,10 @@ public class User implements Parcelable {
     public User() {
     }
 
-    public User(String name, String uid, String email, String hofstraId, String phoneNumber, HashMap<String, WishlistBook> wishlist, HashMap<String, UserProfileChat> chats, HashMap<String, UserProfileBook> books, String profileUri) {
+    public User(String name, String uid, String email, String phoneNumber, HashMap<String, WishlistBook> wishlist, HashMap<String, UserProfileChat> chats, HashMap<String, UserProfileBook> books, String profileUri) {
         this.name = name;
         this.uid = uid;
         this.email = email;
-        this.hofstraId = hofstraId;
         this.phoneNumber = phoneNumber;
         this.wishlist = wishlist;
         this.chats = chats;
@@ -84,10 +82,6 @@ public class User implements Parcelable {
         return email;
     }
 
-    public String getHofstraId() {
-        return hofstraId;
-    }
-
     public HashMap<String, WishlistBook> getWishlist() {
         return wishlist;
     }
@@ -114,10 +108,6 @@ public class User implements Parcelable {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setHofstraId(String hofstraId) {
-        this.hofstraId = hofstraId;
     }
 
     public void setWishlist(HashMap<String, WishlistBook> wishlist) {
@@ -147,7 +137,6 @@ public class User implements Parcelable {
         str.append("name: " + name + "\n");
         str.append("uid: " + uid + "\n");
         str.append("email: " + email + "\n");
-        str.append("hofstraId: " + hofstraId + "\n");
         if (wishlist != null)
             str.append("wishlist: " + wishlist.toString() + "\n");
         if (chats != null)
@@ -199,7 +188,6 @@ public class User implements Parcelable {
                     // add user data to user object
                     user.setName(taskResult.getString("name"));
                     user.setEmail(taskResult.getString("email"));
-                    user.setHofstraId(taskResult.getString("hofID"));
                     user.setPhoneNumber(taskResult.getString("phoneNumber"));
 
                     // books as hashmap
@@ -327,7 +315,6 @@ public class User implements Parcelable {
         parcel.writeString(this.name);
         parcel.writeString(this.uid);
         parcel.writeString(this.email);
-        parcel.writeString(this.hofstraId);
         parcel.writeString(this.phoneNumber);
         parcel.writeString(this.profileUri);
         parcel.writeSerializable(this.wishlist);
@@ -349,7 +336,6 @@ public class User implements Parcelable {
         name = in.readString();
         uid = in.readString();
         email = in.readString();
-        hofstraId = in.readString();
         phoneNumber = in.readString();
         profileUri = in.readString();
         wishlist = (HashMap<String, WishlistBook>) in.readSerializable();
